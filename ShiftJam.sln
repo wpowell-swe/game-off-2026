@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36930.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShiftJam.Platforms", "ShiftJam.Platforms", "{0D132025-2810-496D-9AE4-196B0BCF9095}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftJam.Game", "ShiftJam.Game\ShiftJam.Game.csproj", "{374E26DB-C481-4655-8E26-D5EE8AB08063}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftJam.SDL2.GL", "ShiftJam.SDL2.GL\ShiftJam.SDL2.GL.csproj", "{91A76D27-54B7-4051-B439-FF2C120C616A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftJam.Blazor.GL", "ShiftJam.Blazor.GL\ShiftJam.Blazor.GL.csproj", "{8EB453B1-6560-4354-9453-C1EA00FA7B2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{374E26DB-C481-4655-8E26-D5EE8AB08063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{374E26DB-C481-4655-8E26-D5EE8AB08063}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{374E26DB-C481-4655-8E26-D5EE8AB08063}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{374E26DB-C481-4655-8E26-D5EE8AB08063}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91A76D27-54B7-4051-B439-FF2C120C616A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91A76D27-54B7-4051-B439-FF2C120C616A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91A76D27-54B7-4051-B439-FF2C120C616A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91A76D27-54B7-4051-B439-FF2C120C616A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB453B1-6560-4354-9453-C1EA00FA7B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB453B1-6560-4354-9453-C1EA00FA7B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB453B1-6560-4354-9453-C1EA00FA7B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB453B1-6560-4354-9453-C1EA00FA7B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{91A76D27-54B7-4051-B439-FF2C120C616A} = {0D132025-2810-496D-9AE4-196B0BCF9095}
+		{8EB453B1-6560-4354-9453-C1EA00FA7B2B} = {0D132025-2810-496D-9AE4-196B0BCF9095}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ECE4097E-1424-423B-926A-A21AA8564538}
+	EndGlobalSection
+EndGlobal
