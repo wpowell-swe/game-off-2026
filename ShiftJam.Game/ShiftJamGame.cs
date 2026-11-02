@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
+using Microsoft.Xna.Framework.Media;
 
 namespace ShiftJam
 {
@@ -24,7 +24,7 @@ namespace ShiftJam
 
             graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
             if (TitleContainer.Platform == TitlePlatform.iOS)
-                    graphics.IsFullScreen = true;
+                graphics.IsFullScreen = true;
 
         }
 

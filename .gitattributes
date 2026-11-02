@@ -1,0 +1,31 @@
+# Normalize text files to LF in the repo, whatever OS checks them out.
+* text=auto eol=lf
+
+# Visual Studio and the MGCB editor write CRLF; keep them that way to avoid churn.
+*.sln   text eol=crlf
+*.mgcb  text eol=crlf
+
+*.cs     text diff=csharp
+*.csproj text
+*.props  text
+*.razor  text
+*.md     text diff=markdown
+
+# Binary assets: never touch line endings, never diff.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.bmp  binary
+*.ico  binary
+*.psd  binary
+*.aseprite binary
+*.ase  binary
+*.wav  binary
+*.ogg  binary
+*.mp3  binary
+*.flac binary
+*.ttf  binary
+*.otf  binary
+*.xnb  binary
+*.zip  binary
