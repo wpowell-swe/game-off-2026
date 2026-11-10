@@ -31,10 +31,17 @@ namespace ShiftJam
             if (ground) Velocity.X = MoveToward(Velocity.X, 0, 500f * dt);
         }
 
+        private readonly Animator _anim = new(SpriteDefs.Dummy);
+
         public void Draw(SpriteBatch sb)
         {
             if (!IsAlive) return;
             var r = new Rectangle((int)MathF.Round(Position.X), (int)MathF.Round(Position.Y), Size.X, Size.Y);
+            if (_flash > 0 ? _anim.Play("hurt", "idle") : _anim.Play("idle"))
+            {
+                _anim.Draw(sb, new Point(r.X + Size.X / 2, r.Bottom), 1, false, Color.White);
+                return;
+            }
             Gfx.Fill(sb, r, _flash > 0 ? Color.White : Color.Gray);
         }
 

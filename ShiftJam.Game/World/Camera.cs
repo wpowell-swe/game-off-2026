@@ -23,7 +23,35 @@ namespace ShiftJam
 
         public Vector2 Position;   // top-left of the view, in world pixels
 
-        public Matrix Transform => Matrix.CreateTranslation(-MathF.Round(Position.X), -MathF.Round(Position.Y), 0);
+        private float _shakeMag, _shakeTime, _shakeDur;
+        private int _shakeStep;
+        private Point _shakeOffset;
+
+        public Matrix Transform => Matrix.CreateTranslation(-MathF.Round(Position.X) + _shakeOffset.X, -MathF.Round(Position.Y) + _shakeOffset.Y, 0);
+
+        /// <summary>Screen shake: peak magnitude in pixels, decaying linearly over duration seconds. Keeps the stronger of overlapping shakes.</summary>
+        public void Shake(float magnitude, float duration)
+        {
+            float current = _shakeDur > 0 ? _shakeMag * (_shakeTime / _shakeDur) : 0f;
+            if (magnitude < current) return;
+            _shakeMag = magnitude; _shakeTime = _shakeDur = MathF.Max(0.001f, duration);
+        }
+
+        /// <summary>Advance the shake. Call every frame, including during hit-stop.</summary>
+        public void UpdateShake(float dt)
+        {
+            if (_shakeTime <= 0) { _shakeOffset = Point.Zero; return; }
+            _shakeTime -= dt;
+            if (_shakeTime <= 0) { _shakeOffset = Point.Zero; return; }
+            float m = _shakeMag * (_shakeTime / _shakeDur);
+            _shakeStep++;
+            // Deterministic hash noise, pixel-snapped.
+            uint h = (uint)_shakeStep * 2654435761u;
+            float rx = ((h >> 8) & 0xFFFF) / 32767.5f - 1f;
+            h = (h ^ (h >> 13)) * 1274126177u;
+            float ry = ((h >> 8) & 0xFFFF) / 32767.5f - 1f;
+            _shakeOffset = new Point((int)MathF.Round(rx * m), (int)MathF.Round(ry * m));
+        }
 
         /// <summary>Snap straight to the target (call on level start or teleport).</summary>
         public void Reset() => _init = false;

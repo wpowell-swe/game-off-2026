@@ -153,6 +153,7 @@ namespace ShiftJam
                 if (_jumpBuffer > 0 && (_onGround || _coyote > 0))
                 {
                     Velocity.Y = -Tuning.JumpVelocity;
+                    Sfx.Play(SfxId.Jump, 0.8f, 0.05f);
                     _jumping = true;
                     _jumpBuffer = 0;
                     _coyote = 0;
@@ -250,6 +251,7 @@ namespace ShiftJam
                 Facing, Plane,
                 _heavy ? Tuning.HeavyKnockback : Tuning.LightKnockback,
                 _heavy);
+            Sfx.Play(SfxId.Swing, _heavy ? 1f : 0.7f, 0.08f);
             world.SpawnHit(hit, this);
         }
 
@@ -320,13 +322,49 @@ namespace ShiftJam
 
         // ---- Drawing ----
 
+        // Animation tracking only (read-only with respect to behaviour).
+        private readonly Animator _anim = new(SpriteDefs.Joseph);
+        private Plane _drawnPlane = Plane.Material;
+        private float _shiftAnimUntil;
+        private const float ShiftAnimTime = 0.2f;
+
+        /// <summary>Picks and draws the sprite for the current state. False means no art: draw rectangles.</summary>
+        private bool DrawSprite(SpriteBatch sb, Rectangle body, bool astral)
+        {
+            bool ok;
+            if (_state == State.Dead) ok = _anim.Play("dead");
+            else if (_state == State.Attack)
+            {
+                int s = _heavy ? Tuning.HeavyStartupFrames : Tuning.LightStartupFrames;
+                int a = _heavy ? Tuning.HeavyActiveFrames : Tuning.LightActiveFrames;
+                int r = _heavy ? Tuning.HeavyRecoveryFrames : Tuning.LightRecoveryFrames;
+                int done = _phase == Phase.Startup ? s - _phaseFrames
+                         : _phase == Phase.Active ? s + a - _phaseFrames
+                         : s + a + r - _phaseFrames;
+                ok = _anim.Scrub((done + 0.5f) / (s + a + r), _heavy ? "heavy" : "light");
+            }
+            else if (_state == State.Hurt || _state == State.Stun) ok = _anim.Play("hurt");
+            else if (_clock < _shiftAnimUntil) ok = _anim.Play("shift");
+            else if (_blocking) ok = _anim.Play("block");
+            else if (!_onGround) ok = _anim.Play("jump");
+            else if (Math.Abs(Velocity.X) > 8f) ok = _anim.Play("walk");
+            else ok = _anim.Play("idle");
+
+            if (!ok) return false;
+            // Hitbox bottom centre = the feet.
+            _anim.Draw(sb, new Point(body.X + Size.X / 2, body.Bottom), Facing, astral, Color.White);
+            return true;
+        }
+
         public void Draw(SpriteBatch sb)
         {
             var body = Hurtbox;
             bool astral = Plane == Plane.Astral;
+            if (Plane != _drawnPlane) { _drawnPlane = Plane; _shiftAnimUntil = _clock + ShiftAnimTime; }
 
             if (_state == State.Dead)
             {
+                if (DrawSprite(sb, body, astral)) return;
                 Gfx.Fill(sb, new Rectangle(body.Left - 4, body.Bottom - 8, Size.Y - 8, 8), new Color(90, 60, 40));
                 return;
             }
@@ -334,7 +372,9 @@ namespace ShiftJam
             bool flickerOff = _invuln > 0 && _state != State.Free ? ((int)(_clock / Tuning.FlickerInterval) % 2 == 0)
                             : _invuln > Tuning.BlockInvulnTime && ((int)(_clock / Tuning.FlickerInterval) % 2 == 0);
 
-            if (!flickerOff)
+            bool drewSprite = !flickerOff && DrawSprite(sb, body, astral);
+
+            if (!flickerOff && !drewSprite)
             {
                 Color bodyColor = astral ? new Color(150, 130, 255) * 0.55f : new Color(235, 140, 40);
                 Color head = astral ? new Color(120, 230, 255) * 0.65f : new Color(240, 200, 150);
@@ -349,7 +389,7 @@ namespace ShiftJam
                 Gfx.Fill(sb, new Rectangle(mx, body.Y + 3, 3, 2), astral ? new Color(255, 255, 255) * 0.8f : Color.Black);
             }
 
-            if (_blocking)
+            if (_blocking && !drewSprite)
             {
                 int sx = Facing > 0 ? body.Right + 1 : body.Left - 4;
                 Gfx.Fill(sb, new Rectangle(sx, body.Y + 2, 3, 22), new Color(90, 190, 255));

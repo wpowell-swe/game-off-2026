@@ -86,6 +86,7 @@ namespace ShiftJam
                             _struck = true;
                             int x = Facing > 0 ? Hurtbox.Right : Hurtbox.Left - 20;
                             var area = new Rectangle(x, Hurtbox.Top + 4, 20, 20);
+                            Sfx.Play(SfxId.Swing, 0.5f, 0.1f);
                             world.SpawnHit(new Hit(area, AttackDamage, Facing, Plane.Material, 140f, false), this);
                         }
                         _state = State.Recover; _timer = RecoverTime;
@@ -132,10 +133,26 @@ namespace ShiftJam
             return Mover.Overlaps(world.Tiles, Plane, probeFloor, new Point(2, 2));
         }
 
+        private readonly Animator _anim = new(SpriteDefs.Shell);
+
         public void Draw(SpriteBatch sb)
         {
             if (!IsAlive) return;
             var r = new Rectangle((int)MathF.Round(Position.X), (int)MathF.Round(Position.Y), Size.X, Size.Y);
+
+            bool ok = _state switch
+            {
+                State.Stun => _anim.Play("hurt"),
+                State.Windup => _anim.Scrub(1f - _timer / WindupTime, "windup"),
+                State.Recover => _anim.Scrub(1f - _timer / RecoverTime, "attack"),
+                _ => _anim.Play("walk"),
+            };
+            if (ok)
+            {
+                _anim.Draw(sb, new Point(r.X + Size.X / 2, r.Bottom), Facing, false, Color.White);
+                return;
+            }
+
             Color body = new(110, 100, 90);
             if (_flash > 0) body = Color.White;
             else if (_state == State.Windup && ((int)(_timer * 20f) % 2 == 0)) body = new Color(255, 120, 80);

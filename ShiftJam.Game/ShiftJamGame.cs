@@ -35,6 +35,8 @@ namespace ShiftJam
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Gfx.Init(GraphicsDevice);
+            SpriteStore.Load(Content);
+            Sfx.Load(Content);
             _screen = new RenderTarget2D(GraphicsDevice, Metrics.ScreenWidth, Metrics.ScreenHeight);
 
             LoadLevel(TestRoom.Build);
@@ -85,6 +87,7 @@ namespace ShiftJam
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             Hud.Draw(spriteBatch, _world.Player);
+            _world.DrawScreenFx(spriteBatch);
             spriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(null);

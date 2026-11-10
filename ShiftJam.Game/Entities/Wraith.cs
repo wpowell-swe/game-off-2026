@@ -118,6 +118,7 @@ namespace ShiftJam
                     {
                         _struck = true;
                         var area = Hurtbox; area.Inflate(8, 6);
+                        Sfx.Play(SfxId.Swing, 0.4f, 0.2f);
                         world.SpawnHit(new Hit(area, AttackDamage, Facing, Plane.Astral, 100f, false), this);
                     }
                     if (_timer <= 0) { _state = State.Recover; _timer = RecoverTime; }
@@ -134,12 +135,25 @@ namespace ShiftJam
             Position += Velocity * dt;
         }
 
+        private readonly Animator _anim = new(SpriteDefs.Wraith);
+
         public void Draw(SpriteBatch sb)
         {
             if (!IsAlive) return;
             float bob = Defeated ? 0 : MathF.Sin(_clock * 4f + _seed) * 1.5f;
             var r = new Rectangle((int)MathF.Round(Position.X), (int)MathF.Round(Position.Y + bob), Size.X, Size.Y);
             float alpha = Defeated ? 1f - _fade / FadeTime : 0.65f + 0.15f * MathF.Sin(_clock * 6f);
+
+            // Wraiths always use the Astral variant of their art. The sprite already has its own opacity,
+            // so only the fade-out (and a slight shimmer) is applied on top.
+            bool ok = (_state == State.Lunge && !Defeated) ? _anim.Play("lunge", "float") : _anim.Play("float");
+            if (ok)
+            {
+                float a = Defeated ? alpha : 0.9f + 0.1f * MathF.Sin(_clock * 6f);
+                Color tint = _flash > 0 ? new Color(255, 255, 255) : new Color(235, 235, 255);
+                _anim.Draw(sb, new Point(r.X + Size.X / 2, r.Bottom), Facing, true, tint * MathHelper.Clamp(a, 0, 1));
+                return;
+            }
             Color c = new(120, 220, 255);
             if (_flash > 0) c = new Color(200, 255, 255);
             else if (_state == State.Windup && ((int)(_timer * 20f) % 2 == 0)) c = Color.White;
