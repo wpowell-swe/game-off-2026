@@ -87,7 +87,31 @@ Level 1 teaches: fight Shells in Material, shift to deal with Wraiths, and shift
 | **Hollowed** | Body plus soul. Break guard in Material, shift, free the soul (the main rescue loop). |
 | **Flicker** | Swaps plane on a visible beat (ring pulse). Hit it only while you share its plane. |
 
-**Boss (end of level 2): the Tithe's Clerk.** Alternates planes and uses every rule from both levels. **[DECIDE]** The final boss, the Tithe itself, is out of scope for this sprint.
+Levels 3 to 5 reuse these four enemy types in new combinations (see Levels and bosses). New enemy types are **not** planned for them, to protect the schedule.
+
+## Levels and bosses (Mega Man style)
+
+Five levels, each ending in a boss. Each boss is a notable townsperson who has been hollowed. Defeating the boss frees them, they move into the hub, and they give you a **charm** (the Mega Man "boss power" is a Ki or shift upgrade).
+
+| # | Level | Shape | Enemies | Boss (freed afterwards) | Charm theme |
+|---|---|---|---|---|---|
+| 1 | **The Lantern Streets** | Horizontal | Shells, Wraiths (one plane each) | **Pell**, lantern-keeper. Lanterns decide which plane is safe. | Cheaper shift |
+| 2 | **The Cellars** | Descends | Hollowed, Flickers (both planes) | **Dova**, market stall owner. Throws goods that exist in one plane only. | Faster Ki recovery |
+| 3 | **The Temple Stairs** | Horizontal plus climbing **[stretch: upward]** | Mix of all four | **The Abbess** (new). Fights from the Astral Plane, so you must stay there. | Longer Astral stay |
+| 4 | **The Bell Tower** | Descends | Mix, plus hazards that flip plane on a timer | **Brother Hask**, bell-ringer. Each bell toll forces a plane swap. | Wider Perfect Shift window |
+| 5 | **The Tithe's Hall** | Both | Everything | **Master Oss**, then **the Tithe's Clerk** (final boss) | Ending |
+
+**Progression:** levels 1 and 2 are played in order, since they teach the plane rules. After that, levels 3 and 4 can be played in either order (Mega Man level select), then level 5. Decided: level select for levels 3 and 4. Each of them must work without the other's charm, since you may arrive first or second.
+
+**Boss rules:** every boss has two phases, one in each plane, so each boss fight is a shift-timing test. Bosses reuse the player's existing move set and a few shared attack patterns, with different timings and art.
+
+### Scope warning
+
+Five levels in two weeks for one coder is tight. To make it feasible:
+- **Levels are data, not code.** One level file format (tiles, enemy spawns, plane-wall markers), so a new level is mostly layout work.
+- **Levels are short:** about 60 to 90 seconds each, one screen-height section plus a boss room.
+- **Finish levels 1 and 2 plus a boss first.** That is a complete game on its own. Levels 3 to 5 are only added if levels 1 and 2 are polished.
+- **Bosses share one base class** with a phase table (plane, pattern, timing).
 
 ## Content from the AI pipeline
 
@@ -109,12 +133,14 @@ The pipeline in `/pipeline` generates text the game loads from `Content/Generate
 |---|---|
 | 1-3 | Joseph moves, jumps, attacks. Material only. One test room. |
 | 4-5 | Shift, Ki, the Astral look, Astral-only wall passage. |
-| 6-8 | Level 1: Shells, Wraiths, level layout, dialogue in game. |
-| 9-11 | Level 2: Hollowed, Flickers, descending section. |
-| 12-13 | Boss, hub with charms, audio, tuning. |
-| 14 | Polish, web build, itch.io page. |
+| 6-7 | Level file format, Level 1 with Shells and Wraiths. |
+| 8 | Boss base class, Pell (level 1 boss). **Checkpoint: a complete one-level game.** |
+| 9-10 | Level 2 (descending), Hollowed, Flickers, Dova. **Checkpoint: the "safe" release.** |
+| 11-12 | Levels 3 and 4 as far as time allows, using existing enemies. |
+| 13 | Level 5 (Oss and the Clerk) or a shorter finale. Hub and charms. |
+| 14 | Polish, tuning, web build, itch.io page. |
 
-**Cut order if late:** hub and charms, Flicker, boss complexity, then Level 2 length.
+**Cut order if late:** level 5 (end the game with a shorter finale after level 4), then level 4, then level 3, then hub and charms, then the Flicker. Two levels with two bosses is the guaranteed minimum.
 
 ## Open questions
 

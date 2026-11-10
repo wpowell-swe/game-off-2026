@@ -24,6 +24,10 @@ The Tithe's Clerk is the Tithe's enforcer and filing system. The Clerk moves bet
 
 Ki is the monk's inner breath. Stepping into the Astral Plane costs a lot of it, staying there costs a little, and it recovers in the Material Plane.
 
-Rescued townsfolk gather in the Lanternfall square: Pell the lantern-keeper, Dova who runs the market stall, Brother Hask the bell-ringer, and Tamsin, a child who can hear the Astral Plane and is the only one honest about how bad things are.
+Each district of Lanternfall has a boss: a notable townsperson hollowed by the Tithe. The Lantern Streets are held by Pell the lantern-keeper, the Cellars by Dova who runs the market stall, the Temple Stairs by the Abbess, and the Bell Tower by Brother Hask the bell-ringer. The Tithe's Hall holds Master Oss and then the Clerk.
+
+When Joseph frees a boss, that person walks to the Lanternfall square, confused and grateful, and gives Joseph a charm. Tamsin, a child who can hear the Astral Plane, waits in the square and is the only one honest about how bad things are.
+
+The Abbess runs the Temple Stairs and fights from the Astral Plane. She is serene, severe and hollowed mid-sermon, and she is very hard to interrupt.
 
 Charms are small relics carried by the freed. Each carries a shift effect that bends a rule of the planes slightly, such as cheaper shifting or a longer Astral stay.
