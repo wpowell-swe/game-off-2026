@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -58,9 +58,10 @@ namespace ShiftJam
                 catch (PlatformNotSupportedException) { /* the web build cannot exit */ }
             }
 
-            // Debug level select: F1 wide level, F2 descent, R restart.
+            // Debug level select: F1 wide level, F2 descent (Hollowed and Flicker), F3 boss arena (Pell), R restart.
             if (keys.IsKeyDown(Keys.F1) && !_prevKeys.IsKeyDown(Keys.F1)) LoadLevel(TestRoom.Build);
             else if (keys.IsKeyDown(Keys.F2) && !_prevKeys.IsKeyDown(Keys.F2)) LoadLevel(TestRoom.BuildDescent);
+            else if (keys.IsKeyDown(Keys.F3) && !_prevKeys.IsKeyDown(Keys.F3)) LoadLevel(BossArena.Build);
             else if (keys.IsKeyDown(Keys.R) && !_prevKeys.IsKeyDown(Keys.R)) LoadLevel(_buildLevel);
             _prevKeys = keys;
 
@@ -75,6 +76,27 @@ namespace ShiftJam
             base.Update(gameTime);
         }
 
+        /// <summary>Level-cleared and defeated banners, drawn in screen space.</summary>
+        private void DrawEndBanner()
+        {
+            bool cleared = _world.LevelCleared;
+            bool defeated = !_world.Player.IsAlive;
+            if (!cleared && !defeated) return;
+
+            Gfx.Fill(spriteBatch, new Rectangle(0, 60, Metrics.ScreenWidth, 60), new Color(0, 0, 0, 170));
+            if (cleared)
+            {
+                PixelFont.DrawCentered(spriteBatch, "LEVEL CLEARED", 72, new Color(255, 225, 140), 3);
+                PixelFont.DrawCentered(spriteBatch, "SOULS FREED: " + _world.SoulsFreed, 96, Color.White, 2);
+                PixelFont.DrawCentered(spriteBatch, "R TO REPLAY", 108, new Color(180, 200, 255), 1);
+            }
+            else
+            {
+                PixelFont.DrawCentered(spriteBatch, "DEFEATED", 72, new Color(255, 110, 110), 3);
+                PixelFont.DrawCentered(spriteBatch, "R TO TRY AGAIN", 100, Color.White, 1);
+            }
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.SetRenderTarget(_screen);
@@ -87,6 +109,9 @@ namespace ShiftJam
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             Hud.Draw(spriteBatch, _world.Player);
+            foreach (var e in _world.Entities)
+                if (e is IBoss boss) BossBar.Draw(spriteBatch, boss);
+            DrawEndBanner();
             _world.DrawScreenFx(spriteBatch);
             spriteBatch.End();
 

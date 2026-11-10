@@ -31,6 +31,7 @@ namespace ShiftJam
         private bool _blocking;
         private float _coyote;
         private float _jumpBuffer;
+        private float _shiftBuffer;    // a shift pressed during an attack is remembered briefly, not dropped
         private float _stateTimer;     // Hurt / Stun
         private float _invuln;
         private float _clock;
@@ -125,7 +126,7 @@ namespace ShiftJam
 
         private void UpdateFree(float dt, GameWorld world, InputFrame input)
         {
-            if (input.ShiftPressed) TryShift(world);
+            if (input.ShiftPressed || _shiftBuffer > 0) { _shiftBuffer = 0; TryShift(world); }
 
             if (input.JumpPressed) _jumpBuffer = Tuning.JumpBufferTime;
             else _jumpBuffer -= dt;
@@ -187,6 +188,8 @@ namespace ShiftJam
             _blocking = false;
             if (input.JumpPressed) _jumpBuffer = Tuning.JumpBufferTime; else _jumpBuffer -= dt;
 
+            if (input.ShiftPressed) _shiftBuffer = Tuning.ShiftBufferTime;
+            else if (_shiftBuffer > 0) _shiftBuffer -= dt;
             if (input.LightPressed) _queuedLight = true;
             if (input.HeavyPressed) _queuedHeavy = true;
 

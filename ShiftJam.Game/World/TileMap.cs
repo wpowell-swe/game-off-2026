@@ -20,7 +20,7 @@ namespace ShiftJam
                 for (int x = 0; x < rows[y].Length; x++)
                 {
                     char c = rows[y][x];
-                    if (c == 'P' || c == 'D' || c == 'S' || c == 'R')
+                    if (c == 'P' || c == 'D' || c == 'S' || c == 'R' || c == 'H' || c == 'F')
                         list.Add((c, new Vector2(x * Metrics.TileSize, y * Metrics.TileSize)));
                 }
             return list;

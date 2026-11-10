@@ -22,6 +22,12 @@ namespace ShiftJam
             if (entity is IHittable h) Hittables.Add(h);
         }
 
+        /// <summary>Souls freed from Hollowed enemies and bosses this level. Entities increment it.</summary>
+        public int SoulsFreed;
+
+        /// <summary>Set by the level's boss when it is freed. The game shows a level-complete state.</summary>
+        public bool LevelCleared;
+
         public readonly Particles Sparks = new Particles();
         public readonly ShiftFx ShiftEffect = new ShiftFx();
 

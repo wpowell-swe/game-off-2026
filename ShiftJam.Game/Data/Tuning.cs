@@ -61,6 +61,7 @@ namespace ShiftJam
         public const float MinHurtKnockback = 80f;
         public const float FlickerInterval = 0.06f;
         public const float KiDepletedStunTime = 0.5f;
+        public const float ShiftBufferTime = 0.25f;   // a shift pressed mid-attack fires when the attack ends
 
         // Ki (see GDD: large up-front shift cost, small upkeep)
         public const float MaxKi = 100f;
