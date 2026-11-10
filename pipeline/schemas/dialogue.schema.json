@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["id", "speaker", "text", "mood"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "speaker": { "type": "string", "minLength": 1 },
+    "text": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "mood": { "type": "string", "enum": ["neutral", "happy", "tense", "sad", "angry"] }
+  }
+}

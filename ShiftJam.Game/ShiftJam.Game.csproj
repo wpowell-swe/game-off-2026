@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Compile Include="ShiftJamGame.cs" />
+    <Compile Include="GeneratedContent.cs" />
   </ItemGroup>
 
 </Project>

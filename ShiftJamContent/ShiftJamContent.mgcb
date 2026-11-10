@@ -12,3 +12,8 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#--- generated-content:begin (managed by pipeline, do not edit) ---#
+#begin Generated/dialogue.json
+/copy:Generated/dialogue.json
+#end Generated/dialogue.json
+#--- generated-content:end ---#

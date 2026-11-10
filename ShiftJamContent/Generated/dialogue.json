@@ -1,0 +1,20 @@
+[
+  {
+    "id": "mara_greet_01",
+    "speaker": "Mara",
+    "text": "You're back. Late shift, was it? The clock says so. The clock also said the opposite an hour ago.",
+    "mood": "neutral"
+  },
+  {
+    "id": "mara_greet_02",
+    "speaker": "Mara",
+    "text": "Your boots are on the wrong feet. Or the room is. Sit down. Let it settle before you trust the floor.",
+    "mood": "tense"
+  },
+  {
+    "id": "mara_greet_03",
+    "speaker": "Mara",
+    "text": "Tea's by the window. It was by the door. Don't ask me which is true. Drink it while it's warm.",
+    "mood": "happy"
+  }
+]
