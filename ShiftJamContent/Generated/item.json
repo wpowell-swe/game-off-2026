@@ -1,32 +1,32 @@
 [
   {
-    "id": "pell_lantern_wick",
-    "name": "Pell's Lantern Wick",
-    "description": "A charred wick from the last lamp Pell lit. One end remembers the flame. The other remembers the dark.",
-    "shiftEffect": "Ki drains 15% slower while in the Astral Plane."
+    "id": "widows_receipt_stub",
+    "name": "Widow's Receipt Stub",
+    "description": "Proof that someone's soul was held in storage. The widow kept it. The Tithe never asked for it back, which is unusual.",
+    "shiftEffect": "Shifting into the Astral Plane costs 5 less Ki."
   },
   {
-    "id": "dova_market_weight",
-    "name": "Dova's Stall Weight",
-    "description": "A brass weight, heavy on one face and light on the other. Dova says it was always honest. She does not say to whom.",
-    "shiftEffect": "Ki recovers 20% faster while in the Material Plane."
+    "id": "baker_second_loaf",
+    "name": "Baker's Second Loaf",
+    "description": "A small stone loaf. The baker says he set it aside for later. Later turned out to be inconvenient. He wants it back, but you may borrow it.",
+    "shiftEffect": "Shifting into the Astral Plane costs 3 less Ki."
   },
   {
-    "id": "hask_cracked_clapper",
-    "name": "Hask's Cracked Clapper",
-    "description": "The clapper of a bell that rang twice for every strike. Brother Hask keeps it in his sleeve. It hums when he's nervous.",
-    "shiftEffect": "The Perfect Shift window is 0.08 seconds wider."
+    "id": "ferrymans_late_coin",
+    "name": "Ferryman's Late Coin",
+    "description": "A coin paid after the crossing instead of before. One side is warm, the other is not. The ferryman declines to say which is which.",
+    "shiftEffect": "Your Astral Plane stay lasts 4 seconds longer before Ki drains."
   },
   {
-    "id": "tamsin_thread_whistle",
-    "name": "Tamsin's Thread Whistle",
-    "description": "A whistle made from bone-white thread. Tamsin says you can't hear it here. She says it is very loud somewhere else.",
-    "shiftEffect": "Each Astral Plane stay lasts 2 seconds longer."
+    "id": "clerks_stamped_pardon",
+    "name": "Clerk's Stamped Pardon",
+    "description": "A pardon, correctly stamped, for an offence nobody can name. It is valid in one plane and merely decorative in the other.",
+    "shiftEffect": "Staying in the Astral Plane drains 1 less Ki per second."
   },
   {
-    "id": "pell_shuttered_lens",
-    "name": "Pell's Shuttered Lens",
-    "description": "A lantern lens with a little door. Open, it shows what is there. Closed, it shows what was.",
-    "shiftEffect": "Astral stay is 1 second longer, but Material Plane Ki recovers 10% slower."
+    "id": "gravediggers_folding_chair",
+    "name": "Gravedigger's Folding Chair",
+    "description": "A tiny carved chair, carried by a man who spent years standing between two worlds. He would like you to sit down.",
+    "shiftEffect": "Ki recovers 25% faster while in the Material Plane."
   }
 ]

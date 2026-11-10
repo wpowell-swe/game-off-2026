@@ -1,38 +1,50 @@
 [
   {
-    "id": "wren_square_arrival",
-    "speaker": "Wren",
-    "text": "Easy. Sit if you can. The square's still here, and so are you. That's more than I expected from today.",
+    "id": "joseph_pell_lantern",
+    "speaker": "Joseph",
+    "text": "Pell. You're free. Your lanterns are exactly where you left them, which is the only thing in town I can say that about.",
     "mood": "neutral"
   },
   {
-    "id": "wren_to_pell_lantern",
-    "speaker": "Wren",
-    "text": "Pell. Your lanterns are still hanging. Somebody has to light them. I'd offer, but I'd only set the wrong thing on fire.",
+    "id": "joseph_dova_stall",
+    "speaker": "Joseph",
+    "text": "Dova, your stall is untouched. The prices are the same as before. I checked. It seemed like the least I could do, and I did it.",
     "mood": "happy"
   },
   {
-    "id": "wren_to_dova_stall",
-    "speaker": "Wren",
-    "text": "Dova, your stall's right where you left it. Dusty. A little crooked. Like the rest of us, really.",
-    "mood": "happy"
+    "id": "joseph_hask_bell",
+    "speaker": "Joseph",
+    "text": "Brother Hask. The bell is still up there. So is the rope. I'd say it's a miracle, but I didn't file for one.",
+    "mood": "neutral"
   },
   {
-    "id": "wren_to_hask_bell",
-    "speaker": "Wren",
-    "text": "Hask. The bell hasn't rung in a long while. You don't have to ring it yet. It can wait one more quiet hour.",
-    "mood": "sad"
-  },
-  {
-    "id": "wren_to_tamsin_listen",
-    "speaker": "Wren",
-    "text": "Tamsin, you're listening to something I can't hear. If it gets loud, tell me. I'll stand between you and it. Badly, but I'll stand.",
+    "id": "joseph_tamsin_honest",
+    "speaker": "Joseph",
+    "text": "Tamsin, you hear the Astral Plane. Tell me honestly how bad it is. Everyone else has been very polite about it, and it's no help.",
     "mood": "tense"
   },
   {
-    "id": "wren_closing_two_sides",
-    "speaker": "Wren",
-    "text": "You were shell on one side and spark on the other. Now you're one thing again. Take your time getting used to it.",
+    "id": "joseph_pell_delay",
+    "speaker": "Joseph",
+    "text": "Yes, Pell, I saw the first signs. Yes, I put off reporting them. I'm now doing the work of the report, only louder.",
+    "mood": "sad"
+  },
+  {
+    "id": "joseph_dova_complaint",
+    "speaker": "Joseph",
+    "text": "You were hollowed for a season and you want a refund. Dova, I admire that. I can't give you one, but I admire it.",
+    "mood": "happy"
+  },
+  {
+    "id": "oss_disappointed",
+    "speaker": "Master Oss",
+    "text": "Joseph. The order entrusted you with one duty: to report. You have since managed the rescue, the shifting and the regret. In that order, I note.",
+    "mood": "angry"
+  },
+  {
+    "id": "clerk_notice",
+    "speaker": "Tithe Clerk",
+    "text": "Good day. A number of souls have left our care without form 7. We are not upset. We would simply like them back, at your earliest convenience.",
     "mood": "neutral"
   }
 ]
