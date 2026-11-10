@@ -26,11 +26,11 @@ jobs:
             8.0.x
             10.0.x
 
-      # The content builder loads FreeImage to import PNGs, under the name libFreeImage.so.
+      # The content builder needs FreeImage (PNGs, under the name libFreeImage.so) and FFmpeg (WAVs).
       - name: Install FreeImage
         run: |
           sudo apt-get update
-          sudo apt-get install -y libfreeimage3
+          sudo apt-get install -y libfreeimage3 ffmpeg
           mkdir -p "$HOME/freeimage"
           ln -sf "$(dpkg -L libfreeimage3 | grep 'libfreeimage.so.3$' | head -1)" "$HOME/freeimage/libFreeImage.so"
           echo "LD_LIBRARY_PATH=$HOME/freeimage:$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
