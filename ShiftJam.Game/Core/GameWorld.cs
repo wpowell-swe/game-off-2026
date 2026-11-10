@@ -22,6 +22,11 @@ namespace ShiftJam
             if (entity is IHittable h) Hittables.Add(h);
         }
 
+        /// <summary>The level exit (a door tile). Reaching it clears a normal level; boss arenas have none.</summary>
+        public Rectangle? ExitArea;
+
+        private float _exitClock;
+
         /// <summary>Souls freed from Hollowed enemies and bosses this level. Entities increment it.</summary>
         public int SoulsFreed;
 
@@ -108,6 +113,13 @@ namespace ShiftJam
                 DetectPlayerEvents();
                 Camera.Follow(Player.Hurtbox, Tiles, dt);
             }
+            _exitClock += dt;
+            if (ExitArea.HasValue && Player != null && Player.IsAlive && !LevelCleared && Player.Hurtbox.Intersects(ExitArea.Value))
+            {
+                LevelCleared = true;
+                Sfx.Play(SfxId.ShiftOut, 0.8f);
+            }
+
             Camera.UpdateShake(dt);
             Sparks.Update(dt);
             ShiftEffect.Update(dt);
@@ -138,9 +150,25 @@ namespace ShiftJam
         public void Draw(SpriteBatch sb)
         {
             if (Tiles is IDrawableTiles tiles) tiles.Draw(sb, Camera);
+            DrawExit(sb);
             foreach (var e in Entities) e.Draw(sb);
             Sparks.Draw(sb);
             ShiftEffect.DrawWorld(sb);
+        }
+
+        /// <summary>A glowing doorway: two posts and a pulsing light between them.</summary>
+        private void DrawExit(SpriteBatch sb)
+        {
+            if (!ExitArea.HasValue) return;
+            var r = ExitArea.Value;
+            int h = Metrics.TileSize * 3;                       // taller than the player, so it reads as a doorway
+            var door = new Rectangle(r.X + 1, r.Bottom - h, r.Width - 2, h);
+            float pulse = 0.55f + 0.25f * MathF.Sin(_exitClock * 4f);
+            Gfx.Fill(sb, door, new Color(255, 225, 140) * (pulse * 0.45f));
+            Gfx.Fill(sb, new Rectangle(door.X + 3, door.Y + 4, door.Width - 6, door.Height - 4), new Color(255, 240, 190) * pulse);
+            Gfx.Fill(sb, new Rectangle(door.X - 2, door.Y, 3, door.Height), new Color(110, 80, 50));
+            Gfx.Fill(sb, new Rectangle(door.Right - 1, door.Y, 3, door.Height), new Color(110, 80, 50));
+            Gfx.Fill(sb, new Rectangle(door.X - 2, door.Y - 3, door.Width + 4, 3), new Color(110, 80, 50));
         }
 
         /// <summary>Screen-space effects (flash). Call inside a batch with no camera transform.</summary>

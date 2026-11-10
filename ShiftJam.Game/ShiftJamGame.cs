@@ -17,8 +17,10 @@ namespace ShiftJam
         private RenderTarget2D _screen;
         private readonly InputReader _input = new();
         private GameWorld _world;
-        private Action<GameWorld> _buildLevel = TestRoom.Build;
+        private readonly Campaign _campaign = new();
         private KeyboardState _prevKeys;
+        private float _stageIntro;     // seconds left on the stage-name banner
+        private bool _ending;          // the whole campaign is finished
 
         public ShiftJamGame()
         {
@@ -39,15 +41,28 @@ namespace ShiftJam
             Sfx.Load(Content);
             _screen = new RenderTarget2D(GraphicsDevice, Metrics.ScreenWidth, Metrics.ScreenHeight);
 
-            LoadLevel(TestRoom.Build);
+            LoadStage();
         }
 
-        private void LoadLevel(Action<GameWorld> build)
+        /// <summary>Builds the current campaign stage from scratch.</summary>
+        private void LoadStage()
         {
-            _buildLevel = build;
+            _world = new GameWorld();
+            _campaign.Current.Build(_world);
+            _stageIntro = 2.5f;
+            _ending = false;
+        }
+
+        /// <summary>Loads a standalone test level (debug keys), outside the campaign flow.</summary>
+        private void LoadDebugLevel(Action<GameWorld> build)
+        {
             _world = new GameWorld();
             build(_world);
+            _stageIntro = 0;
+            _ending = false;
         }
+
+        private bool Pressed(KeyboardState keys, Keys key) => keys.IsKeyDown(key) && !_prevKeys.IsKeyDown(key);
 
         protected override void Update(GameTime gameTime)
         {
@@ -58,42 +73,78 @@ namespace ShiftJam
                 catch (PlatformNotSupportedException) { /* the web build cannot exit */ }
             }
 
-            // Debug level select: F1 wide level, F2 descent (Hollowed and Flicker), F3 boss arena (Pell), R restart.
-            if (keys.IsKeyDown(Keys.F1) && !_prevKeys.IsKeyDown(Keys.F1)) LoadLevel(TestRoom.Build);
-            else if (keys.IsKeyDown(Keys.F2) && !_prevKeys.IsKeyDown(Keys.F2)) LoadLevel(TestRoom.BuildDescent);
-            else if (keys.IsKeyDown(Keys.F3) && !_prevKeys.IsKeyDown(Keys.F3)) LoadLevel(BossArena.Build);
-            else if (keys.IsKeyDown(Keys.R) && !_prevKeys.IsKeyDown(Keys.R)) LoadLevel(_buildLevel);
+            // Debug: F1-F4 jump to campaign stages, F5/F6 the old test levels, R restarts the stage.
+            for (int n = 0; n < Campaign.Stages.Length; n++)
+                if (Pressed(keys, Keys.F1 + n)) { _campaign.GoTo(n); LoadStage(); }
+            if (Pressed(keys, Keys.F5)) LoadDebugLevel(TestRoom.Build);
+            else if (Pressed(keys, Keys.F6)) LoadDebugLevel(TestRoom.BuildDescent);
+
+            bool confirm = Pressed(keys, Keys.Enter);
+            if (_ending)
+            {
+                if (confirm || Pressed(keys, Keys.R)) { _campaign.Restart(); LoadStage(); }
+            }
+            else if (_world.LevelCleared && confirm)
+            {
+                if (_campaign.Advance(_world.SoulsFreed)) LoadStage();
+                else _ending = true;
+            }
+            else if (!_world.Player.IsAlive && confirm) LoadStage();
+            else if (Pressed(keys, Keys.R)) LoadStage();
             _prevKeys = keys;
 
             float dt = Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, 1f / 30f);
-            _world.Input = _input.Read();
+            if (_stageIntro > 0) _stageIntro -= dt;
+            _world.Input = _ending ? default : _input.Read();
             _world.Update(dt);
 
             // Fell out of the bottom of the level: restart it (real respawn comes later).
             if (_world.Player.Position.Y > (_world.Tiles.Height + 4) * Metrics.TileSize || !_world.Player.IsAlive && _world.Player.Position.Y > _world.Tiles.Height * Metrics.TileSize)
-                LoadLevel(_buildLevel);
+                LoadStage();
 
             base.Update(gameTime);
         }
 
-        /// <summary>Level-cleared and defeated banners, drawn in screen space.</summary>
+        /// <summary>Stage intro, level-cleared, defeated and ending banners, drawn in screen space.</summary>
         private void DrawEndBanner()
         {
+            if (_ending)
+            {
+                Gfx.Fill(spriteBatch, new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight), new Color(0, 0, 0, 200));
+                PixelFont.DrawCentered(spriteBatch, "THE END", 44, new Color(255, 225, 140), 4);
+                PixelFont.DrawCentered(spriteBatch, "BUT THE TITHE IS STILL OUT THERE.", 82, Color.White, 1);
+                PixelFont.DrawCentered(spriteBatch, "TOTAL SOULS FREED: " + _campaign.TotalSouls, 98, new Color(150, 220, 255), 2);
+                PixelFont.DrawCentered(spriteBatch, "THANKS FOR PLAYING", 124, Color.White, 1);
+                PixelFont.DrawCentered(spriteBatch, "ENTER TO PLAY AGAIN", 140, new Color(180, 200, 255), 1);
+                return;
+            }
+
             bool cleared = _world.LevelCleared;
             bool defeated = !_world.Player.IsAlive;
-            if (!cleared && !defeated) return;
+            if (!cleared && !defeated)
+            {
+                if (_stageIntro > 0)
+                {
+                    float a = Math.Clamp(_stageIntro / 0.6f, 0f, 1f);   // fades out over the last 0.6 s
+                    int n = Array.IndexOf(Campaign.Stages, _campaign.Current) + 1;
+                    PixelFont.DrawCentered(spriteBatch, "STAGE " + n, 40, new Color(180, 200, 255) * a, 1);
+                    PixelFont.DrawCentered(spriteBatch, _campaign.Current.Name, 50, new Color(255, 225, 140) * a, 2);
+                }
+                return;
+            }
 
             Gfx.Fill(spriteBatch, new Rectangle(0, 60, Metrics.ScreenWidth, 60), new Color(0, 0, 0, 170));
             if (cleared)
             {
-                PixelFont.DrawCentered(spriteBatch, "LEVEL CLEARED", 72, new Color(255, 225, 140), 3);
-                PixelFont.DrawCentered(spriteBatch, "SOULS FREED: " + _world.SoulsFreed, 96, Color.White, 2);
-                PixelFont.DrawCentered(spriteBatch, "R TO REPLAY", 108, new Color(180, 200, 255), 1);
+                bool last = _campaign.IsLast;
+                PixelFont.DrawCentered(spriteBatch, _campaign.Current.Kind == StageKind.Boss ? "BOSS FREED" : "LEVEL CLEARED", 70, new Color(255, 225, 140), 3);
+                PixelFont.DrawCentered(spriteBatch, "SOULS FREED: " + _world.SoulsFreed, 94, Color.White, 2);
+                PixelFont.DrawCentered(spriteBatch, last ? "ENTER FOR THE ENDING" : "ENTER TO CONTINUE", 108, new Color(180, 200, 255), 1);
             }
             else
             {
                 PixelFont.DrawCentered(spriteBatch, "DEFEATED", 72, new Color(255, 110, 110), 3);
-                PixelFont.DrawCentered(spriteBatch, "R TO TRY AGAIN", 100, Color.White, 1);
+                PixelFont.DrawCentered(spriteBatch, "ENTER TO TRY AGAIN", 100, Color.White, 1);
             }
         }
 

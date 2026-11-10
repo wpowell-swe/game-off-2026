@@ -31,6 +31,7 @@ namespace ShiftJam
         private float _timer;
         private float _flash;
         private float _fade;          // counts up once defeated
+        private bool _counted;        // the freed soul has been added to the world's tally
         private float _clock;
         private float _wanderTimer;
         private Vector2 _wander;
@@ -60,6 +61,7 @@ namespace ShiftJam
 
             if (Defeated)
             {
+                if (_fade == 0f && !_counted) { _counted = true; world.SoulsFreed++; }   // a lost soul, freed (counted once)
                 _fade += dt;
                 Velocity *= MathF.Max(0, 1 - 4f * dt);
                 Position += Velocity * dt;

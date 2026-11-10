@@ -97,7 +97,10 @@ namespace ShiftJam
         /// <summary>Only floats (no gravity) while in the Astral plane by default.</summary>
         protected virtual bool AffectedByGravity => Plane == Plane.Material;
 
-        private bool CanBeHit => Engaged && _state == BossState.Fight;
+        /// <summary>Set by a boss while it is vanished or otherwise untargetable (nothing can hit it, and its hurtbox is empty).</summary>
+        protected bool Intangible;
+
+        private bool CanBeHit => Engaged && _state == BossState.Fight && !Intangible;
         public Rectangle Hurtbox => CanBeHit ? Body : Rectangle.Empty;
 
         // ---- Hooks ----
