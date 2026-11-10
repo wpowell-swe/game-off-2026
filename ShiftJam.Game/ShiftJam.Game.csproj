@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="ShiftJamGame.cs" />
+    <Compile Include="**/*.cs" Exclude="bin/**;obj/**" />
   </ItemGroup>
 
 </Project>
