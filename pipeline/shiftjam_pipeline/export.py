@@ -29,11 +29,14 @@ def sync_mgcb(mgcb: Path = MGCB, generated_dir: Path = GENERATED_DIR) -> None:
         blocks.append(f"#begin {rel}\n/copy:{rel}\n#end {rel}\n")
     managed = BEGIN + "\n" + "\n".join(blocks) + END + "\n"
 
-    text = mgcb.read_text(encoding="utf-8")
+    # .gitattributes keeps *.mgcb as CRLF in the working tree; preserve that on rewrite.
+    newline = "\r\n" if b"\r\n" in mgcb.read_bytes() else "\n"
+    text = mgcb.read_text(encoding="utf-8")  # universal newlines: always "\n" here
     if BEGIN in text:
         head, rest = text.split(BEGIN, 1)
         tail = rest.split(END, 1)[1].lstrip("\n")
         text = head + managed + ("\n" + tail if tail else "")
     else:
         text = text.rstrip("\n") + "\n\n" + managed
-    mgcb.write_text(text, encoding="utf-8")
+    with mgcb.open("w", encoding="utf-8", newline=newline) as f:
+        f.write(text)

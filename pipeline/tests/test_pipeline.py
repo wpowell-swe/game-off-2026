@@ -22,8 +22,8 @@ def test_backend_selection(monkeypatch):
 
 
 def test_retrieve_ranks_relevant_paragraph_first():
-    top = lore.retrieve("shift shards trade places", k=1)[0]
-    assert "shards" in top.lower()
+    top = lore.retrieve("wraiths lost souls drifted", k=1)[0]
+    assert "wraith" in top.lower()
 
 
 def test_crew_approves_valid_draft():
@@ -42,6 +42,16 @@ def test_crew_retries_schema_violation():
     bad = [{"id": "Bad ID", "speaker": "M", "text": "t", "mood": "tense"}]
     llm = make_llm([json.dumps(bad), json.dumps(GOOD), '{"approved": true, "issues": []}'])
     assert crew.Crew(llm).run("dialogue", "x", 1) == GOOD
+
+
+def test_sync_mgcb_preserves_crlf(tmp_path):
+    gen = tmp_path / "Generated"
+    export.write_content("dialogue", GOOD, gen)
+    mgcb = tmp_path / "x.mgcb"
+    mgcb.write_bytes(b"/config:\r\n")
+    export.sync_mgcb(mgcb, gen)
+    data = mgcb.read_bytes()
+    assert b"\r\n" in data and b"\n" not in data.replace(b"\r\n", b"")
 
 
 def test_export_writes_json_and_syncs_mgcb(tmp_path):
