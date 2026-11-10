@@ -26,6 +26,15 @@ jobs:
             8.0.x
             10.0.x
 
+      # The content builder loads FreeImage to import PNGs, under the name libFreeImage.so.
+      - name: Install FreeImage
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfreeimage3
+          mkdir -p "$HOME/freeimage"
+          ln -sf "$(dpkg -L libfreeimage3 | grep 'libfreeimage.so.3$' | head -1)" "$HOME/freeimage/libFreeImage.so"
+          echo "LD_LIBRARY_PATH=$HOME/freeimage:$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
+
       - name: Publish web build
         run: dotnet publish ShiftJam.Blazor.GL/ShiftJam.Blazor.GL.csproj -c Release -o publish/web
 
