@@ -25,16 +25,16 @@ namespace ShiftJam
 
         // Combat
         public const int LightDamage = 8;
-        public const int HeavyDamage = 20;
+        public const int HeavyDamage = 34;
         public const int LightChainMax = 3;
 
         // Attack timing in frames (startup / active / recovery)
         public const int LightStartupFrames = 3;
         public const int LightActiveFrames = 3;
-        public const int LightRecoveryFrames = 9;
-        public const int HeavyStartupFrames = 12;
-        public const int HeavyActiveFrames = 5;
-        public const int HeavyRecoveryFrames = 18;
+        public const int LightRecoveryFrames = 11;
+        public const int HeavyStartupFrames = 22;   // long, planted wind-up: the swing is a commitment
+        public const int HeavyActiveFrames = 6;
+        public const int HeavyRecoveryFrames = 36;  // long recovery: a whiffed heavy is punished
 
         // Attack hitboxes (pixels, in front of the body)
         public const int LightReachX = 14;
@@ -44,9 +44,9 @@ namespace ShiftJam
         public const int HeavyHeight = 20;
         public const int HeavyOffsetY = 3;
         public const float LightKnockback = 40f;
-        public const float HeavyKnockback = 190f;
+        public const float HeavyKnockback = 260f;
         public const float LightLunge = 40f;
-        public const float HeavyLunge = 70f;
+        public const float HeavyLunge = 95f;          // the step forward happens on release, not at the start
         public const float AttackFriction = 400f;
 
         // Block
@@ -61,6 +61,7 @@ namespace ShiftJam
         public const float MinHurtKnockback = 80f;
         public const float FlickerInterval = 0.06f;
         public const float KiDepletedStunTime = 0.5f;
+        public const float HeavyCooldown = 0.45f;      // extra seconds after a heavy ends before another can start
         public const float ShiftBufferTime = 0.25f;   // a shift pressed mid-attack fires when the attack ends
 
         // Ki (see GDD: large up-front shift cost, small upkeep)
@@ -74,7 +75,7 @@ namespace ShiftJam
         // ---- Game feel (all seconds / pixels unless noted) ----
         /// <summary>World freeze when a hit lands: HitStopLight at damage 0 up to HitStopHeavy at HitStopMaxDamage.</summary>
         public const float HitStopLight = 0.04f;
-        public const float HitStopHeavy = 0.09f;
+        public const float HitStopHeavy = 0.17f;
         public const int HitStopMaxDamage = 20;
         /// <summary>Hits with Damage at or above this count as heavy (shake, heavy sound).</summary>
         public const int HeavyHitDamageThreshold = 15;
@@ -82,8 +83,8 @@ namespace ShiftJam
         public const float ShiftHitStop = 0.05f;
 
         // Screen shake: magnitude in pixels (peak), duration in seconds.
-        public const float ShakeHeavyHit = 3f;
-        public const float ShakeHeavyHitTime = 0.15f;
+        public const float ShakeHeavyHit = 5f;
+        public const float ShakeHeavyHitTime = 0.22f;
         public const float ShakeHurt = 4f;
         public const float ShakeHurtTime = 0.25f;
         public const float ShakeShift = 2f;

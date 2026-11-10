@@ -23,8 +23,8 @@ namespace ShiftJam
         private const float NearDist = 30f;            // phase 1 stops walking at this horizontal distance
         private const float SwingStartDist = 44f;      // a swing waits until he is this close (or MaxApproach passes)
         private const float MaxApproach = 2.0f;
-        private const float IdleTime = 0.8f;           // minimum pause between phase 1 patterns
-        private const float IdleTimeAstral = 0.7f;     // phase 2 pause (shorter: harder)
+        private const float IdleTime = 0.55f;           // minimum pause between phase 1 patterns
+        private const float IdleTimeAstral = 0.5f;     // phase 2 pause (shorter: harder)
 
         private const float SwingWindup = 0.6f;        // telegraphed
         private const float SwingActive = 0.15f;
@@ -50,12 +50,27 @@ namespace ShiftJam
         private const int FlameDamage = 8;
         private const float FlameTick = 0.3f;
         private const int FlameW = 10, FlameH = 14;
-        private const float FlameOffset = 26f;         // px either side of the player's centre
+        private static readonly float[] FlameOffsets = { -58f, -26f, 26f, 58f };   // px from the player's centre: four fires, a gap in the middle
+        private const int FlameCount = 4;
+
+        // Blink: a flash of light moves Pell behind the player, then he strikes after a short re-appear telegraph.
+        private const float BlinkWindup = 0.45f;       // the destination is shown during this
+        private const float BlinkAppear = 0.25f;       // he stands still here before the strike telegraph starts
+        private const float BlinkFollowWindup = 0.5f;  // the follow-up attack's telegraph is a little shorter than normal (0.6)
+        private const float BlinkSideOffset = 40f;     // lands this far to the far side of the player
+
+        // Thrown lanterns: two arcing lanterns land on marked spots and become fires.
+        private const float ThrowWindup = 0.55f;
+        private const float ThrowRecover = 0.7f;
+        private const float ThrowFlight = 0.75f;
+        private const float ThrowArc = 38f;
+        private const int ThrownDamage = 8;
+        private const int ThrownSize = 8;
 
         private const float WispWindup = 0.6f;         // telegraphed
         private const float WispRecover = 0.9f;
-        private const int WispCount = 3;
-        private const float WispFan = 0.45f;           // radians between wisps
+        private const int WispCount = 5;
+        private const float WispFan = 0.36f;           // radians between wisps
         private const float WispSpeed = 55f;
         private const float WispLife = 4f;
         private const int WispDamage = 8;
@@ -70,15 +85,16 @@ namespace ShiftJam
         private const float RestTime = 3.2f;           // harmless, in Material: Ki recovers, player can hit him
         private const float RestReturnWarn = 0.4f;     // telegraph before going Astral again
 
-        private enum K { Swing, Lunge, Lantern, Wisps, Rest }
+        private enum K { Swing, Lunge, Lantern, Wisps, Rest, Blink, Throw }
         private enum S
         {
             Idle, SwingWind, SwingHit, SwingRecover, LungeWind, LungeDash, LungeRecover,
-            LanternWind, LanternRecover, WispWind, WispRecover, RestDown, Rest, RestUp
+            LanternWind, LanternRecover, WispWind, WispRecover, RestDown, Rest, RestUp,
+            BlinkWind, BlinkAppear, ThrowWind, ThrowRecover
         }
 
-        private static readonly K[] SeqOne = { K.Swing, K.Lunge, K.Lantern, K.Swing, K.Lunge };
-        private static readonly K[] SeqTwo = { K.Wisps, K.Lunge, K.Wisps, K.Rest };
+        private static readonly K[] SeqOne = { K.Swing, K.Throw, K.Lunge, K.Blink, K.Lantern, K.Lunge, K.Throw, K.Blink };
+        private static readonly K[] SeqTwo = { K.Wisps, K.Blink, K.Wisps, K.Lunge, K.Blink, K.Wisps, K.Rest };
 
         private S _s = S.Idle;
         private float _timer;
@@ -86,9 +102,13 @@ namespace ShiftJam
         private int _seq;
         private bool _landed;
         private int _lungeDir = 1;
-        private readonly Rectangle[] _tele = new Rectangle[2];
+        private readonly Rectangle[] _tele = new Rectangle[FlameCount];
         private float _teleProgress;
-        private readonly Vector2[] _flamePos = new Vector2[2];
+        private readonly Vector2[] _flamePos = new Vector2[FlameCount];
+        private float _swingWind = SwingWindup;        // current wind-up lengths (a blink follow-up uses a shorter one)
+        private float _lungeWind = LungeWindup;
+        private Vector2 _blinkDest;
+        private readonly Vector2[] _throwSpot = new Vector2[2];
 
         public Pell(Vector2 position) : base("Pell", PellHealth, BodySize, position, new[]
         {
@@ -139,7 +159,7 @@ namespace ShiftJam
                 }
 
                 case S.SwingWind:
-                    _teleProgress = 1f - _timer / SwingWindup;
+                    _teleProgress = 1f - _timer / _swingWind;
                     _tele[0] = SwingArea(b);
                     if (_timer <= 0) { _s = S.SwingHit; _timer = SwingActive; _landed = false; Sfx.Play(SfxId.Swing, 0.7f, 0.1f); }
                     break;
@@ -154,7 +174,7 @@ namespace ShiftJam
                     break;
 
                 case S.LungeWind:
-                    _teleProgress = 1f - _timer / LungeWindup;
+                    _teleProgress = 1f - _timer / _lungeWind;
                     _tele[0] = LungeArea(b, astral);
                     if (_timer <= 0)
                     {
@@ -179,11 +199,11 @@ namespace ShiftJam
 
                 case S.LanternWind:
                     _teleProgress = 1f - _timer / LanternWindup;
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < FlameCount; i++)
                         _tele[i] = new Rectangle((int)_flamePos[i].X, (int)_flamePos[i].Y, FlameW, FlameH);
                     if (_timer <= 0)
                     {
-                        for (int i = 0; i < 2; i++) world.Add(new Flame(this, _flamePos[i]));
+                        for (int i = 0; i < FlameCount; i++) world.Add(new Flame(this, _flamePos[i]));
                         Sfx.Play(SfxId.Swing, 0.4f, 0.2f);
                         _s = S.LanternRecover; _timer = LanternRecover;
                     }
@@ -206,6 +226,60 @@ namespace ShiftJam
 
                 case S.WispRecover:
                     hover = true;
+                    if (_timer <= 0) EndPattern(astral);
+                    break;
+
+                case S.BlinkWind:
+                    hover = true;
+                    Face(dx);
+                    _teleProgress = 1f - _timer / BlinkWindup;
+                    _tele[0] = new Rectangle((int)_blinkDest.X - 2, (int)_blinkDest.Y - 2, Size.X + 4, Size.Y + 4);
+                    {
+                        // Also pre-show where the follow-up strike will land, so the player can already move out of it.
+                        var destBody = new Rectangle((int)_blinkDest.X, (int)_blinkDest.Y, Size.X, Size.Y);
+                        int destFacing = p.Hurtbox.Center.X >= destBody.Center.X ? 1 : -1;
+                        _tele[1] = astral ? LungeArea(destBody, true, destFacing) : SwingAreaFor(destBody, destFacing);
+                    }
+                    if (_timer <= 0)
+                    {
+                        world.Sparks.Sparks(new Vector2(b.Center.X, b.Center.Y), Plane, 14, 0);
+                        Position = _blinkDest;
+                        Velocity = Vector2.Zero;
+                        world.Sparks.Sparks(new Vector2(_blinkDest.X + Size.X / 2f, _blinkDest.Y + Size.Y / 2f), Plane, 14, 0);
+                        Sfx.Play(SfxId.ShiftIn, 0.5f, 0.1f);
+                        Face(p.Hurtbox.Center.X - (_blinkDest.X + Size.X / 2f));
+                        _s = S.BlinkAppear; _timer = BlinkAppear;
+                    }
+                    break;
+
+                case S.BlinkAppear:
+                    hover = true;
+                    Face(dx);
+                    _tele[0] = Body;
+                    _teleProgress = 1f - _timer / BlinkAppear;
+                    if (_timer <= 0)
+                    {
+                        // Strike straight away from behind, but with a shorter telegraph than usual.
+                        if (astral) { _s = S.LungeWind; _timer = _lungeWind = BlinkFollowWindup; _lungeDir = Facing; }
+                        else { _s = S.SwingWind; _timer = _swingWind = BlinkFollowWindup; }
+                    }
+                    break;
+
+                case S.ThrowWind:
+                    Face(dx);
+                    _teleProgress = 1f - _timer / ThrowWindup;
+                    for (int i = 0; i < _throwSpot.Length; i++)
+                        _tele[i] = new Rectangle((int)_throwSpot[i].X, (int)_throwSpot[i].Y, FlameW, FlameH);
+                    if (_timer <= 0)
+                    {
+                        var origin = new Vector2(b.Center.X, b.Y + 6);
+                        for (int i = 0; i < _throwSpot.Length; i++) world.Add(new Thrown(this, origin, _throwSpot[i]));
+                        Sfx.Play(SfxId.Swing, 0.5f, 0.15f);
+                        _s = S.ThrowRecover; _timer = ThrowRecover;
+                    }
+                    break;
+
+                case S.ThrowRecover:
                     if (_timer <= 0) EndPattern(astral);
                     break;
 
@@ -261,8 +335,13 @@ namespace ShiftJam
             Face(p.Hurtbox.Center.X - Body.Center.X);
             switch (kind)
             {
-                case K.Swing: _s = S.SwingWind; _timer = SwingWindup; break;
-                case K.Lunge: _s = S.LungeWind; _timer = LungeWindup; _lungeDir = Facing; break;
+                case K.Swing: _s = S.SwingWind; _timer = _swingWind = SwingWindup; break;
+                case K.Lunge: _s = S.LungeWind; _timer = _lungeWind = LungeWindup; _lungeDir = Facing; break;
+                case K.Blink:
+                    if (TryBlinkTarget(world, p, out _blinkDest)) { _s = S.BlinkWind; _timer = BlinkWindup; }
+                    else { _s = S.SwingWind; _timer = _swingWind = SwingWindup; }   // nowhere to blink to: fall back to a swing
+                    break;
+                case K.Throw: _s = S.ThrowWind; _timer = ThrowWindup; PlaceThrowSpots(world, p); break;
                 case K.Lantern: _s = S.LanternWind; _timer = LanternWindup; PlaceFlames(world, p); break;
                 case K.Wisps: _s = S.WispWind; _timer = WispWindup; break;
                 case K.Rest: _s = S.RestDown; _timer = RestWarn; break;
@@ -270,40 +349,77 @@ namespace ShiftJam
             _teleProgress = 0;
         }
 
-        private Rectangle SwingArea(Rectangle b) =>
-            Facing > 0 ? new Rectangle(b.Right - 2, b.Y - 8, SwingReach, SwingHeight)
+        private Rectangle SwingArea(Rectangle b) => SwingAreaFor(b, Facing);
+
+        private static Rectangle SwingAreaFor(Rectangle b, int facing) =>
+            facing > 0 ? new Rectangle(b.Right - 2, b.Y - 8, SwingReach, SwingHeight)
                        : new Rectangle(b.Left - SwingReach + 2, b.Y - 8, SwingReach, SwingHeight);
 
-        private Rectangle LungeArea(Rectangle b, bool astral)
+        private Rectangle LungeArea(Rectangle b, bool astral) => LungeArea(b, astral, _lungeDir);
+
+        private static Rectangle LungeArea(Rectangle b, bool astral, int dir)
         {
             int len = (int)((astral ? LungeSpeedAstral * LungeTimeAstral : LungeSpeedMaterial * LungeTimeMaterial));
-            return _lungeDir > 0 ? new Rectangle(b.Right, b.Y + 6, len, b.Height - 12)
-                                 : new Rectangle(b.Left - len, b.Y + 6, len, b.Height - 12);
+            return dir > 0 ? new Rectangle(b.Right, b.Y + 6, len, b.Height - 12)
+                           : new Rectangle(b.Left - len, b.Y + 6, len, b.Height - 12);
         }
 
-        /// <summary>Two flame spots on the floor either side of the player (shown as telegraphs, then spawned).</summary>
+        /// <summary>Fire spots on the floor around the player (shown as telegraphs, then spawned).</summary>
         private void PlaceFlames(GameWorld world, Player p)
+        {
+            float cx = p.Hurtbox.Center.X;
+            for (int i = 0; i < FlameCount; i++)
+                _flamePos[i] = FlameSpot(world, p, cx + FlameOffsets[i]);
+        }
+
+        /// <summary>Two landing spots for the thrown lanterns: on the player and a little ahead of where they are walking.</summary>
+        private void PlaceThrowSpots(GameWorld world, Player p)
+        {
+            float cx = p.Hurtbox.Center.X;
+            int ahead = p.Velocity.X >= 0 ? 1 : -1;
+            _throwSpot[0] = FlameSpot(world, p, cx);
+            _throwSpot[1] = FlameSpot(world, p, cx + ahead * 44f);
+        }
+
+        /// <summary>Top-left of a fire standing on the floor below the given x, falling back to the player's own column if that spot is inside a wall.</summary>
+        private static Vector2 FlameSpot(GameWorld world, Player p, float centreX)
         {
             const int T = Metrics.TileSize;
             var tiles = world.Tiles;
-            float cx = p.Hurtbox.Center.X;
-            for (int i = 0; i < 2; i++)
+            float x = centreX - FlameW / 2f;
+            float floorY = p.Hurtbox.Bottom;
+            if (tiles != null)
             {
-                float x = cx + (i == 0 ? -FlameOffset : FlameOffset) - FlameW / 2f;
-                float floorY = p.Hurtbox.Bottom;
-                if (tiles != null)
-                {
-                    int tx = (int)MathF.Floor((x + FlameW / 2f) / T);
-                    int ty = Math.Max(0, (int)MathF.Floor((p.Hurtbox.Bottom - 1) / T));
-                    while (ty < tiles.Height && !tiles.IsSolid(tx, ty, Plane.Material)) ty++;
-                    floorY = ty * T;
-                    // Not inside a wall: fall back to the player's own column.
-                    var pos = new Vector2(x, floorY - FlameH);
-                    if (Mover.Overlaps(tiles, Plane.Material, pos, new Point(FlameW, FlameH)))
-                        x = cx - FlameW / 2f;
-                }
-                _flamePos[i] = new Vector2((float)Math.Round(x), (float)Math.Round(floorY - FlameH));
+                int tx = (int)MathF.Floor((x + FlameW / 2f) / T);
+                int ty = Math.Max(0, (int)MathF.Floor((p.Hurtbox.Bottom - 1) / T));
+                while (ty < tiles.Height && !tiles.IsSolid(tx, ty, Plane.Material)) ty++;
+                floorY = ty * T;
+                var pos = new Vector2(x, floorY - FlameH);
+                if (Mover.Overlaps(tiles, Plane.Material, pos, new Point(FlameW, FlameH)))
+                    x = p.Hurtbox.Center.X - FlameW / 2f;
             }
+            return new Vector2((float)Math.Round(x), (float)Math.Round(floorY - FlameH));
+        }
+
+        /// <summary>Where the blink lands: behind the player (far side from Pell), else the other side. Never inside a wall in Material.</summary>
+        private bool TryBlinkTarget(GameWorld world, Player p, out Vector2 dest)
+        {
+            dest = Position;
+            if (world.Tiles == null) return false;
+            float levelW = world.Tiles.Width * Metrics.TileSize;
+            float cx = p.Hurtbox.Center.X;
+            int away = cx >= Body.Center.X ? 1 : -1;   // the side of the player away from Pell
+            foreach (int side in new[] { away, -away })
+            {
+                float x = MathHelper.Clamp(cx + side * BlinkSideOffset - Size.X / 2f, 2f, levelW - Size.X - 2f);
+                float y = Plane == Plane.Astral ? p.Hurtbox.Bottom - Size.Y - HoverLift : p.Hurtbox.Bottom - Size.Y;
+                var cand = new Vector2(x, y);
+                if (Plane == Plane.Material && Mover.Overlaps(world.Tiles, Plane.Material, cand, Size)) continue;
+                if (MathF.Abs(x + Size.X / 2f - cx) < 14f) continue;   // too close to the player to be fair
+                dest = cand;
+                return true;
+            }
+            return false;
         }
 
         private void FireWisps(GameWorld world, Player p, Rectangle b)
@@ -361,7 +477,7 @@ namespace ShiftJam
         protected override void DrawOverlay(SpriteBatch sb, Rectangle r)
         {
             for (int i = 0; i < _tele.Length; i++)
-                if (_tele[i].Width > 0) DrawTelegraph(sb, _tele[i], _s == S.LanternWind ? Plane.Material : Plane, _teleProgress);
+                if (_tele[i].Width > 0) DrawTelegraph(sb, _tele[i], (_s == S.LanternWind || _s == S.ThrowWind) ? Plane.Material : Plane, _teleProgress);
         }
 
         // ---- Hazards ----
@@ -396,6 +512,55 @@ namespace ShiftJam
                 Gfx.Fill(sb, new Rectangle(x, bottom - h, FlameW, h), new Color(255, 110, 20) * fade);
                 int ih = Math.Max(2, h - 5 + (((int)(_t * 24f) & 1) == 0 ? 1 : -1));
                 Gfx.Fill(sb, new Rectangle(x + 2, bottom - ih, FlameW - 4, ih), new Color(255, 215, 70) * fade);
+            }
+        }
+
+        /// <summary>A lantern lobbed in an arc. It can hurt the player in flight and lands as a fire on its marked spot.</summary>
+        private sealed class Thrown : IEntity
+        {
+            private readonly Pell _owner;
+            private readonly Vector2 _from;
+            private readonly Vector2 _to;      // top-left of the fire it becomes
+            private float _t;
+
+            public Thrown(Pell owner, Vector2 from, Vector2 to) { _owner = owner; _from = from; _to = to + new Vector2(FlameW / 2f, FlameH); }
+
+            private Vector2 PosAt(float f)
+            {
+                var p = Vector2.Lerp(_from, _to, f);
+                p.Y -= MathF.Sin(f * MathF.PI) * ThrowArc;
+                return p;
+            }
+
+            public void Update(float dt, GameWorld world)
+            {
+                _t += dt;
+                if (_owner.ClearHazards) { world.Entities.Remove(this); return; }
+                float f = MathHelper.Clamp(_t / ThrowFlight, 0f, 1f);
+                var c = PosAt(f);
+                if (world.Player != null && world.Player.IsAlive)
+                {
+                    var area = new Rectangle((int)MathF.Round(c.X) - ThrownSize / 2, (int)MathF.Round(c.Y) - ThrownSize / 2, ThrownSize, ThrownSize);
+                    int face = _to.X >= _from.X ? 1 : -1;
+                    if (world.SpawnHit(new Hit(area, ThrownDamage, face, Plane.Material, 70f, false), _owner) > 0)
+                    {
+                        world.Entities.Remove(this);
+                        return;
+                    }
+                }
+                if (f >= 1f)
+                {
+                    world.Entities.Remove(this);
+                    world.Add(new Flame(_owner, new Vector2(_to.X - FlameW / 2f, _to.Y - FlameH)));
+                }
+            }
+
+            public void Draw(SpriteBatch sb)
+            {
+                var c = PosAt(MathHelper.Clamp(_t / ThrowFlight, 0f, 1f));
+                int x = (int)MathF.Round(c.X), y = (int)MathF.Round(c.Y);
+                Gfx.Fill(sb, new Rectangle(x - ThrownSize / 2, y - ThrownSize / 2, ThrownSize, ThrownSize), new Color(255, 140, 30));
+                Gfx.Fill(sb, new Rectangle(x - 2, y - 2, 4, 4), new Color(255, 230, 120));
             }
         }
 

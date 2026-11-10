@@ -31,6 +31,7 @@ namespace ShiftJam
         private bool _blocking;
         private float _coyote;
         private float _jumpBuffer;
+        private float _heavyCooldown;  // seconds before another heavy attack may start
         private float _shiftBuffer;    // a shift pressed during an attack is remembered briefly, not dropped
         private float _stateTimer;     // Hurt / Stun
         private float _invuln;
@@ -53,6 +54,7 @@ namespace ShiftJam
             _clock += dt;
             var input = world.Input;
             if (_invuln > 0) _invuln -= dt;
+            if (_heavyCooldown > 0) _heavyCooldown -= dt;
             if (_flashTimer > 0) _flashTimer -= dt;
 
             if (_state == State.Dead || !IsAlive)
@@ -134,7 +136,7 @@ namespace ShiftJam
             _blocking = input.BlockHeld && _onGround && Plane == Plane.Material;
 
             if (input.LightPressed) { StartAttack(false, 1, input); return; }
-            if (input.HeavyPressed) { StartAttack(true, 1, input); return; }
+            if (input.HeavyPressed && _heavyCooldown <= 0) { StartAttack(true, 1, input); return; }
 
             float moveX = Math.Abs(input.MoveX) < Tuning.MoveDeadzone ? 0 : Math.Sign(input.MoveX);
             if (_blocking)
@@ -180,7 +182,8 @@ namespace ShiftJam
             _phase = Phase.Startup;
             _phaseFrames = heavy ? Tuning.HeavyStartupFrames : Tuning.LightStartupFrames;
             if (Math.Abs(input.MoveX) >= Tuning.MoveDeadzone) Facing = Math.Sign(input.MoveX);
-            Velocity.X = Facing * (heavy ? Tuning.HeavyLunge : Tuning.LightLunge);
+            // Light attacks step forward at once; a heavy stays planted through its wind-up and lunges on release.
+            Velocity.X = heavy ? 0f : Facing * Tuning.LightLunge;
         }
 
         private void UpdateAttack(float dt, GameWorld world, InputFrame input)
@@ -196,8 +199,9 @@ namespace ShiftJam
             // Chain / cancel only from recovery.
             if (_phase == Phase.Recovery && (_queuedLight || _queuedHeavy))
             {
-                if (_queuedHeavy) { StartAttack(true, 1, input); }
-                else if (!_heavy && _chain < Tuning.LightChainMax) { StartAttack(false, _chain + 1, input); }
+                // A heavy cannot follow a heavy, and nothing cancels out of a heavy's recovery.
+                if (_queuedHeavy && !_heavy && _heavyCooldown <= 0) { StartAttack(true, 1, input); }
+                else if (_queuedLight && !_heavy && _chain < Tuning.LightChainMax) { StartAttack(false, _chain + 1, input); }
                 else _queuedLight = _queuedHeavy = false;
             }
 
@@ -225,6 +229,7 @@ namespace ShiftJam
                 case Phase.Startup:
                     _phase = Phase.Active;
                     _phaseFrames = _heavy ? Tuning.HeavyActiveFrames : Tuning.LightActiveFrames;
+                    if (_heavy) Velocity.X = Facing * Tuning.HeavyLunge;
                     FireHit(world);
                     break;
                 case Phase.Active:
@@ -233,6 +238,7 @@ namespace ShiftJam
                     break;
                 default:
                     _state = State.Free;
+                    if (_heavy) _heavyCooldown = Tuning.HeavyCooldown;
                     _queuedLight = _queuedHeavy = false;
                     break;
             }

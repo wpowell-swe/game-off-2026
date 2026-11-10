@@ -29,7 +29,7 @@ namespace ShiftJam
         private const float ChipFraction = 0.2f;      // share of damage that gets through the guard (min 1)
         private const float GuardedFlinchKnock = 25f; // tiny shove when guarded
         private const float BrokenKnock = 0.5f;       // fraction of hit knockback while guard is broken
-        internal const float BrokenTime = 2.5f;       // fixed length of the guard-broken / soul-exposed window
+        internal const float BrokenTime = 3.5f;       // fixed length of the guard-broken / soul-exposed window
         private const float FreedTime = 1.5f;         // relieved sit-down before both parts vanish
         private const float FlashTime = 0.1f;
 
