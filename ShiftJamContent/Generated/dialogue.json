@@ -1,20 +1,38 @@
 [
   {
-    "id": "mara_greet_01",
-    "speaker": "Mara",
-    "text": "You're back. Late shift, was it? The clock says so. The clock also said the opposite an hour ago.",
+    "id": "wren_square_arrival",
+    "speaker": "Wren",
+    "text": "Easy. Sit if you can. The square's still here, and so are you. That's more than I expected from today.",
     "mood": "neutral"
   },
   {
-    "id": "mara_greet_02",
-    "speaker": "Mara",
-    "text": "Your boots are on the wrong feet. Or the room is. Sit down. Let it settle before you trust the floor.",
+    "id": "wren_to_pell_lantern",
+    "speaker": "Wren",
+    "text": "Pell. Your lanterns are still hanging. Somebody has to light them. I'd offer, but I'd only set the wrong thing on fire.",
+    "mood": "happy"
+  },
+  {
+    "id": "wren_to_dova_stall",
+    "speaker": "Wren",
+    "text": "Dova, your stall's right where you left it. Dusty. A little crooked. Like the rest of us, really.",
+    "mood": "happy"
+  },
+  {
+    "id": "wren_to_hask_bell",
+    "speaker": "Wren",
+    "text": "Hask. The bell hasn't rung in a long while. You don't have to ring it yet. It can wait one more quiet hour.",
+    "mood": "sad"
+  },
+  {
+    "id": "wren_to_tamsin_listen",
+    "speaker": "Wren",
+    "text": "Tamsin, you're listening to something I can't hear. If it gets loud, tell me. I'll stand between you and it. Badly, but I'll stand.",
     "mood": "tense"
   },
   {
-    "id": "mara_greet_03",
-    "speaker": "Mara",
-    "text": "Tea's by the window. It was by the door. Don't ask me which is true. Drink it while it's warm.",
-    "mood": "happy"
+    "id": "wren_closing_two_sides",
+    "speaker": "Wren",
+    "text": "You were shell on one side and spark on the other. Now you're one thing again. Take your time getting used to it.",
+    "mood": "neutral"
   }
 ]

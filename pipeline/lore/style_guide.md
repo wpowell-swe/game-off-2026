@@ -1,9 +1,13 @@
 # Style guide
 
-Placeholder: replace with ShiftJam's real voice once the game concept settles.
+Tone: quiet, dry, a little melancholy, with warmth underneath. Short sentences. Concrete images over abstractions.
 
-Tone: terse, wry, a little uncanny. Short sentences. No modern slang.
+Voice: Wren speaks sparingly and sometimes jokes at their own expense. Townsfolk are plain-spoken and a bit lost after being freed. Master Oss is formal and exact. The Tithe is polite, patient and bureaucratic, never ranting.
 
-Never break the theme: every item, line and place should hint at something SHIFTing (state, perspective, position, allegiance).
+The theme is shifting: of plane, of state, of allegiance. Lines and items should hint at two sides of one thing.
 
-Text limits: dialogue lines under 200 characters; item descriptions under 160.
+Avoid: modern slang, real-world brands, "D&D", "Dungeons", "Wizards of the Coast", gore, and the words "kill" or "die" for Husks (they are freed, not killed).
+
+Text limits: dialogue lines under 200 characters; item names under 40; item descriptions under 160; shift effects under 120 and phrased as a concrete rule change.
+
+Item ids and dialogue ids use lowercase letters, digits and underscores only.

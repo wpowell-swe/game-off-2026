@@ -16,4 +16,8 @@
 #begin Generated/dialogue.json
 /copy:Generated/dialogue.json
 #end Generated/dialogue.json
+
+#begin Generated/item.json
+/copy:Generated/item.json
+#end Generated/item.json
 #--- generated-content:end ---#
