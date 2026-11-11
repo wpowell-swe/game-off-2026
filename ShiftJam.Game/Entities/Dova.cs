@@ -15,83 +15,83 @@ namespace ShiftJam
         public static readonly Point BodySize = new(20, 34);
 
         // ---- Tuning (all Dova constants live here) ----
-        private const int DovaHealth = 160;
-        private const int PhaseOneEnd = 80;
-        private const float TriggerRangePx = 150f;
+        private static int DovaHealth = Cfg.I("Dova.DovaHealth", 160, v => DovaHealth = v);
+        private static int PhaseOneEnd = Cfg.I("Dova.PhaseOneEnd", 80, v => PhaseOneEnd = v);
+        private static float TriggerRangePx = Cfg.F("Dova.TriggerRangePx", 150f, v => TriggerRangePx = v);
 
-        private const float WalkSpeed = 40f;
-        private const float NearDist = 36f;
-        private const float MaxApproach = 2.0f;        // stops waiting to get close after this long
-        private const float IdleTime = 0.55f;
-        private const float IdleTimeAstral = 0.5f;
-        private const float SlamStartDist = 60f;       // slam waits until the player is this close
-        private const float DashStartDist = 100f;
+        private static float WalkSpeed = Cfg.F("Dova.WalkSpeed", 40f, v => WalkSpeed = v);
+        private static float NearDist = Cfg.F("Dova.NearDist", 36f, v => NearDist = v);
+        private static float MaxApproach = Cfg.F("Dova.MaxApproach", 2.0f, v => MaxApproach = v);        // stops waiting to get close after this long
+        private static float IdleTime = Cfg.F("Dova.IdleTime", 0.55f, v => IdleTime = v);
+        private static float IdleTimeAstral = Cfg.F("Dova.IdleTimeAstral", 0.5f, v => IdleTimeAstral = v);
+        private static float SlamStartDist = Cfg.F("Dova.SlamStartDist", 60f, v => SlamStartDist = v);       // slam waits until the player is this close
+        private static float DashStartDist = Cfg.F("Dova.DashStartDist", 100f, v => DashStartDist = v);
 
         // Crate toss: two crates arc to marked spots, land and roll along the floor.
-        private const float CrateWindup = 0.55f;
-        private const float CrateRecover = 0.8f;
-        private const float CrateFlight = 0.7f;
-        private const float CrateArc = 40f;
-        private const float CrateRollTime = 2.0f;
-        private const float CrateRollSpeed = 60f;
-        private const int CrateDamage = 10;
-        private const int CrateSize = 10;
-        private const float CrateAhead = 44f;          // second crate lands this far ahead of the player's walk
+        private static float CrateWindup = Cfg.F("Dova.CrateWindup", 0.55f, v => CrateWindup = v);
+        private static float CrateRecover = Cfg.F("Dova.CrateRecover", 0.8f, v => CrateRecover = v);
+        private static float CrateFlight = Cfg.F("Dova.CrateFlight", 0.7f, v => CrateFlight = v);
+        private static float CrateArc = Cfg.F("Dova.CrateArc", 40f, v => CrateArc = v);
+        private static float CrateRollTime = Cfg.F("Dova.CrateRollTime", 2.0f, v => CrateRollTime = v);
+        private static float CrateRollSpeed = Cfg.F("Dova.CrateRollSpeed", 60f, v => CrateRollSpeed = v);
+        private static int CrateDamage = Cfg.I("Dova.CrateDamage", 10, v => CrateDamage = v);
+        private static int CrateSize = Cfg.I("Dova.CrateSize", 10, v => CrateSize = v);
+        private static float CrateAhead = Cfg.F("Dova.CrateAhead", 44f, v => CrateAhead = v);          // second crate lands this far ahead of the player's walk
 
         // Haggle slam: overhead slam, two low shockwaves along the floor.
-        private const float SlamWindup = 0.6f;
-        private const float SlamActive = 0.12f;
-        private const float SlamRecover = 0.8f;
-        private const int ShockDamage = 10;
-        private const float ShockRange = 96f;          // px each side (shown in the telegraph)
-        private const float ShockSpeed = 140f;
+        private static float SlamWindup = Cfg.F("Dova.SlamWindup", 0.6f, v => SlamWindup = v);
+        private static float SlamActive = Cfg.F("Dova.SlamActive", 0.12f, v => SlamActive = v);
+        private static float SlamRecover = Cfg.F("Dova.SlamRecover", 0.8f, v => SlamRecover = v);
+        private static int ShockDamage = Cfg.I("Dova.ShockDamage", 10, v => ShockDamage = v);
+        private static float ShockRange = Cfg.F("Dova.ShockRange", 96f, v => ShockRange = v);          // px each side (shown in the telegraph)
+        private static float ShockSpeed = Cfg.F("Dova.ShockSpeed", 140f, v => ShockSpeed = v);
         private const int ShockW = 12, ShockH = 10;
-        private const float ShockKnockback = 90f;
+        private static float ShockKnockback = Cfg.F("Dova.ShockKnockback", 90f, v => ShockKnockback = v);
 
         // Stall dash: 5-tile shoulder charge, long recovery is the punish window.
-        private const float DashWindup = 0.5f;
-        private const float DashTime = 0.25f;
-        private const float DashSpeed = 320f;          // 0.25 * 320 = 80 px = 5 tiles
-        private const float DashRecover = 0.9f;
-        private const int DashDamage = 12;
-        private const float DashKnockback = 150f;
+        private static float DashWindup = Cfg.F("Dova.DashWindup", 0.5f, v => DashWindup = v);
+        private static float DashTime = Cfg.F("Dova.DashTime", 0.25f, v => DashTime = v);
+        private static float DashSpeed = Cfg.F("Dova.DashSpeed", 320f, v => DashSpeed = v);          // 0.25 * 320 = 80 px = 5 tiles
+        private static float DashRecover = Cfg.F("Dova.DashRecover", 0.9f, v => DashRecover = v);
+        private static int DashDamage = Cfg.I("Dova.DashDamage", 12, v => DashDamage = v);
+        private static float DashKnockback = Cfg.F("Dova.DashKnockback", 150f, v => DashKnockback = v);
 
         // Coin spray and ring (Astral).
-        private const float SprayWindup = 0.55f;
-        private const float SprayRecover = 0.9f;
-        private const int SprayCount = 5;
-        private const float SprayFan = 0.3f;           // radians between coins
-        private const float SpraySpeed = 55f;
-        private const float CoinLife = 4f;
-        private const int CoinDamage = 8;
-        private const int CoinSize = 8;
-        private const float RingWindup = 0.7f;
-        private const float RingRecover = 0.9f;
-        private const int RingCount = 8;
-        private const float RingSpeed = 48f;
-        private const float RingStartRadius = 12f;
-        private const int RingTeleHalf = 40;           // half size of the zone shown while winding up
+        private static float SprayWindup = Cfg.F("Dova.SprayWindup", 0.55f, v => SprayWindup = v);
+        private static float SprayRecover = Cfg.F("Dova.SprayRecover", 0.9f, v => SprayRecover = v);
+        private static int SprayCount = Cfg.I("Dova.SprayCount", 5, v => SprayCount = v);
+        private static float SprayFan = Cfg.F("Dova.SprayFan", 0.3f, v => SprayFan = v);           // radians between coins
+        private static float SpraySpeed = Cfg.F("Dova.SpraySpeed", 55f, v => SpraySpeed = v);
+        private static float CoinLife = Cfg.F("Dova.CoinLife", 4f, v => CoinLife = v);
+        private static int CoinDamage = Cfg.I("Dova.CoinDamage", 8, v => CoinDamage = v);
+        private static int CoinSize = Cfg.I("Dova.CoinSize", 8, v => CoinSize = v);
+        private static float RingWindup = Cfg.F("Dova.RingWindup", 0.7f, v => RingWindup = v);
+        private static float RingRecover = Cfg.F("Dova.RingRecover", 0.9f, v => RingRecover = v);
+        private static int RingCount = Cfg.I("Dova.RingCount", 8, v => RingCount = v);
+        private static float RingSpeed = Cfg.F("Dova.RingSpeed", 48f, v => RingSpeed = v);
+        private static float RingStartRadius = Cfg.F("Dova.RingStartRadius", 12f, v => RingStartRadius = v);
+        private static int RingTeleHalf = Cfg.I("Dova.RingTeleHalf", 40, v => RingTeleHalf = v);           // half size of the zone shown while winding up
 
         // Receipt drop: she vanishes, reappears above the marked spot, then drops.
-        private const float ReceiptMark = 0.45f;       // flashes, spot is marked
-        private const float ReceiptVanish = 0.6f;     // gone; spot stays marked
-        private const float ReceiptHold = 0.3f;        // back above the spot, still marked
-        private const float ReceiptDropMax = 0.3f;
-        private const float ReceiptFallSpeed = 420f;
-        private const float ReceiptRecover = 0.8f;
-        private const int ReceiptDamage = 12;
-        private const int ReceiptHalfWidth = 14;
+        private static float ReceiptMark = Cfg.F("Dova.ReceiptMark", 0.45f, v => ReceiptMark = v);       // flashes, spot is marked
+        private static float ReceiptVanish = Cfg.F("Dova.ReceiptVanish", 0.6f, v => ReceiptVanish = v);     // gone; spot stays marked
+        private static float ReceiptHold = Cfg.F("Dova.ReceiptHold", 0.3f, v => ReceiptHold = v);        // back above the spot, still marked
+        private static float ReceiptDropMax = Cfg.F("Dova.ReceiptDropMax", 0.3f, v => ReceiptDropMax = v);
+        private static float ReceiptFallSpeed = Cfg.F("Dova.ReceiptFallSpeed", 420f, v => ReceiptFallSpeed = v);
+        private static float ReceiptRecover = Cfg.F("Dova.ReceiptRecover", 0.8f, v => ReceiptRecover = v);
+        private static int ReceiptDamage = Cfg.I("Dova.ReceiptDamage", 12, v => ReceiptDamage = v);
+        private static int ReceiptHalfWidth = Cfg.I("Dova.ReceiptHalfWidth", 14, v => ReceiptHalfWidth = v);
         private static readonly float[] ReceiptGaps = { 56f, 40f, 24f };   // her feet above the floor, tried in order
 
-        private const float HoverSpeed = 36f;
-        private const float HoverStandOff = 56f;
-        private const float HoverLift = 8f;
-        private const float HoverMaxVy = 60f;
+        private static float HoverSpeed = Cfg.F("Dova.HoverSpeed", 36f, v => HoverSpeed = v);
+        private static float HoverStandOff = Cfg.F("Dova.HoverStandOff", 56f, v => HoverStandOff = v);
+        private static float HoverLift = Cfg.F("Dova.HoverLift", 8f, v => HoverLift = v);
+        private static float HoverMaxVy = Cfg.F("Dova.HoverMaxVy", 60f, v => HoverMaxVy = v);
 
-        private const float RestEvery = 7f;            // seconds of Astral fighting between rests
-        private const float RestWarn = 0.4f;
-        private const float RestTime = 3f;             // harmless, in Material
-        private const float RestReturnWarn = 0.4f;
+        private static float RestEvery = Cfg.F("Dova.RestEvery", 7f, v => RestEvery = v);            // seconds of Astral fighting between rests
+        private static float RestWarn = Cfg.F("Dova.RestWarn", 0.4f, v => RestWarn = v);
+        private static float RestTime = Cfg.F("Dova.RestTime", 3f, v => RestTime = v);             // harmless, in Material
+        private static float RestReturnWarn = Cfg.F("Dova.RestReturnWarn", 0.4f, v => RestReturnWarn = v);
 
         private enum K { Crate, Slam, Dash, Spray, Ring, Receipt, Rest }
         private enum S
@@ -102,8 +102,8 @@ namespace ShiftJam
             RestDown, Rest, RestUp
         }
 
-        private static readonly K[] SeqOne = { K.Crate, K.Slam, K.Dash, K.Slam, K.Crate, K.Dash, K.Slam, K.Dash };
-        private static readonly K[] SeqTwo = { K.Spray, K.Ring, K.Receipt, K.Spray, K.Receipt, K.Ring };
+        private static K[] SeqOne = Cfg.Seq("Dova.SeqOne", new K[] { K.Crate, K.Slam, K.Dash, K.Slam, K.Crate, K.Dash, K.Slam, K.Dash }, v => SeqOne = v);
+        private static K[] SeqTwo = Cfg.Seq("Dova.SeqTwo", new K[] { K.Spray, K.Ring, K.Receipt, K.Spray, K.Receipt, K.Ring }, v => SeqTwo = v);
 
         private S _s = S.Idle;
         private float _timer;

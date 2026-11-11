@@ -9,27 +9,9 @@ namespace ShiftJam
     public static class BossArena
     {
         private const int T = Metrics.TileSize;
-        private const int TriggerFromTile = 6;   // the boss wakes once the player passes this column (start area is safe)
+        private static int TriggerFromTile = Cfg.I("BossArena.TriggerFromTile", 6, v => TriggerFromTile = v);   // the boss wakes once the player passes this column (start area is safe)
 
-        /// <summary>
-        /// Lantern Streets boss room, 28x12. Flat floor, two ledges (3 tiles up, reached by 1-tile steps), a Material-only wall at column 24
-        /// that closes off an alcove only reachable in Astral. Player starts far left, Pell waits on the right.
-        /// </summary>
-        public static readonly Level Pell = new(new[]
-        {
-            "############################",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "#.......................w..#",
-            "#.......................w..#",
-            "#......####..####.......w..#",
-            "#.......................w..#",
-            "#.P...#....#.....#..B...w..#",
-            "############################",
-        }, "Lantern Streets: Pell");
+        public static Level Pell => LevelFile.Get("pell");
 
         public static void Build(GameWorld world) => Load(world, Pell);
 

@@ -9,27 +9,9 @@ namespace ShiftJam
     public static class DovaArena
     {
         private const int T = Metrics.TileSize;
-        private const int TriggerFromTile = 9;   // the boss wakes once the player passes this column (start area is safe)
+        private static int TriggerFromTile = Cfg.I("DovaArena.TriggerFromTile", 9, v => TriggerFromTile = v);   // the boss wakes once the player passes this column (start area is safe)
 
-        /// <summary>
-        /// Cellars boss room, 28x12. A completely flat, clear floor from start to boss. Two crate stacks (2 tiles high, so
-        /// a normal jump reaches them) stand against the left and right walls as ledges; nothing blocks the walk between them.
-        /// </summary>
-        public static readonly Level Dova = new(new[]
-        {
-            "############################",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "#..........................#",
-            "###......................###",
-            "###..P................B..###",
-            "############################",
-        }, "Cellars: Dova");
+        public static Level Dova => LevelFile.Get("dova");
 
         public static void Build(GameWorld world) => Load(world, Dova);
 

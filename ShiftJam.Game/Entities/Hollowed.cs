@@ -15,23 +15,23 @@ namespace ShiftJam
         private enum State { Patrol, Chase, Windup, Recover, Broken, Freed }
 
         // ---- Tuning (private to this class) ----
-        private const float Gravity = 600f;
-        private const float PatrolSpeed = 16f;
-        private const float ChaseSpeed = 34f;
-        private const float SeeRange = 110f;          // Material-plane player
-        private const float AstralSeeFactor = 0.5f;   // sight multiplier when the player is Astral (clumsy)
-        private const float LoseFactor = 1.4f;        // lose range = see range * this
-        private const float AttackRange = 24f;
-        private const float WindupTime = 0.5f;
-        private const float RecoverTime = 0.6f;
-        private const int AttackDamage = 12;
-        private const int StartHealth = 50;
-        private const float ChipFraction = 0.2f;      // share of damage that gets through the guard (min 1)
-        private const float GuardedFlinchKnock = 25f; // tiny shove when guarded
-        private const float BrokenKnock = 0.5f;       // fraction of hit knockback while guard is broken
-        internal const float BrokenTime = 3.5f;       // fixed length of the guard-broken / soul-exposed window
-        private const float FreedTime = 1.5f;         // relieved sit-down before both parts vanish
-        private const float FlashTime = 0.1f;
+        private static float Gravity = Cfg.F("Hollowed.Gravity", 600f, v => Gravity = v);
+        private static float PatrolSpeed = Cfg.F("Hollowed.PatrolSpeed", 16f, v => PatrolSpeed = v);
+        private static float ChaseSpeed = Cfg.F("Hollowed.ChaseSpeed", 34f, v => ChaseSpeed = v);
+        private static float SeeRange = Cfg.F("Hollowed.SeeRange", 110f, v => SeeRange = v);          // Material-plane player
+        private static float AstralSeeFactor = Cfg.F("Hollowed.AstralSeeFactor", 0.5f, v => AstralSeeFactor = v);   // sight multiplier when the player is Astral (clumsy)
+        private static float LoseFactor = Cfg.F("Hollowed.LoseFactor", 1.4f, v => LoseFactor = v);        // lose range = see range * this
+        private static float AttackRange = Cfg.F("Hollowed.AttackRange", 24f, v => AttackRange = v);
+        private static float WindupTime = Cfg.F("Hollowed.WindupTime", 0.5f, v => WindupTime = v);
+        private static float RecoverTime = Cfg.F("Hollowed.RecoverTime", 0.6f, v => RecoverTime = v);
+        private static int AttackDamage = Cfg.I("Hollowed.AttackDamage", 12, v => AttackDamage = v);
+        private static int StartHealth = Cfg.I("Hollowed.StartHealth", 50, v => StartHealth = v);
+        private static float ChipFraction = Cfg.F("Hollowed.ChipFraction", 0.2f, v => ChipFraction = v);      // share of damage that gets through the guard (min 1)
+        private static float GuardedFlinchKnock = Cfg.F("Hollowed.GuardedFlinchKnock", 25f, v => GuardedFlinchKnock = v); // tiny shove when guarded
+        private static float BrokenKnock = Cfg.F("Hollowed.BrokenKnock", 0.5f, v => BrokenKnock = v);       // fraction of hit knockback while guard is broken
+        internal static float BrokenTime = Cfg.F("Hollowed.BrokenTime", 3.5f, v => BrokenTime = v);       // fixed length of the guard-broken / soul-exposed window
+        private static float FreedTime = Cfg.F("Hollowed.FreedTime", 1.5f, v => FreedTime = v);         // relieved sit-down before both parts vanish
+        private static float FlashTime = Cfg.F("Hollowed.FlashTime", 0.1f, v => FlashTime = v);
 
         public Vector2 Position;
         public Vector2 Velocity;

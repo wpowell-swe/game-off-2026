@@ -11,16 +11,16 @@ namespace ShiftJam
 
         private enum State { Drift, Windup, Lunge, Recover }
 
-        private const float DriftSpeed = 28f;
-        private const float SeeRange = 120f;
-        private const float LungeRange = 44f;
-        private const float WindupTime = 0.5f;
-        private const float LungeTime = 0.24f;
-        private const float LungeSpeed = 150f;
-        private const float RecoverTime = 0.6f;
-        private const float FlashTime = 0.12f;
-        private const float FadeTime = 0.8f;
-        private const int AttackDamage = 8;
+        private static float DriftSpeed = Cfg.F("Wraith.DriftSpeed", 28f, v => DriftSpeed = v);
+        private static float SeeRange = Cfg.F("Wraith.SeeRange", 120f, v => SeeRange = v);
+        private static float LungeRange = Cfg.F("Wraith.LungeRange", 44f, v => LungeRange = v);
+        private static float WindupTime = Cfg.F("Wraith.WindupTime", 0.5f, v => WindupTime = v);
+        private static float LungeTime = Cfg.F("Wraith.LungeTime", 0.24f, v => LungeTime = v);
+        private static float LungeSpeed = Cfg.F("Wraith.LungeSpeed", 150f, v => LungeSpeed = v);
+        private static float RecoverTime = Cfg.F("Wraith.RecoverTime", 0.6f, v => RecoverTime = v);
+        private static float FlashTime = Cfg.F("Wraith.FlashTime", 0.12f, v => FlashTime = v);
+        private static float FadeTime = Cfg.F("Wraith.FadeTime", 0.8f, v => FadeTime = v);
+        private static int AttackDamage = Cfg.I("Wraith.AttackDamage", 8, v => AttackDamage = v);
 
         public Vector2 Position;
         public Vector2 Velocity;

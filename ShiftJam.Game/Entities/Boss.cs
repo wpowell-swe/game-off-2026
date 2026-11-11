@@ -39,15 +39,15 @@ namespace ShiftJam
     public abstract class Boss : IEntity, IHittable, IBoss
     {
         // ---- Tuning for every boss (private to this class) ----
-        private const float Gravity = 600f;
-        private const float IntroTime = 0.9f;               // standing and flashing after the player enters, before attacking
-        private const float TransitionTelegraph = 0.5f;     // flashing in the old plane before the swap
-        private const float TransitionRecover = 0.5f;       // flashing in the new plane after the swap
-        private const float FreedTime = 1.5f;               // relieved fade before the level is cleared
-        private const float HitFlashTime = 0.1f;
-        private const float DefaultTriggerRange = 150f;     // px, used when no TriggerArea is set
-        private const float FreedHitStop = 0.12f;
-        private const float FreedRise = 9f;                 // px the soul drifts up while fading
+        private static float Gravity = Cfg.F("Boss.Gravity", 600f, v => Gravity = v);
+        private static float IntroTime = Cfg.F("Boss.IntroTime", 0.9f, v => IntroTime = v);               // standing and flashing after the player enters, before attacking
+        private static float TransitionTelegraph = Cfg.F("Boss.TransitionTelegraph", 0.5f, v => TransitionTelegraph = v);     // flashing in the old plane before the swap
+        private static float TransitionRecover = Cfg.F("Boss.TransitionRecover", 0.5f, v => TransitionRecover = v);       // flashing in the new plane after the swap
+        private static float FreedTime = Cfg.F("Boss.FreedTime", 1.5f, v => FreedTime = v);               // relieved fade before the level is cleared
+        private static float HitFlashTime = Cfg.F("Boss.HitFlashTime", 0.1f, v => HitFlashTime = v);
+        private static float DefaultTriggerRange = Cfg.F("Boss.DefaultTriggerRange", 150f, v => DefaultTriggerRange = v);     // px, used when no TriggerArea is set
+        private static float FreedHitStop = Cfg.F("Boss.FreedHitStop", 0.12f, v => FreedHitStop = v);
+        private static float FreedRise = Cfg.F("Boss.FreedRise", 9f, v => FreedRise = v);                 // px the soul drifts up while fading
 
         private enum BossState { Dormant, Intro, Fight, Transition, Freed }
 

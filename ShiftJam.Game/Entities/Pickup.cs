@@ -9,9 +9,9 @@ namespace ShiftJam
     /// <summary>A bobbing orb on the floor. Walk into it to restore Ki or health; it is used up once.</summary>
     public sealed class Pickup : IEntity
     {
-        private const int KiAmount = 50;
-        private const int HealthAmount = 30;
-        private const int Size = 10;
+        private static int KiAmount = Cfg.I("Pickup.KiAmount", 50, v => KiAmount = v);
+        private static int HealthAmount = Cfg.I("Pickup.HealthAmount", 30, v => HealthAmount = v);
+        private static int Size = Cfg.I("Pickup.Size", 10, v => Size = v);
 
         private readonly PickupKind _kind;
         private readonly Vector2 _home;
@@ -69,7 +69,7 @@ namespace ShiftJam
                 var gold = new Color(255, 200, 80);
                 var rim = new Color(255, 240, 190);
                 Gfx.Fill(sb, new Rectangle(b.X - 2, b.Y - 2, Size + 4, Size + 4), gold * 0.25f);
-                const int r = Size;                      // radius; the wedge's corner is the bottom-left of the box
+                int r = Size;                      // radius; the wedge's corner is the bottom-left of the box
                 for (int row = 0; row < r; row++)
                 {
                     int dy = r - 1 - row;               // distance up from the corner

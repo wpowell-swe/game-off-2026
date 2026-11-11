@@ -24,6 +24,8 @@ namespace ShiftJam
         private bool _title = true;    // showing the title screen
         private Texture2D _titleArt;
         private float _titleClock;
+        private string _toast;         // a short message in the corner (data reloaded, ...)
+        private float _toastTime;
 
         public ShiftJamGame()
         {
@@ -48,6 +50,17 @@ namespace ShiftJam
             catch (Exception) { /* no art yet: the title falls back to a plain background */ }
 
             LoadStage();
+        }
+
+        /// <summary>Re-reads the data files and rebuilds the current stage. Textures are not reloaded (that needs a content build).</summary>
+        private void ReloadData()
+        {
+            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload();
+            SpriteStore.Load(Content);
+            _campaign.ClampIndex();
+            LoadStage();
+            _toast = "DATA RELOADED" + (DataFiles.OverrideDir == null ? " (BUILT-IN COPIES)" : "");
+            _toastTime = 2.5f;
         }
 
         /// <summary>Builds the current campaign stage from scratch.</summary>
@@ -85,6 +98,9 @@ namespace ShiftJam
             if (Pressed(keys, Keys.F9)) { _title = false; LoadDebugLevel(TestRoom.Build); }
             else if (Pressed(keys, Keys.F10)) { _title = false; LoadDebugLevel(TestRoom.BuildDescent); }
 
+            // F11: re-read every data file (balance numbers, text, levels, campaign, sprite sizes) and rebuild the stage.
+            if (Pressed(keys, Keys.F11)) ReloadData();
+
             bool confirm = Pressed(keys, Keys.Enter) || Pressed(keys, Keys.Space);
             if (_title)
             {
@@ -108,6 +124,7 @@ namespace ShiftJam
             _prevKeys = keys;
 
             float dt = Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, 1f / 30f);
+            if (_toastTime > 0) _toastTime -= dt;
             if (_stageIntro > 0) _stageIntro -= dt;
             _world.Input = _ending ? default : _input.Read();
             _world.Update(dt);
@@ -135,13 +152,13 @@ namespace ShiftJam
             if (_ending)
             {
                 Gfx.Fill(spriteBatch, new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight), new Color(0, 0, 0, 200));
-                PixelFont.DrawCentered(spriteBatch, "THE END", 44, new Color(255, 225, 140), 4);
-                PixelFont.DrawCentered(spriteBatch, "BUT THE TITHE IS STILL OUT THERE.", 82, Color.White, 1);
-                PixelFont.DrawCentered(spriteBatch, "TOTAL SOULS FREED: " + _campaign.TotalSouls, 98, new Color(150, 220, 255), 2);
-                PixelFont.DrawCentered(spriteBatch, "THANKS FOR PLAYING", 124, Color.White, 1);
-                PixelFont.DrawCentered(spriteBatch, "ENTER TO PLAY AGAIN", 140, new Color(180, 200, 255), 1);
-                PixelFont.DrawCentered(spriteBatch, "DESIGN BY WILLIAM POWELL. MADE WITH AI ASSISTANCE:", 156, new Color(150, 150, 170), 1);
-                PixelFont.DrawCentered(spriteBatch, "CODE, STORY AND TITLE ART. ENGINE: KNI. SEE CREDITS.MD", 164, new Color(150, 150, 170), 1);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("ending.title", "THE END"), 44, new Color(255, 225, 140), 4);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("ending.line", "BUT THE TITHE IS STILL OUT THERE."), 82, Color.White, 1);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("ending.souls", "TOTAL SOULS FREED: ") + _campaign.TotalSouls, 98, new Color(150, 220, 255), 2);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("ending.thanks", "THANKS FOR PLAYING"), 124, Color.White, 1);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("ending.again", "ENTER TO PLAY AGAIN"), 140, new Color(180, 200, 255), 1);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("ending.credits1", "DESIGN BY WILLIAM POWELL. MADE WITH AI ASSISTANCE:"), 156, new Color(150, 150, 170), 1);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("ending.credits2", "CODE, STORY AND TITLE ART. ENGINE: KNI. SEE CREDITS.MD"), 164, new Color(150, 150, 170), 1);
                 return;
             }
 
@@ -153,7 +170,7 @@ namespace ShiftJam
                 {
                     float a = Math.Clamp(_stageIntro / 0.6f, 0f, 1f);   // fades out over the last 0.6 s
                     int n = Array.IndexOf(Campaign.Stages, _campaign.Current) + 1;
-                    PixelFont.DrawCentered(spriteBatch, "STAGE " + n, 40, new Color(180, 200, 255) * a, 1);
+                    PixelFont.DrawCentered(spriteBatch, Txt.S("banner.stage", "STAGE ") + n, 40, new Color(180, 200, 255) * a, 1);
                     PixelFont.DrawCentered(spriteBatch, _campaign.Current.Name, 50, new Color(255, 225, 140) * a, 2);
                 }
                 return;
@@ -163,14 +180,14 @@ namespace ShiftJam
             if (cleared)
             {
                 bool last = _campaign.IsLast;
-                PixelFont.DrawCentered(spriteBatch, _campaign.Current.Kind == StageKind.Boss ? "BOSS FREED" : "LEVEL CLEARED", 70, new Color(255, 225, 140), 3);
-                PixelFont.DrawCentered(spriteBatch, "SOULS FREED: " + _world.SoulsFreed, 94, Color.White, 2);
-                PixelFont.DrawCentered(spriteBatch, last ? "ENTER FOR THE ENDING" : "ENTER TO CONTINUE", 108, new Color(180, 200, 255), 1);
+                PixelFont.DrawCentered(spriteBatch, _campaign.Current.Kind == StageKind.Boss ? Txt.S("clear.boss", "BOSS FREED") : Txt.S("clear.level", "LEVEL CLEARED"), 70, new Color(255, 225, 140), 3);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("clear.souls", "SOULS FREED: ") + _world.SoulsFreed, 94, Color.White, 2);
+                PixelFont.DrawCentered(spriteBatch, last ? Txt.S("clear.ending", "ENTER FOR THE ENDING") : Txt.S("clear.continue", "ENTER TO CONTINUE"), 108, new Color(180, 200, 255), 1);
             }
             else
             {
-                PixelFont.DrawCentered(spriteBatch, "DEFEATED", 72, new Color(255, 110, 110), 3);
-                PixelFont.DrawCentered(spriteBatch, "ENTER TO TRY AGAIN", 100, Color.White, 1);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("defeat.title", "DEFEATED"), 72, new Color(255, 110, 110), 3);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("defeat.retry", "ENTER TO TRY AGAIN"), 100, Color.White, 1);
             }
         }
 
@@ -183,19 +200,19 @@ namespace ShiftJam
             // Darken the top and bottom so the text reads over the art.
             Gfx.Fill(spriteBatch, new Rectangle(0, 0, Metrics.ScreenWidth, 62), new Color(0, 0, 0, 110));
 
-            PixelFont.DrawCentered(spriteBatch, "THRESHOLD", 12, new Color(255, 225, 140), 6);
-            PixelFont.DrawCentered(spriteBatch, "A GAME OF TWO PLANES", 48, new Color(150, 220, 255), 1);
+            PixelFont.DrawCentered(spriteBatch, Txt.S("title.name", "THRESHOLD"), 12, new Color(255, 225, 140), 6);
+            PixelFont.DrawCentered(spriteBatch, Txt.S("title.tagline", "A GAME OF TWO PLANES"), 48, new Color(150, 220, 255), 1);
             if ((int)(_titleClock * 1.6f) % 2 == 0)
-                PixelFont.DrawCentered(spriteBatch, "PRESS ENTER", 114, Color.White, 2);
+                PixelFont.DrawCentered(spriteBatch, Txt.S("title.press", "PRESS ENTER"), 114, Color.White, 2);
 
             // Controls: an action label with keycaps beside it, two columns of three.
             Gfx.Fill(spriteBatch, new Rectangle(0, 132, Metrics.ScreenWidth, 48), new Color(0, 0, 0, 170));
-            DrawBinding("MOVE", 20, 138, "A", "D");
-            DrawBinding("JUMP", 20, 150, "SPACE");
-            DrawBinding("SWAP PLANE", 20, 162, "SHIFT");
-            DrawBinding("LIGHT", 176, 138, "J");
-            DrawBinding("HEAVY", 176, 150, "K");
-            DrawBinding("BLOCK", 176, 162, "L");
+            DrawBinding(Txt.S("title.move", "MOVE"), 20, 138, "A", "D");
+            DrawBinding(Txt.S("title.jump", "JUMP"), 20, 150, "SPACE");
+            DrawBinding(Txt.S("title.swap", "SWAP PLANE"), 20, 162, "SHIFT");
+            DrawBinding(Txt.S("title.light", "LIGHT"), 176, 138, "J");
+            DrawBinding(Txt.S("title.heavy", "HEAVY"), 176, 150, "K");
+            DrawBinding(Txt.S("title.block", "BLOCK"), 176, 162, "L");
         }
 
         /// <summary>One controls row: a dim action label, then each key drawn as a small keycap.</summary>
@@ -243,6 +260,7 @@ namespace ShiftJam
                 PixelFont.Draw(spriteBatch, _world.StatusText, Metrics.ScreenWidth - 6 - PixelFont.Width(_world.StatusText), 8, new Color(255, 225, 140), 1);
             DrawEndBanner();
             _world.DrawScreenFx(spriteBatch);
+            if (_toastTime > 0 && _toast != null) PixelFont.Draw(spriteBatch, _toast, 6, Metrics.ScreenHeight - 10, new Color(150, 255, 170));
             spriteBatch.End();
 
             PresentScreen();

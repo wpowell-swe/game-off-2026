@@ -19,11 +19,11 @@ namespace ShiftJam
         public static readonly Point BodySize = new(18, 30);
 
         // ---- Tuning (private to this class) ----
-        private const int BarHealth = 96;                 // twelve light hits (or about three heavies) per bar
-        private const int BarCount = 4;
-        private const float WalkSpeed = 52f;
-        private const float HoverSpeed = 50f;
-        private const float FleeSpeed = 150f;
+        private static int BarHealth = Cfg.I("Clerk.BarHealth", 96, v => BarHealth = v);                 // twelve light hits (or about three heavies) per bar
+        private static int BarCount = Cfg.I("Clerk.BarCount", 4, v => BarCount = v);
+        private static float WalkSpeed = Cfg.F("Clerk.WalkSpeed", 52f, v => WalkSpeed = v);
+        private static float HoverSpeed = Cfg.F("Clerk.HoverSpeed", 50f, v => HoverSpeed = v);
+        private static float FleeSpeed = Cfg.F("Clerk.FleeSpeed", 150f, v => FleeSpeed = v);
         private const float SwipeWind = 0.45f, SwipeRecover = 0.7f;
         private const int SwipeW = 26, SwipeDamage = 16;
         private const float StampWind = 0.9f, StampRecover = 1.1f, StampShow = 0.15f;
@@ -44,17 +44,33 @@ namespace ShiftJam
         private enum M { Own, Opp, Both }   // which plane an attack hits: the Clerk's own, the other, or both
         private enum S { Idle, Wind, Hidden, Recover, FlipWind }
 
-        private static readonly (K, M)[][] Sequences =
+        // Each attack is "Kind Mode": Kind is Swipe, Stamp, Fan, Rain, Vanish or Wave; Mode is Own (the Clerk's plane),
+        // Opp (the other plane) or Both. The four bar sequences and the two Vault ones are lists in balance.json.
+        private static (K, M)[] ParseSeq(string[] names, (K, M)[] fallback)
         {
-            new[] { (K.Stamp, M.Own), (K.Swipe, M.Own), (K.Stamp, M.Opp), (K.Swipe, M.Both), (K.Stamp, M.Both) },
-            new[] { (K.Fan, M.Own), (K.Wave, M.Opp), (K.Rain, M.Own), (K.Fan, M.Both), (K.Rain, M.Opp) },
-            new[] { (K.Vanish, M.Own), (K.Swipe, M.Own), (K.Stamp, M.Opp), (K.Vanish, M.Both), (K.Swipe, M.Both), (K.Vanish, M.Opp) },
-            null,   // the last bar picks by plane (see Next)
-        };
-        private static readonly (K, M)[] VaultMaterial = { (K.Stamp, M.Both), (K.Swipe, M.Opp), (K.Vanish, M.Own), (K.Stamp, M.Opp), (K.Wave, M.Both) };
-        private static readonly (K, M)[] VaultAstral = { (K.Fan, M.Both), (K.Wave, M.Opp), (K.Rain, M.Own), (K.Fan, M.Opp), (K.Rain, M.Both) };
+            var list = new System.Collections.Generic.List<(K, M)>();
+            foreach (var n in names)
+            {
+                var parts = n.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 2 && Enum.TryParse<K>(parts[0], out var k) && Enum.TryParse<M>(parts[1], out var m)) list.Add((k, m));
+                else Console.WriteLine($"[data] Clerk sequence: cannot read '{n}' (use e.g. \"Stamp Both\").");
+            }
+            return list.Count > 0 ? list.ToArray() : fallback;
+        }
 
-        private static readonly BossPhase[] Table =
+        private static (K, M)[] Make(string key, string[] def, Action<(K, M)[]> set)
+        {
+            var fallback = ParseSeq(def, null);
+            return ParseSeq(Cfg.Strings(key, def, names => set(ParseSeq(names, fallback))), fallback);
+        }
+
+        private static (K, M)[] _bar1 = Make("Clerk.Bar1", new[] { "Stamp Own", "Swipe Own", "Stamp Opp", "Swipe Both", "Stamp Both" }, v => _bar1 = v);
+        private static (K, M)[] _bar2 = Make("Clerk.Bar2", new[] { "Fan Own", "Wave Opp", "Rain Own", "Fan Both", "Rain Opp" }, v => _bar2 = v);
+        private static (K, M)[] _bar3 = Make("Clerk.Bar3", new[] { "Vanish Own", "Swipe Own", "Stamp Opp", "Vanish Both", "Swipe Both", "Vanish Opp" }, v => _bar3 = v);
+        private static (K, M)[] VaultMaterial = Make("Clerk.VaultMaterial", new[] { "Stamp Both", "Swipe Opp", "Vanish Own", "Stamp Opp", "Wave Both" }, v => VaultMaterial = v);
+        private static (K, M)[] VaultAstral = Make("Clerk.VaultAstral", new[] { "Fan Both", "Wave Opp", "Rain Own", "Fan Opp", "Rain Both" }, v => VaultAstral = v);
+        // Built fresh for each fight, so a changed BarHealth (balance.json, then F11) applies to the phase thresholds too.
+        private static BossPhase[] Table => new BossPhase[]
         {
             new(Plane.Material, BarHealth * 3, 0, "The Stacks"),
             new(Plane.Astral, BarHealth * 2, 1, "The Ledger Hall"),
@@ -130,7 +146,7 @@ namespace ShiftJam
 
         private (K, M) Next()
         {
-            (K, M)[] seq = PhaseIndex < 3 ? Sequences[PhaseIndex] : (Plane == Plane.Astral ? VaultAstral : VaultMaterial);
+            (K, M)[] seq = PhaseIndex < 3 ? (PhaseIndex == 0 ? _bar1 : PhaseIndex == 1 ? _bar2 : _bar3) : (Plane == Plane.Astral ? VaultAstral : VaultMaterial);
             return seq[_seq % seq.Length];
         }
 

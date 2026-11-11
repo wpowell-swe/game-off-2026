@@ -10,29 +10,15 @@ namespace ShiftJam
     public static class ClerkArena
     {
         private const int T = Metrics.TileSize;
-        public const int RoomWidth = 30;
-        public const int RoomCount = 4;
+        public static int RoomWidth => Catacombs.Meta.TryGetValue("roomwidth", out var w) ? int.Parse(w) : 30;
+        public static int RoomCount => Catacombs.Meta.TryGetValue("rooms", out var n) ? int.Parse(n) : 4;
 
         /// <summary>The bar (room) to restart in. Reset whenever the stage is entered fresh.</summary>
         public static int Checkpoint;
 
-        // The Stacks, the Ledger Hall, the Crypt, the Vault. Column 0 of each room is its doorway; g is a shut gate.
-        public static readonly Level Catacombs = new(new[]
-        {
-            "########################################################################################################################",
-            "#.............................#.............................#........##........##.........#............................#",
-            "#.............................#.............................#........##........##.........#............................#",
-            "#.............................#.............................#........##........##.........#............................#",
-            "#.............................#.............................#........##........##.........#............................#",
-            "..............................g.............................g........##........##.........g............................#",
-            ".......####........####.......g.......####......####........g.............................g.......aaaa......aaaa.......#",
-            "..............................g.............................g.............................g............................#",
-            "...P.........h................g....k........k..........k....g....k........h...............g...k.....h...k.....h.....k..#",
-            "########################################################################################################################",
-            "########################################################################################################################",
-        }, "The Catacombs");
+        public static Level Catacombs => LevelFile.Get("clerk_catacombs");
 
-        public static int RoomStart(int room) => room * RoomWidth;
+        public static int RoomStart(int room) => room * RoomWidth;   // the rooms are equal width, set by @roomwidth in the file
 
         /// <summary>Opens the gate into a room (the doorway column), once.</summary>
         public static void OpenGate(GameWorld world, int room)

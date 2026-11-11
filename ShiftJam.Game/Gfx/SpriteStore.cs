@@ -65,7 +65,7 @@ namespace ShiftJam
             new(14, 10, 52), new(70, 60, 190), new(150, 160, 255), new(220, 240, 255),
         };
 
-        private const float AstralOpacity = 0.8f;
+        private static float AstralOpacity = Cfg.F("SpriteStore.AstralOpacity", 0.8f, v => AstralOpacity = v);
 
         /// <summary>Remaps colour by luminance onto the ramp on the CPU. Alpha is kept (and lowered a little).</summary>
         private static Texture2D MakeAstral(Texture2D src)

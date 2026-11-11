@@ -1,0 +1,17 @@
+@name Cellars: Dova
+; / <summary>
+; / Cellars boss room, 28x12. A completely flat, clear floor from start to boss. Two crate stacks (2 tiles high, so
+; / a normal jump reaches them) stand against the left and right walls as ledges; nothing blocks the walk between them.
+; / </summary>
+############################
+#..........................#
+#..........................#
+#..........................#
+#..........................#
+#..........................#
+#..........................#
+#..........................#
+#..........................#
+###......................###
+###..P................B..###
+############################

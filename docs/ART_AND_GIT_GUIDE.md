@@ -30,7 +30,7 @@ Notes on the newer ones:
 - **`soul`** is that Astral soul, a small pale wisp. It is only visible while the body is broken. The game tints it, so draw it in normal colours.
 - **`flicker`** swaps between the Material and Astral planes every couple of seconds. You draw one set; the game tints the Astral half and draws the warning ring.
 
-Example: `joseph_walk.png` is 128x48 (4 frames of 32x48). The exact list is in `ShiftJam.Game/Gfx/SpriteDefs.cs`; if you want a different size or frame count, ask the coder to change it there.
+Example: `joseph_walk.png` is 128x48 (4 frames of 32x48). The exact list is `ShiftJamContent/Data/sprites.json`. If you want a different size or frame count, edit the numbers there (no coder needed; see `docs/DATA_GUIDE.md`) and press F11 in the game.
 
 Placeholder strips already exist for all of the characters in the table above, including the Hollowed, Flicker and soul (not the bosses, see below). `python3 tools/make_placeholder_sprites.py` writes any that are missing and never overwrites your art. Replace one by saving your own PNG with the **same name**.
 

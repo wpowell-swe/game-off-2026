@@ -7,9 +7,9 @@ namespace ShiftJam
     /// <summary>Boss health bar at the bottom of the screen. Screen space (no camera); rectangles only.</summary>
     public static class BossBar
     {
-        private const int Width = 200;
-        private const int Height = 6;
-        private const int BottomMargin = 10;
+        private static int Width = Cfg.I("BossBar.Width", 200, v => Width = v);
+        private static int Height = Cfg.I("BossBar.Height", 6, v => Height = v);
+        private static int BottomMargin = Cfg.I("BossBar.BottomMargin", 10, v => BottomMargin = v);
 
         public static void Draw(SpriteBatch sb, IBoss boss)
         {

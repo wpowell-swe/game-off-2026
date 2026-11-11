@@ -9,7 +9,7 @@ namespace ShiftJam
     public static class Mover
     {
         private const int T = Metrics.TileSize;
-        private const float Eps = 0.001f;
+        private static float Eps = Cfg.F("Mover.Eps", 0.001f, v => Eps = v);
 
         public static void Move(ITileWorld world, Plane plane, ref Vector2 pos, Point size, ref Vector2 vel, float dt,
             out bool onGround, out bool hitWall, out bool hitCeiling)

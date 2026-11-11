@@ -35,7 +35,7 @@ namespace ShiftJam
             public int Target;
             public bool Done;          // already used up: drawn dim, cannot be entered
             public bool Enabled = true;
-            public string Label = "ENTER";
+            public string Label = Txt.S("prompt.enter", "ENTER");
         }
 
         public readonly List<Portal> Portals = new();
@@ -249,7 +249,7 @@ namespace ShiftJam
                 Gfx.Fill(sb, new Rectangle(d.X - 2, d.Y - 3, d.Width + 4, 3), wood);
                 if (live && Player != null && Player.Hurtbox.Intersects(d))
                 {
-                    string text = "E " + p.Label;
+                    string text = Txt.S("prompt.interact", "E ") + p.Label;
                     PixelFont.Draw(sb, text, d.Center.X - PixelFont.Width(text) / 2, d.Y - 12, Color.White);
                 }
             }

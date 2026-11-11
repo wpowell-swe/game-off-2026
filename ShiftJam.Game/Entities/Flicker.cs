@@ -15,34 +15,34 @@ namespace ShiftJam
         private enum State { Idle, Windup, Strike, Recover, Stun, Swap }
 
         // ---- Tunables (private; Data/Tuning.cs is not ours) ----
-        private const float BeatPeriod = 2.0f;        // seconds between plane swaps
-        private const float TelegraphTime = 0.5f;     // ring + shimmer lead-in before a swap
-        private const float SwapTime = 0.12f;         // not hittable, flashing
-        private const float MaxSwapDelay = 1.0f;      // wait this long for a safe Material landing, then skip the beat
-        private const float RingMaxGrow = 10f;        // px the telegraph ring grows outward
-        private const int MaxPushOut = 24;            // px we may nudge it out of a wall when entering Material
-        private const float LandProbe = 96f;          // Material swap needs floor within this many px below
+        private static float BeatPeriod = Cfg.F("Flicker.BeatPeriod", 2.0f, v => BeatPeriod = v);        // seconds between plane swaps
+        private static float TelegraphTime = Cfg.F("Flicker.TelegraphTime", 0.5f, v => TelegraphTime = v);     // ring + shimmer lead-in before a swap
+        private static float SwapTime = Cfg.F("Flicker.SwapTime", 0.12f, v => SwapTime = v);         // not hittable, flashing
+        private static float MaxSwapDelay = Cfg.F("Flicker.MaxSwapDelay", 1.0f, v => MaxSwapDelay = v);      // wait this long for a safe Material landing, then skip the beat
+        private static float RingMaxGrow = Cfg.F("Flicker.RingMaxGrow", 10f, v => RingMaxGrow = v);        // px the telegraph ring grows outward
+        private static int MaxPushOut = Cfg.I("Flicker.MaxPushOut", 24, v => MaxPushOut = v);            // px we may nudge it out of a wall when entering Material
+        private static float LandProbe = Cfg.F("Flicker.LandProbe", 96f, v => LandProbe = v);          // Material swap needs floor within this many px below
 
-        private const float Gravity = 600f;           // Material only
-        private const float PatrolSpeed = 18f;
-        private const float ChaseSpeed = 38f;
-        private const float FloatSpeed = 34f;         // Astral approach speed
-        private const float SeeRange = 110f;          // sees the player in either plane
-        private const float LoseRange = 150f;
-        private const float MeleeRange = 22f;
-        private const float MeleeWindup = 0.45f;
-        private const float MeleeRecover = 0.5f;
-        private const int MeleeDamage = 9;
-        private const float LungeRange = 48f;
-        private const float LungeWindup = 0.4f;
-        private const float LungeTime = 0.22f;
-        private const float LungeSpeed = 150f;
-        private const float LungeRecover = 0.6f;
-        private const int LungeDamage = 9;
-        private const float StunTime = 0.3f;
-        private const float FlashTime = 0.12f;
-        private const float FadeTime = 0.8f;
-        private const int StartHealth = 36;
+        private static float Gravity = Cfg.F("Flicker.Gravity", 600f, v => Gravity = v);           // Material only
+        private static float PatrolSpeed = Cfg.F("Flicker.PatrolSpeed", 18f, v => PatrolSpeed = v);
+        private static float ChaseSpeed = Cfg.F("Flicker.ChaseSpeed", 38f, v => ChaseSpeed = v);
+        private static float FloatSpeed = Cfg.F("Flicker.FloatSpeed", 34f, v => FloatSpeed = v);         // Astral approach speed
+        private static float SeeRange = Cfg.F("Flicker.SeeRange", 110f, v => SeeRange = v);          // sees the player in either plane
+        private static float LoseRange = Cfg.F("Flicker.LoseRange", 150f, v => LoseRange = v);
+        private static float MeleeRange = Cfg.F("Flicker.MeleeRange", 22f, v => MeleeRange = v);
+        private static float MeleeWindup = Cfg.F("Flicker.MeleeWindup", 0.45f, v => MeleeWindup = v);
+        private static float MeleeRecover = Cfg.F("Flicker.MeleeRecover", 0.5f, v => MeleeRecover = v);
+        private static int MeleeDamage = Cfg.I("Flicker.MeleeDamage", 9, v => MeleeDamage = v);
+        private static float LungeRange = Cfg.F("Flicker.LungeRange", 48f, v => LungeRange = v);
+        private static float LungeWindup = Cfg.F("Flicker.LungeWindup", 0.4f, v => LungeWindup = v);
+        private static float LungeTime = Cfg.F("Flicker.LungeTime", 0.22f, v => LungeTime = v);
+        private static float LungeSpeed = Cfg.F("Flicker.LungeSpeed", 150f, v => LungeSpeed = v);
+        private static float LungeRecover = Cfg.F("Flicker.LungeRecover", 0.6f, v => LungeRecover = v);
+        private static int LungeDamage = Cfg.I("Flicker.LungeDamage", 9, v => LungeDamage = v);
+        private static float StunTime = Cfg.F("Flicker.StunTime", 0.3f, v => StunTime = v);
+        private static float FlashTime = Cfg.F("Flicker.FlashTime", 0.12f, v => FlashTime = v);
+        private static float FadeTime = Cfg.F("Flicker.FadeTime", 0.8f, v => FadeTime = v);
+        private static int StartHealth = Cfg.I("Flicker.StartHealth", 36, v => StartHealth = v);
 
         public Vector2 Position;
         public Vector2 Velocity;

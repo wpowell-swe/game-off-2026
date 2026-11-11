@@ -458,4 +458,76 @@
 /processorParam:Quality=Best
 /build:Sfx/swing.wav
 #end Sfx/swing.wav
+
+#begin Data/balance.json
+/copy:Data/balance.json
+#end Data/balance.json
+
+#begin Data/campaign.json
+/copy:Data/campaign.json
+#end Data/campaign.json
+
+#begin Data/sprites.json
+/copy:Data/sprites.json
+#end Data/sprites.json
+
+#begin Data/text.json
+/copy:Data/text.json
+#end Data/text.json
+
+#begin Data/levels/cellars.txt
+/copy:Data/levels/cellars.txt
+#end Data/levels/cellars.txt
+
+#begin Data/levels/clerk_catacombs.txt
+/copy:Data/levels/clerk_catacombs.txt
+#end Data/levels/clerk_catacombs.txt
+
+#begin Data/levels/dova.txt
+/copy:Data/levels/dova.txt
+#end Data/levels/dova.txt
+
+#begin Data/levels/keep_hub.txt
+/copy:Data/levels/keep_hub.txt
+#end Data/levels/keep_hub.txt
+
+#begin Data/levels/keep_room1.txt
+/copy:Data/levels/keep_room1.txt
+#end Data/levels/keep_room1.txt
+
+#begin Data/levels/keep_room2.txt
+/copy:Data/levels/keep_room2.txt
+#end Data/levels/keep_room2.txt
+
+#begin Data/levels/keep_room3.txt
+/copy:Data/levels/keep_room3.txt
+#end Data/levels/keep_room3.txt
+
+#begin Data/levels/keep_room4.txt
+/copy:Data/levels/keep_room4.txt
+#end Data/levels/keep_room4.txt
+
+#begin Data/levels/pell.txt
+/copy:Data/levels/pell.txt
+#end Data/levels/pell.txt
+
+#begin Data/levels/rooftops.txt
+/copy:Data/levels/rooftops.txt
+#end Data/levels/rooftops.txt
+
+#begin Data/levels/streets.txt
+/copy:Data/levels/streets.txt
+#end Data/levels/streets.txt
+
+#begin Data/levels/test_descent.txt
+/copy:Data/levels/test_descent.txt
+#end Data/levels/test_descent.txt
+
+#begin Data/levels/test_horizontal.txt
+/copy:Data/levels/test_horizontal.txt
+#end Data/levels/test_horizontal.txt
+
+#begin Data/levels/tithe_hall.txt
+/copy:Data/levels/tithe_hall.txt
+#end Data/levels/tithe_hall.txt
 #--- sprites-and-sfx:end ---#

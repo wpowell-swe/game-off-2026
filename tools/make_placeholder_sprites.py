@@ -3,7 +3,7 @@
 
 These exist only so the game shows *something* before the real art arrives. Replace any of them by
 saving your own PNG with the same name (see docs/ART_AND_GIT_GUIDE.md). Needs Pillow.
-Frame sizes must match ShiftJam.Game/Gfx/SpriteDefs.cs. Art faces RIGHT.
+Frame sizes must match ShiftJamContent/Data/sprites.json. Art faces RIGHT.
 Usage: python3 tools/make_placeholder_sprites.py [--force]   (only missing files are written, unless --force)
 """
 import sys

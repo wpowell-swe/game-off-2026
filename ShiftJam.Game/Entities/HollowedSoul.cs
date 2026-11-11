@@ -11,10 +11,10 @@ namespace ShiftJam
     public sealed class HollowedSoul : IEntity, IHittable
     {
         // ---- Tuning (private to this class) ----
-        private const int StartHealth = 24;       // three light hits (8 damage each)
-        private const float BobAmplitude = 2f;
-        private const float BobSpeed = 6f;
-        private const int BoxHeightDivisor = 2;   // hurtbox covers the body's upper half
+        private static int StartHealth = Cfg.I("HollowedSoul.StartHealth", 24, v => StartHealth = v);       // three light hits (8 damage each)
+        private static float BobAmplitude = Cfg.F("HollowedSoul.BobAmplitude", 2f, v => BobAmplitude = v);
+        private static float BobSpeed = Cfg.F("HollowedSoul.BobSpeed", 6f, v => BobSpeed = v);
+        private static int BoxHeightDivisor = Cfg.I("HollowedSoul.BoxHeightDivisor", 2, v => BoxHeightDivisor = v);   // hurtbox covers the body's upper half
 
         private readonly Hollowed _owner;
         public int Health = StartHealth;

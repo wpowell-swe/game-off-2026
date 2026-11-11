@@ -31,12 +31,16 @@ Full install steps for Linux and Windows, as paste-into-the-terminal blocks, are
 
 Opening `index.html` straight from disk won't work; the web build has to be served over HTTP.
 
+## Changing the game without compiling
+
+Balance numbers, levels, on-screen text, the stage order and sprite sizes are plain files in `ShiftJamContent/Data/`. Edit them and press F11 in the game to reload. See [docs/DATA_GUIDE.md](docs/DATA_GUIDE.md).
+
 ## Project layout
 
 | Folder | Contents |
 |---|---|
 | `ShiftJam.Game/` | All game code, shared by every platform. Start at `ShiftJamGame.cs`. |
-| `ShiftJamContent/` | Art, audio and fonts, listed in `ShiftJamContent.mgcb`. |
+| `ShiftJamContent/` | Art, audio and data (`Data/`: numbers, levels, text), listed in `ShiftJamContent.mgcb`. |
 | `ShiftJam.SDL2.GL/` | Desktop launcher (Windows/Linux/macOS). |
 | `ShiftJam.Blazor.GL/` | Web launcher (WebAssembly + WebGL). |
 

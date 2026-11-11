@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Lists every sprite, UI image (Ui/*.png) and sound effect in ShiftJamContent/ShiftJamContent.mgcb.
+"""Lists every sprite, UI image (Ui/*.png), sound effect and data file (Data/*.json, Data/levels/*.txt) in ShiftJamContent/ShiftJamContent.mgcb.
 
 Run this after adding, renaming or deleting a file in ShiftJamContent/Sprites (*.png) or
-ShiftJamContent/Sfx (*.wav), then run `dotnet build`. Safe to run any number of times: it only
+ShiftJamContent/Sfx (*.wav) or ShiftJamContent/Data, then run `dotnet build`. Safe to run any number of times: it only
 rewrites its own block (between the two marker comments) and leaves the rest of the file alone.
 Standard library only. Keeps the file's existing line endings (CRLF).
 """
@@ -31,6 +31,10 @@ def texture_entry(rel):
         f"/build:{rel}",
         f"#end {rel}",
     ]
+
+
+def copy_entry(rel):
+    return [f"#begin {rel}", f"/copy:{rel}", f"#end {rel}"]
 
 
 def sound_entry(rel):
@@ -68,6 +72,9 @@ def main():
         block += [""] + texture_entry(rel)
     for rel in files("Sfx", "*.wav"):
         block += [""] + sound_entry(rel)
+    # Game data (balance numbers, text, campaign, sprite table, level maps): copied as they are, read by the game at runtime.
+    for rel in files("Data", "*.json") + files("Data/levels", "*.txt"):
+        block += [""] + copy_entry(rel)
     block.append(END)
 
     if BEGIN in lines and END in lines:
@@ -87,7 +94,8 @@ def main():
     else:
         MGCB.write_bytes(data)
         print(f"sync_content: updated {MGCB.relative_to(ROOT)}")
-    print(f"  {len(files('Sprites', '*.png'))} sprites, {len(files('Sfx', '*.wav'))} sound effects listed.")
+    print(f"  {len(files('Sprites', '*.png'))} sprites, {len(files('Sfx', '*.wav'))} sound effects, "
+          f"{len(files('Data', '*.json')) + len(files('Data/levels', '*.txt'))} data files listed.")
 
 
 if __name__ == "__main__":

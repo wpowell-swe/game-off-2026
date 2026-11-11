@@ -11,17 +11,17 @@ namespace ShiftJam
 
         private enum State { Patrol, Chase, Windup, Recover, Stun }
 
-        private const float Gravity = 600f;
-        private const float PatrolSpeed = 18f;
-        private const float ChaseSpeed = 38f;
-        private const float SeeRange = 100f;
-        private const float LoseRange = 140f;
-        private const float AttackRange = 22f;
-        private const float WindupTime = 0.45f;
-        private const float RecoverTime = 0.5f;
-        private const float StunTime = 0.3f;
-        private const float FlashTime = 0.12f;
-        private const int AttackDamage = 10;
+        private static float Gravity = Cfg.F("Shell.Gravity", 600f, v => Gravity = v);
+        private static float PatrolSpeed = Cfg.F("Shell.PatrolSpeed", 18f, v => PatrolSpeed = v);
+        private static float ChaseSpeed = Cfg.F("Shell.ChaseSpeed", 38f, v => ChaseSpeed = v);
+        private static float SeeRange = Cfg.F("Shell.SeeRange", 100f, v => SeeRange = v);
+        private static float LoseRange = Cfg.F("Shell.LoseRange", 140f, v => LoseRange = v);
+        private static float AttackRange = Cfg.F("Shell.AttackRange", 22f, v => AttackRange = v);
+        private static float WindupTime = Cfg.F("Shell.WindupTime", 0.45f, v => WindupTime = v);
+        private static float RecoverTime = Cfg.F("Shell.RecoverTime", 0.5f, v => RecoverTime = v);
+        private static float StunTime = Cfg.F("Shell.StunTime", 0.3f, v => StunTime = v);
+        private static float FlashTime = Cfg.F("Shell.FlashTime", 0.12f, v => FlashTime = v);
+        private static int AttackDamage = Cfg.I("Shell.AttackDamage", 10, v => AttackDamage = v);
 
         public Vector2 Position;
         public Vector2 Velocity;

@@ -335,7 +335,7 @@ namespace ShiftJam
         private readonly Animator _anim = new(SpriteDefs.Joseph);
         private Plane _drawnPlane = Plane.Material;
         private float _shiftAnimUntil;
-        private const float ShiftAnimTime = 0.2f;
+        private static float ShiftAnimTime = Cfg.F("Player.ShiftAnimTime", 0.2f, v => ShiftAnimTime = v);
 
         /// <summary>Picks and draws the sprite for the current state. False means no art: draw rectangles.</summary>
         private bool DrawSprite(SpriteBatch sb, Rectangle body, bool astral)

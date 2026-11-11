@@ -8,8 +8,8 @@ namespace ShiftJam
     public sealed class Dummy : IEntity, IHittable
     {
         public static readonly Point Size = new(14, 28);
-        private const float Gravity = 600f;
-        private const float FlashTime = 0.12f;
+        private static float Gravity = Cfg.F("Dummy.Gravity", 600f, v => Gravity = v);
+        private static float FlashTime = Cfg.F("Dummy.FlashTime", 0.12f, v => FlashTime = v);
 
         public Vector2 Position;
         public Vector2 Velocity;

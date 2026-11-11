@@ -11,6 +11,9 @@ namespace ShiftJam
     /// </summary>
     public sealed record Level(string[] Rows, string Name = "")
     {
+        /// <summary>Settings from the level file's @lines (name, and per-level extras like roomwidth).</summary>
+        public IReadOnlyDictionary<string, string> Meta { get; init; } = new Dictionary<string, string>();
+
         public IReadOnlyList<(char Kind, Vector2 Position)> Spawns { get; } = ParseSpawns(Rows);
 
         private static List<(char, Vector2)> ParseSpawns(string[] rows)

@@ -1,0 +1,20 @@
+{
+  "_help": [
+    "The order the game is played in. Each stage has a name (shown in the banner), a kind (level or boss: how it is described",
+    "when cleared) and what to build:",
+    "  level:<file>   a normal level from levels/<file>.txt, cleared by reaching its exit door",
+    "  boss:pell      the Pell arena (levels/pell.txt)       boss:dova   the Dova arena (levels/dova.txt)",
+    "  boss:clerk     the Clerk's catacombs (levels/clerk_catacombs.txt)",
+    "  keep           the Tithe Keep hub and its four rooms (levels/keep_*.txt)"
+  ],
+  "stages": [
+    { "name": "The Lantern Streets", "kind": "level", "build": "level:streets" },
+    { "name": "Pell, the Lantern-Keeper", "kind": "boss", "build": "boss:pell" },
+    { "name": "The Cellars", "kind": "level", "build": "level:cellars" },
+    { "name": "Dova, the Stall Owner", "kind": "boss", "build": "boss:dova" },
+    { "name": "The Rooftops", "kind": "level", "build": "level:rooftops" },
+    { "name": "The Tithe Hall", "kind": "level", "build": "level:tithe_hall" },
+    { "name": "The Tithe Keep", "kind": "level", "build": "keep" },
+    { "name": "The Clerk, in the Catacombs", "kind": "boss", "build": "boss:clerk" }
+  ]
+}

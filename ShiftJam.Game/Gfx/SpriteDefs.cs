@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace ShiftJam
 {
@@ -12,8 +14,9 @@ namespace ShiftJam
         float Fps, bool Loop, int OriginX, int OriginY);
 
     /// <summary>
-    /// The table of every animation the game knows about. File name = ShiftJamContent/Sprites/&lt;character&gt;_&lt;animation&gt;.png.
-    /// To change a frame size or count, edit the line here (and tell the coder if you are not them).
+    /// The table of every animation the game knows about, read from Data/sprites.json.
+    /// File name = ShiftJamContent/Sprites/&lt;character&gt;_&lt;animation&gt;.png. To change a frame size or count, edit that
+    /// JSON (and press F11 in the game); no rebuild is needed for the numbers, only for new or changed PNGs.
     /// Art must be drawn FACING RIGHT; the game flips it for facing left.
     /// </summary>
     public static class SpriteDefs
@@ -29,81 +32,41 @@ namespace ShiftJam
         public const string Dova = "dova";
         public const string Clerk = "clerk";
 
-        private static readonly Dictionary<string, SpriteDef> Table = Build();
+        private static Dictionary<string, SpriteDef> _table;
 
         /// <summary>All defs, keyed by "character_animation" (for example "joseph_idle").</summary>
-        public static IReadOnlyDictionary<string, SpriteDef> All => Table;
+        public static IReadOnlyDictionary<string, SpriteDef> All => _table ??= Read();
+
+        /// <summary>Forget the table so it is read again (the F11 reload).</summary>
+        public static void Reload() => _table = null;
 
         public static bool TryGet(string character, string animation, out SpriteDef def) =>
-            Table.TryGetValue(character + "_" + animation, out def);
+            All.TryGetValue(character + "_" + animation, out def);
 
-        private static Dictionary<string, SpriteDef> Build()
+        private static Dictionary<string, SpriteDef> Read()
         {
             var t = new Dictionary<string, SpriteDef>();
-
-            // Character feet at the bottom centre of the frame.
-            void Feet(string who, string anim, int w, int h, int frames, float fps, bool loop, int originY = -1) =>
-                t[who + "_" + anim] = new SpriteDef("Sprites/" + who + "_" + anim, w, h, frames, fps, loop, w / 2, originY < 0 ? h : originY);
-
-            // Joseph: 32x48 frames, hitbox 12x28.
-            Feet(Joseph, "idle", 32, 48, 2, 3, true);
-            Feet(Joseph, "walk", 32, 48, 4, 8, true);
-            Feet(Joseph, "jump", 32, 48, 1, 1, true);
-            Feet(Joseph, "light", 32, 48, 3, 1, false);   // paced by the attack timing, not by fps
-            Feet(Joseph, "heavy", 32, 48, 4, 1, false);   // paced by the attack timing, not by fps
-            Feet(Joseph, "block", 32, 48, 1, 1, true);
-            Feet(Joseph, "hurt", 32, 48, 1, 1, false);
-            Feet(Joseph, "shift", 32, 48, 2, 10, false);
-            Feet(Joseph, "dead", 32, 48, 1, 1, false);
-
-            // Shell: 32x48 frames, hitbox 14x28.
-            Feet(Shell, "walk", 32, 48, 4, 5, true);
-            Feet(Shell, "windup", 32, 48, 2, 1, false);   // paced by the windup timer
-            Feet(Shell, "attack", 32, 48, 2, 1, false);   // paced by the recovery timer
-            Feet(Shell, "hurt", 32, 48, 1, 1, false);
-
-            // Wraith: 24x32 frames, hitbox 12x16. Hitbox bottom centre is at (12, 24); the wisp tail hangs below.
-            Feet(Wraith, "float", 24, 32, 2, 4, true, 24);
-            Feet(Wraith, "lunge", 24, 32, 2, 8, true, 24);
-
-            // Hollowed: 32x48 frames, hitbox 16x30. broken = the guard-broken slump, freed = sitting, relieved.
-            Feet(Hollowed, "idle", 32, 48, 2, 3, true);
-            Feet(Hollowed, "walk", 32, 48, 4, 5, true);
-            Feet(Hollowed, "windup", 32, 48, 2, 1, false);   // paced by the windup timer
-            Feet(Hollowed, "attack", 32, 48, 2, 1, false);   // paced by the recovery timer
-            Feet(Hollowed, "hurt", 32, 48, 1, 1, false);
-            Feet(Hollowed, "broken", 32, 48, 2, 6, true);
-            Feet(Hollowed, "freed", 32, 48, 1, 1, false);
-
-            // The Hollowed's soul (Astral only, shown while the body's guard is broken): 24x32, bottom centre is the wisp tail.
-            Feet(Soul, "float", 24, 32, 2, 4, true);
-
-            // Flicker: 32x48 frames, hitbox 14x28. It swaps plane every couple of seconds; the game tints the Astral half.
-            Feet(Flicker, "idle", 32, 48, 2, 3, true);
-            Feet(Flicker, "walk", 32, 48, 4, 6, true);
-            Feet(Flicker, "windup", 32, 48, 2, 6, false);
-            Feet(Flicker, "attack", 32, 48, 2, 8, false);
-            Feet(Flicker, "hurt", 32, 48, 1, 1, false);
-
-            // Dummy: 24x32 frames, hitbox 14x28.
-            Feet(Dummy, "idle", 24, 32, 1, 1, true);
-            Feet(Dummy, "hurt", 24, 32, 1, 1, false);
-
-            // Bosses share one animation set. Frames are larger than the hitbox so weapons and hats fit.
-            // Pell: hitbox 18x36. Dova: hitbox 20x34. Clerk: hitbox 18x30. Feet at the bottom centre.
-            void Boss(string who, int w, int h)
+            string text = DataFiles.ReadText("sprites.json");
+            if (text == null) { Console.WriteLine("[data] sprites.json is missing: no sprites will load."); return t; }
+            try
             {
-                Feet(who, "idle", w, h, 2, 3, true);
-                Feet(who, "walk", w, h, 4, 7, true);
-                Feet(who, "windup", w, h, 2, 6, false);   // the telegraph: raising a weapon, gathering up
-                Feet(who, "attack", w, h, 2, 8, false);   // the strike and its follow-through
-                Feet(who, "hurt", w, h, 1, 1, false);     // flinch between phases
-                Feet(who, "freed", w, h, 1, 1, false);    // relieved, as the boss is freed
+                using var doc = JsonDocument.Parse(text, new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
+                foreach (var e in doc.RootElement.GetProperty("sprites").EnumerateArray())
+                {
+                    string name = e.GetProperty("name").GetString();
+                    int w = e.GetProperty("w").GetInt32(), h = e.GetProperty("h").GetInt32();
+                    int frames = e.GetProperty("frames").GetInt32();
+                    float fps = e.TryGetProperty("fps", out var f) ? (float)f.GetDouble() : 1f;
+                    bool loop = e.TryGetProperty("loop", out var l) && l.GetBoolean();
+                    int originY = e.TryGetProperty("originY", out var o) ? o.GetInt32() : h;
+                    t[name] = new SpriteDef("Sprites/" + name, w, h, frames, fps, loop, w / 2, originY);
+                }
             }
-            Boss(Pell, 48, 56);
-            Boss(Dova, 48, 56);
-            Boss(Clerk, 40, 56);
-
+            catch (Exception ex) when (ex is JsonException || ex is InvalidOperationException || ex is KeyNotFoundException)
+            {
+                Console.WriteLine($"[data] sprites.json could not be read: {ex.Message}");
+                t.Clear();
+            }
             return t;
         }
     }

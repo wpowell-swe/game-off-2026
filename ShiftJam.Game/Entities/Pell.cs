@@ -15,75 +15,75 @@ namespace ShiftJam
         public static readonly Point BodySize = new(18, 36);
 
         // ---- Tuning (all Pell constants live here) ----
-        private const int PellHealth = 140;
-        private const int PhaseOneEnd = 70;            // health at which he steps into Astral
-        private const float TriggerRangePx = 150f;
+        private static int PellHealth = Cfg.I("Pell.PellHealth", 140, v => PellHealth = v);
+        private static int PhaseOneEnd = Cfg.I("Pell.PhaseOneEnd", 70, v => PhaseOneEnd = v);            // health at which he steps into Astral
+        private static float TriggerRangePx = Cfg.F("Pell.TriggerRangePx", 150f, v => TriggerRangePx = v);
 
-        private const float WalkSpeed = 34f;           // phase 1 approach
-        private const float NearDist = 30f;            // phase 1 stops walking at this horizontal distance
-        private const float SwingStartDist = 44f;      // a swing waits until he is this close (or MaxApproach passes)
-        private const float MaxApproach = 2.0f;
-        private const float IdleTime = 0.55f;           // minimum pause between phase 1 patterns
-        private const float IdleTimeAstral = 0.5f;     // phase 2 pause (shorter: harder)
+        private static float WalkSpeed = Cfg.F("Pell.WalkSpeed", 34f, v => WalkSpeed = v);           // phase 1 approach
+        private static float NearDist = Cfg.F("Pell.NearDist", 30f, v => NearDist = v);            // phase 1 stops walking at this horizontal distance
+        private static float SwingStartDist = Cfg.F("Pell.SwingStartDist", 44f, v => SwingStartDist = v);      // a swing waits until he is this close (or MaxApproach passes)
+        private static float MaxApproach = Cfg.F("Pell.MaxApproach", 2.0f, v => MaxApproach = v);
+        private static float IdleTime = Cfg.F("Pell.IdleTime", 0.55f, v => IdleTime = v);           // minimum pause between phase 1 patterns
+        private static float IdleTimeAstral = Cfg.F("Pell.IdleTimeAstral", 0.5f, v => IdleTimeAstral = v);     // phase 2 pause (shorter: harder)
 
-        private const float SwingWindup = 0.6f;        // telegraphed
-        private const float SwingActive = 0.15f;
-        private const float SwingRecoverTime = 0.8f;   // the punish window
-        private const int SwingDamage = 14;
-        private const float SwingKnockback = 170f;
-        private const int SwingReach = 42;             // px in front of him
-        private const int SwingHeight = 46;
+        private static float SwingWindup = Cfg.F("Pell.SwingWindup", 0.6f, v => SwingWindup = v);        // telegraphed
+        private static float SwingActive = Cfg.F("Pell.SwingActive", 0.15f, v => SwingActive = v);
+        private static float SwingRecoverTime = Cfg.F("Pell.SwingRecoverTime", 0.8f, v => SwingRecoverTime = v);   // the punish window
+        private static int SwingDamage = Cfg.I("Pell.SwingDamage", 14, v => SwingDamage = v);
+        private static float SwingKnockback = Cfg.F("Pell.SwingKnockback", 170f, v => SwingKnockback = v);
+        private static int SwingReach = Cfg.I("Pell.SwingReach", 42, v => SwingReach = v);             // px in front of him
+        private static int SwingHeight = Cfg.I("Pell.SwingHeight", 46, v => SwingHeight = v);
 
-        private const float LungeWindup = 0.5f;        // telegraphed
-        private const float LungeTimeMaterial = 0.25f;
-        private const float LungeSpeedMaterial = 320f; // 0.25s * 320 = 80 px = 5 tiles
-        private const float LungeTimeAstral = 0.3f;
-        private const float LungeSpeedAstral = 320f;   // 96 px
-        private const float LungeRecoverMaterial = 0.9f;
-        private const float LungeRecoverAstral = 0.8f;
-        private const int LungeDamage = 12;
-        private const float LungeKnockback = 150f;
+        private static float LungeWindup = Cfg.F("Pell.LungeWindup", 0.5f, v => LungeWindup = v);        // telegraphed
+        private static float LungeTimeMaterial = Cfg.F("Pell.LungeTimeMaterial", 0.25f, v => LungeTimeMaterial = v);
+        private static float LungeSpeedMaterial = Cfg.F("Pell.LungeSpeedMaterial", 320f, v => LungeSpeedMaterial = v); // 0.25s * 320 = 80 px = 5 tiles
+        private static float LungeTimeAstral = Cfg.F("Pell.LungeTimeAstral", 0.3f, v => LungeTimeAstral = v);
+        private static float LungeSpeedAstral = Cfg.F("Pell.LungeSpeedAstral", 320f, v => LungeSpeedAstral = v);   // 96 px
+        private static float LungeRecoverMaterial = Cfg.F("Pell.LungeRecoverMaterial", 0.9f, v => LungeRecoverMaterial = v);
+        private static float LungeRecoverAstral = Cfg.F("Pell.LungeRecoverAstral", 0.8f, v => LungeRecoverAstral = v);
+        private static int LungeDamage = Cfg.I("Pell.LungeDamage", 12, v => LungeDamage = v);
+        private static float LungeKnockback = Cfg.F("Pell.LungeKnockback", 150f, v => LungeKnockback = v);
 
-        private const float LanternWindup = 0.6f;      // flame spots are shown during this
-        private const float LanternRecover = 1.0f;
-        private const float FlameLife = 3f;
-        private const int FlameDamage = 8;
-        private const float FlameTick = 0.3f;
+        private static float LanternWindup = Cfg.F("Pell.LanternWindup", 0.6f, v => LanternWindup = v);      // flame spots are shown during this
+        private static float LanternRecover = Cfg.F("Pell.LanternRecover", 1.0f, v => LanternRecover = v);
+        private static float FlameLife = Cfg.F("Pell.FlameLife", 3f, v => FlameLife = v);
+        private static int FlameDamage = Cfg.I("Pell.FlameDamage", 8, v => FlameDamage = v);
+        private static float FlameTick = Cfg.F("Pell.FlameTick", 0.3f, v => FlameTick = v);
         private const int FlameW = 10, FlameH = 14;
         private static readonly float[] FlameOffsets = { -58f, -26f, 26f, 58f };   // px from the player's centre: four fires, a gap in the middle
-        private const int FlameCount = 4;
+        private static int FlameCount = Cfg.I("Pell.FlameCount", 4, v => FlameCount = v);
 
         // Blink: a flash of light moves Pell behind the player, then he strikes after a short re-appear telegraph.
-        private const float BlinkWindup = 0.45f;       // the destination is shown during this
-        private const float BlinkAppear = 0.25f;       // he stands still here before the strike telegraph starts
-        private const float BlinkFollowWindup = 0.5f;  // the follow-up attack's telegraph is a little shorter than normal (0.6)
-        private const float BlinkSideOffset = 40f;     // lands this far to the far side of the player
+        private static float BlinkWindup = Cfg.F("Pell.BlinkWindup", 0.45f, v => BlinkWindup = v);       // the destination is shown during this
+        private static float BlinkAppear = Cfg.F("Pell.BlinkAppear", 0.25f, v => BlinkAppear = v);       // he stands still here before the strike telegraph starts
+        private static float BlinkFollowWindup = Cfg.F("Pell.BlinkFollowWindup", 0.5f, v => BlinkFollowWindup = v);  // the follow-up attack's telegraph is a little shorter than normal (0.6)
+        private static float BlinkSideOffset = Cfg.F("Pell.BlinkSideOffset", 40f, v => BlinkSideOffset = v);     // lands this far to the far side of the player
 
         // Thrown lanterns: two arcing lanterns land on marked spots and become fires.
-        private const float ThrowWindup = 0.55f;
-        private const float ThrowRecover = 0.7f;
-        private const float ThrowFlight = 0.75f;
-        private const float ThrowArc = 38f;
-        private const int ThrownDamage = 8;
-        private const int ThrownSize = 8;
+        private static float ThrowWindup = Cfg.F("Pell.ThrowWindup", 0.55f, v => ThrowWindup = v);
+        private static float ThrowRecover = Cfg.F("Pell.ThrowRecover", 0.7f, v => ThrowRecover = v);
+        private static float ThrowFlight = Cfg.F("Pell.ThrowFlight", 0.75f, v => ThrowFlight = v);
+        private static float ThrowArc = Cfg.F("Pell.ThrowArc", 38f, v => ThrowArc = v);
+        private static int ThrownDamage = Cfg.I("Pell.ThrownDamage", 8, v => ThrownDamage = v);
+        private static int ThrownSize = Cfg.I("Pell.ThrownSize", 8, v => ThrownSize = v);
 
-        private const float WispWindup = 0.6f;         // telegraphed
-        private const float WispRecover = 0.9f;
-        private const int WispCount = 5;
-        private const float WispFan = 0.36f;           // radians between wisps
-        private const float WispSpeed = 55f;
-        private const float WispLife = 4f;
-        private const int WispDamage = 8;
-        private const int WispSize = 10;
+        private static float WispWindup = Cfg.F("Pell.WispWindup", 0.6f, v => WispWindup = v);         // telegraphed
+        private static float WispRecover = Cfg.F("Pell.WispRecover", 0.9f, v => WispRecover = v);
+        private static int WispCount = Cfg.I("Pell.WispCount", 5, v => WispCount = v);
+        private static float WispFan = Cfg.F("Pell.WispFan", 0.36f, v => WispFan = v);           // radians between wisps
+        private static float WispSpeed = Cfg.F("Pell.WispSpeed", 55f, v => WispSpeed = v);
+        private static float WispLife = Cfg.F("Pell.WispLife", 4f, v => WispLife = v);
+        private static int WispDamage = Cfg.I("Pell.WispDamage", 8, v => WispDamage = v);
+        private static int WispSize = Cfg.I("Pell.WispSize", 10, v => WispSize = v);
 
-        private const float HoverSpeed = 36f;
-        private const float HoverStandOff = 56f;       // horizontal distance he keeps in phase 2
-        private const float HoverLift = 8f;            // his feet float this far above the player's feet
-        private const float HoverMaxVy = 60f;
+        private static float HoverSpeed = Cfg.F("Pell.HoverSpeed", 36f, v => HoverSpeed = v);
+        private static float HoverStandOff = Cfg.F("Pell.HoverStandOff", 56f, v => HoverStandOff = v);       // horizontal distance he keeps in phase 2
+        private static float HoverLift = Cfg.F("Pell.HoverLift", 8f, v => HoverLift = v);            // his feet float this far above the player's feet
+        private static float HoverMaxVy = Cfg.F("Pell.HoverMaxVy", 60f, v => HoverMaxVy = v);
 
-        private const float RestWarn = 0.4f;           // telegraph before stepping into Material
-        private const float RestTime = 3.2f;           // harmless, in Material: Ki recovers, player can hit him
-        private const float RestReturnWarn = 0.4f;     // telegraph before going Astral again
+        private static float RestWarn = Cfg.F("Pell.RestWarn", 0.4f, v => RestWarn = v);           // telegraph before stepping into Material
+        private static float RestTime = Cfg.F("Pell.RestTime", 3.2f, v => RestTime = v);           // harmless, in Material: Ki recovers, player can hit him
+        private static float RestReturnWarn = Cfg.F("Pell.RestReturnWarn", 0.4f, v => RestReturnWarn = v);     // telegraph before going Astral again
 
         private enum K { Swing, Lunge, Lantern, Wisps, Rest, Blink, Throw }
         private enum S
@@ -93,8 +93,8 @@ namespace ShiftJam
             BlinkWind, BlinkAppear, ThrowWind, ThrowRecover
         }
 
-        private static readonly K[] SeqOne = { K.Swing, K.Throw, K.Lunge, K.Blink, K.Lantern, K.Lunge, K.Throw, K.Blink };
-        private static readonly K[] SeqTwo = { K.Wisps, K.Blink, K.Wisps, K.Lunge, K.Blink, K.Wisps, K.Rest };
+        private static K[] SeqOne = Cfg.Seq("Pell.SeqOne", new K[] { K.Swing, K.Throw, K.Lunge, K.Blink, K.Lantern, K.Lunge, K.Throw, K.Blink }, v => SeqOne = v);
+        private static K[] SeqTwo = Cfg.Seq("Pell.SeqTwo", new K[] { K.Wisps, K.Blink, K.Wisps, K.Lunge, K.Blink, K.Wisps, K.Rest }, v => SeqTwo = v);
 
         private S _s = S.Idle;
         private float _timer;

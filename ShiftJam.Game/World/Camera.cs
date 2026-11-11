@@ -11,7 +11,7 @@ namespace ShiftJam
     public sealed class Camera
     {
         private const float DeadX = 10f, DeadY = 20f;
-        private const float LookAhead = 36f;
+        private static float LookAhead = Cfg.F("Camera.LookAhead", 36f, v => LookAhead = v);
         private const float RateX = 8f, RateY = 10f, RateLook = 4f;
         private const float MaxLagX = 70f, MaxLagY = 60f; // hard limit so the target never nears the screen edge
 
