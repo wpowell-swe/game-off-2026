@@ -23,6 +23,7 @@ namespace ShiftJam
         public bool LightPressed;
         public bool HeavyPressed;
         public bool BlockHeld;
+        public bool InteractPressed; // enter or leave a door
         public bool ShiftPressed;    // plane shift (wired up in the shift milestone)
     }
 

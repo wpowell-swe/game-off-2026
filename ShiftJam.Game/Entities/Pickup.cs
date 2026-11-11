@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftJam
 {
-    public enum PickupKind { Ki, Health }
+    public enum PickupKind { Ki, Health, Shard }
 
     /// <summary>A bobbing orb on the floor. Walk into it to restore Ki or health; it is used up once.</summary>
     public sealed class Pickup : IEntity
@@ -17,6 +17,8 @@ namespace ShiftJam
         private readonly Vector2 _home;
         private float _clock;
         private bool _taken;
+
+        public PickupKind Kind => _kind;
 
         /// <summary>position is the tile's top-left; the orb sits on the bottom of the tile.</summary>
         public Pickup(PickupKind kind, Vector2 tile)
@@ -34,7 +36,7 @@ namespace ShiftJam
             if (p == null || !p.IsAlive || !p.Hurtbox.Intersects(Bounds())) return;
 
             if (_kind == PickupKind.Ki) p.Ki = Math.Min(p.MaxKi, p.Ki + KiAmount);
-            else p.Health = Math.Min(p.MaxHealth, p.Health + HealthAmount);
+            else if (_kind == PickupKind.Health) p.Health = Math.Min(p.MaxHealth, p.Health + HealthAmount);
             _taken = true;
             Sfx.Play(SfxId.ShiftIn, 0.6f, 0.2f);
             world.Sparks.Sparks(_home + new Vector2(Size / 2f), p.Plane, 8, 0);

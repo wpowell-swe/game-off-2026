@@ -23,6 +23,7 @@ namespace ShiftJam
 
         public Vector2 Position;   // top-left of the view, in world pixels
 
+
         private float _shakeMag, _shakeTime, _shakeDur;
         private int _shakeStep;
         private Point _shakeOffset;

@@ -23,6 +23,7 @@ namespace ShiftJam
             f.LightPressed = Pressed(keys, Keys.J, pad.Buttons.X, _prevPad.Buttons.X);
             f.HeavyPressed = Pressed(keys, Keys.K, pad.Buttons.Y, _prevPad.Buttons.Y);
             f.ShiftPressed = Pressed(keys, Keys.LeftShift, pad.Buttons.B, _prevPad.Buttons.B) || Pressed(keys, Keys.RightShift, ButtonState.Released, ButtonState.Released);
+            f.InteractPressed = Pressed(keys, Keys.E, pad.DPad.Up, _prevPad.DPad.Up) || Pressed(keys, Keys.Down, ButtonState.Released, ButtonState.Released);
             f.BlockHeld = keys.IsKeyDown(Keys.L) || pad.Buttons.RightShoulder == ButtonState.Pressed;
 
             _prevKeys = keys;

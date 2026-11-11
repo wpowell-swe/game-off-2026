@@ -22,6 +22,7 @@ namespace ShiftJam
             new("Dova, the Stall Owner", StageKind.Boss, DovaArena.Build),
             new("The Rooftops", StageKind.Level, w => LoadWithExit(w, StageLevels.Rooftops)),
             new("The Tithe Hall", StageKind.Level, w => LoadWithExit(w, StageLevels.TitheHall)),
+            new("The Tithe Keep", StageKind.Level, KeepLevel.Build),
         };
 
         public int Index { get; private set; }
@@ -31,12 +32,17 @@ namespace ShiftJam
         public bool IsLast => Index >= Stages.Length - 1;
 
         /// <summary>Jump straight to a stage (debug keys) without banking souls.</summary>
-        public void GoTo(int index) => Index = Math.Clamp(index, 0, Stages.Length - 1);
+        public void GoTo(int index)
+        {
+            KeepState.Reset();
+            Index = Math.Clamp(index, 0, Stages.Length - 1);
+        }
 
         /// <summary>Bank the souls freed in the stage just cleared and move on. Returns false after the last stage.</summary>
         public bool Advance(int soulsThisStage)
         {
             TotalSouls += soulsThisStage;
+            KeepState.Reset();
             if (IsLast) return false;
             Index++;
             return true;
@@ -46,6 +52,7 @@ namespace ShiftJam
         {
             Index = 0;
             TotalSouls = 0;
+            KeepState.Reset();
         }
 
         /// <summary>Loads a level like TestRoom does, then turns its 'X' tile into the exit door.</summary>

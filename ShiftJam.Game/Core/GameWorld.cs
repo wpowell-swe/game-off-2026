@@ -28,6 +28,22 @@ namespace ShiftJam
             if (entity is IHittable h) Hittables.Remove(h);
         }
 
+        /// <summary>A door the player enters with the interact key. Target is where it leads (see KeepState).</summary>
+        public sealed class Portal
+        {
+            public Rectangle Area;
+            public int Target;
+            public bool Done;          // already used up: drawn dim, cannot be entered
+            public bool Enabled = true;
+            public string Label = "ENTER";
+        }
+
+        public readonly List<Portal> Portals = new();
+        /// <summary>Set when the player takes a portal; the game loads the target and clears it.</summary>
+        public int? PortalRequest;
+        /// <summary>A short line of progress text the game shows in the corner (sigils, foes left, shards).</summary>
+        public string StatusText;
+
         /// <summary>The level exit (a door tile). Reaching it clears a normal level; boss arenas have none.</summary>
         public Rectangle? ExitArea;
 
@@ -119,6 +135,15 @@ namespace ShiftJam
                 DetectPlayerEvents();
                 Camera.Follow(Player.Hurtbox, Tiles, dt);
             }
+            if (Player != null && Player.IsAlive && Input.InteractPressed && PortalRequest == null)
+                foreach (var p in Portals)
+                    if (p.Enabled && !p.Done && Player.Hurtbox.Intersects(p.Area))
+                    {
+                        PortalRequest = p.Target;
+                        Sfx.Play(SfxId.ShiftOut, 0.7f);
+                        break;
+                    }
+
             // Spikes hurt only while the player is in the Material plane; shifting makes them harmless.
             if (Player != null && Player.IsAlive && Player.Plane == Plane.Material
                 && Tiles is TileMap map && map.TouchesSpikes(Player.Hurtbox))
@@ -161,6 +186,7 @@ namespace ShiftJam
         {
             if (Tiles is IDrawableTiles tiles) tiles.Draw(sb, Camera);
             DrawExit(sb);
+            DrawPortals(sb);
             foreach (var e in Entities) e.Draw(sb);
             Sparks.Draw(sb);
             ShiftEffect.DrawWorld(sb);
@@ -179,6 +205,28 @@ namespace ShiftJam
             Gfx.Fill(sb, new Rectangle(door.X - 2, door.Y, 3, door.Height), new Color(110, 80, 50));
             Gfx.Fill(sb, new Rectangle(door.Right - 1, door.Y, 3, door.Height), new Color(110, 80, 50));
             Gfx.Fill(sb, new Rectangle(door.X - 2, door.Y - 3, door.Width + 4, 3), new Color(110, 80, 50));
+        }
+
+        private void DrawPortals(SpriteBatch sb)
+        {
+            var wood = new Color(110, 80, 50);
+            foreach (var p in Portals)
+            {
+                var d = p.Area;
+                bool live = p.Enabled && !p.Done;
+                float pulse = 0.55f + 0.25f * MathF.Sin(_exitClock * 4f + d.X * 0.1f);
+                Color glow = live ? new Color(255, 225, 140) : p.Done ? new Color(90, 170, 110) : new Color(70, 60, 80);
+                Gfx.Fill(sb, d, glow * (live ? pulse * 0.45f : 0.3f));
+                Gfx.Fill(sb, new Rectangle(d.X + 3, d.Y + 4, d.Width - 6, d.Height - 4), glow * (live ? pulse : 0.45f));
+                Gfx.Fill(sb, new Rectangle(d.X - 2, d.Y, 3, d.Height), wood);
+                Gfx.Fill(sb, new Rectangle(d.Right - 1, d.Y, 3, d.Height), wood);
+                Gfx.Fill(sb, new Rectangle(d.X - 2, d.Y - 3, d.Width + 4, 3), wood);
+                if (live && Player != null && Player.Hurtbox.Intersects(d))
+                {
+                    string text = "E " + p.Label;
+                    PixelFont.Draw(sb, text, d.Center.X - PixelFont.Width(text) / 2, d.Y - 12, Color.White);
+                }
+            }
         }
 
         /// <summary>Screen-space effects (flash). Call inside a batch with no camera transform.</summary>

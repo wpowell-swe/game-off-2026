@@ -20,7 +20,7 @@ namespace ShiftJam
                 for (int x = 0; x < rows[y].Length; x++)
                 {
                     char c = rows[y][x];
-                    if (c == 'P' || c == 'D' || c == 'S' || c == 'R' || c == 'H' || c == 'F' || c == 'k' || c == 'h')
+                    if (c == 'P' || c == 'D' || c == 'S' || c == 'R' || c == 'H' || c == 'F' || c == 'k' || c == 'h' || c == 'o')
                         list.Add((c, new Vector2(x * Metrics.TileSize, y * Metrics.TileSize)));
                 }
             return list;
@@ -59,12 +59,17 @@ namespace ShiftJam
         public char At(int tx, int ty) =>
             tx < 0 || tx >= Width || ty < 0 || ty >= Height ? '.' : _rows[ty][tx];
 
+        public void Set(int tx, int ty, char c)
+        {
+            if (tx >= 0 && tx < Width && ty >= 0 && ty < Height) _rows[ty][tx] = c;
+        }
+
         public bool IsSolid(int tx, int ty, Plane plane)
         {
             if (tx < 0 || tx >= Width || ty < 0) return true;
             if (ty >= Height) return false;
             char c = _rows[ty][tx];
-            if (c == '#') return true;
+            if (c == '#' || c == 'g') return true;
             if (c == 'w') return plane == Plane.Material;
             if (c == 'a') return plane == Plane.Astral;
             return false;
@@ -95,6 +100,7 @@ namespace ShiftJam
                     if (c == '#') DrawSolid(sb, x, y);
                     else if (c == 'w') DrawWall(sb, x, y);
                     else if (c == 'a') DrawAstralBlock(sb, x, y);
+                    else if (c == 'g') DrawGate(sb, x, y);
                     else if (c == 'x') DrawSpikes(sb, x, y);
                 }
         }
@@ -127,6 +133,16 @@ namespace ShiftJam
             Gfx.Fill(sb, new Rectangle(px, py, 1, T), new Color(150, 235, 255) * 0.5f);
             Gfx.Fill(sb, new Rectangle(px + T - 1, py, 1, T), new Color(150, 235, 255) * 0.5f);
             Gfx.Fill(sb, new Rectangle(px + 7, py + 4, 2, 8), new Color(150, 235, 255) * 0.4f);
+        }
+
+        // A shut gate: iron bars with a red lamp. It opens when its room is cleared.
+        private static void DrawGate(SpriteBatch sb, int x, int y)
+        {
+            int px = x * T, py = y * T;
+            Gfx.Fill(sb, new Rectangle(px + 2, py, 3, T), new Color(120, 120, 135));
+            Gfx.Fill(sb, new Rectangle(px + 10, py, 3, T), new Color(120, 120, 135));
+            Gfx.Fill(sb, new Rectangle(px, py + 6, T, 2), new Color(85, 85, 100));
+            if (y % 4 == 0) Gfx.Fill(sb, new Rectangle(px + 6, py + 2, 4, 3), new Color(255, 80, 70));
         }
 
         private static void DrawSpikes(SpriteBatch sb, int x, int y)

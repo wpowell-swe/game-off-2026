@@ -79,11 +79,11 @@ namespace ShiftJam
                 catch (PlatformNotSupportedException) { /* the web build cannot exit */ }
             }
 
-            // Debug: F1-F6 jump to campaign stages, F7/F8 the old test levels, R restarts the stage.
+            // Debug: F1-F7 jump to campaign stages, F9/F10 the old test levels, R restarts the stage.
             for (int n = 0; n < Campaign.Stages.Length; n++)
                 if (Pressed(keys, Keys.F1 + n)) { _title = false; _campaign.GoTo(n); LoadStage(); }
-            if (Pressed(keys, Keys.F7)) { _title = false; LoadDebugLevel(TestRoom.Build); }
-            else if (Pressed(keys, Keys.F8)) { _title = false; LoadDebugLevel(TestRoom.BuildDescent); }
+            if (Pressed(keys, Keys.F9)) { _title = false; LoadDebugLevel(TestRoom.Build); }
+            else if (Pressed(keys, Keys.F10)) { _title = false; LoadDebugLevel(TestRoom.BuildDescent); }
 
             bool confirm = Pressed(keys, Keys.Enter) || Pressed(keys, Keys.Space);
             if (_title)
@@ -112,6 +112,16 @@ namespace ShiftJam
             _world.Input = _ending ? default : _input.Read();
             _world.Update(dt);
 
+            // Took a door in the Keep: load where it leads (the same stage, a different part of it).
+            if (_world.PortalRequest is int target)
+            {
+                KeepState.Go(target, _world.SoulsFreed);
+                LoadStage();
+                _stageIntro = 0;
+                base.Update(gameTime);
+                return;
+            }
+
             // Fell out of the bottom of the level: restart it (real respawn comes later).
             if (_world.Player.Position.Y > (_world.Tiles.Height + 4) * Metrics.TileSize || !_world.Player.IsAlive && _world.Player.Position.Y > _world.Tiles.Height * Metrics.TileSize)
                 LoadStage();
@@ -130,6 +140,8 @@ namespace ShiftJam
                 PixelFont.DrawCentered(spriteBatch, "TOTAL SOULS FREED: " + _campaign.TotalSouls, 98, new Color(150, 220, 255), 2);
                 PixelFont.DrawCentered(spriteBatch, "THANKS FOR PLAYING", 124, Color.White, 1);
                 PixelFont.DrawCentered(spriteBatch, "ENTER TO PLAY AGAIN", 140, new Color(180, 200, 255), 1);
+                PixelFont.DrawCentered(spriteBatch, "DESIGN BY WILLIAM POWELL. MADE WITH AI ASSISTANCE:", 156, new Color(150, 150, 170), 1);
+                PixelFont.DrawCentered(spriteBatch, "CODE, STORY AND TITLE ART. ENGINE: KNI. SEE CREDITS.MD", 164, new Color(150, 150, 170), 1);
                 return;
             }
 
@@ -227,6 +239,8 @@ namespace ShiftJam
             Hud.Draw(spriteBatch, _world.Player);
             foreach (var e in _world.Entities)
                 if (e is IBoss boss) BossBar.Draw(spriteBatch, boss);
+            if (!string.IsNullOrEmpty(_world.StatusText))
+                PixelFont.Draw(spriteBatch, _world.StatusText, Metrics.ScreenWidth - 6 - PixelFont.Width(_world.StatusText), 8, new Color(255, 225, 140), 1);
             DrawEndBanner();
             _world.DrawScreenFx(spriteBatch);
             spriteBatch.End();
