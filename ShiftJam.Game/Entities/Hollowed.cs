@@ -207,11 +207,29 @@ namespace ShiftJam
             Velocity.X = hit.Facing * GuardedFlinchKnock;
         }
 
+        private readonly Animator _anim = new(SpriteDefs.Hollowed);
+
+        private bool TryDrawSprite(SpriteBatch sb, int px, int py)
+        {
+            bool ok = _state switch
+            {
+                State.Freed => _anim.Play("freed", "broken", "idle"),
+                State.Broken => _anim.Play("broken", "hurt", "idle"),
+                _ when _flash > 0 => _anim.Play("hurt", "idle"),
+                State.Windup => _anim.Scrub(1f - _timer / WindupTime, "windup", "idle"),
+                State.Recover => _anim.Scrub(1f - _timer / RecoverTime, "attack", "idle"),
+                _ => MathF.Abs(Velocity.X) > 5f ? _anim.Play("walk", "idle") : _anim.Play("idle", "walk"),
+            };
+            if (ok) _anim.Draw(sb, new Point(px + Size.X / 2, py + Size.Y), Facing, false, Color.White);
+            return ok;
+        }
+
         public void Draw(SpriteBatch sb)
         {
             if (!IsAlive) return;
             int px = (int)MathF.Round(Position.X), py = (int)MathF.Round(Position.Y);
             bool broken = _state == State.Broken, freed = _state == State.Freed;
+            if (TryDrawSprite(sb, px, py)) { DrawGuardBar(sb, px, py, broken, freed); return; }
 
             // Broken: slumped (shorter, shifted down). Freed: sitting.
             int h = Size.Y, drop = 0;
@@ -236,7 +254,12 @@ namespace ShiftJam
                 Gfx.Fill(sb, new Rectangle(ax, r.Y + 9, 6, 4), Color.OrangeRed);
             }
 
-            // Guard bar over the head: solid while up, drains while broken.
+            DrawGuardBar(sb, px, py, broken, freed);
+        }
+
+        /// <summary>Guard bar over the head: solid while up, drains while broken. Drawn by the game over any art.</summary>
+        private void DrawGuardBar(SpriteBatch sb, int px, int py, bool broken, bool freed)
+        {
             if (!freed)
             {
                 var bar = new Rectangle(px + 1, py - 5, Size.X - 2, 3);

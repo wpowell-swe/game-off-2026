@@ -438,6 +438,9 @@ namespace ShiftJam
 
         // ---- Drawing ----
 
+        protected override string SpriteName => SpriteDefs.Pell;
+        protected override string StateName => _s.ToString();
+
         protected override void DrawBody(SpriteBatch sb, Rectangle r, float flash, float alpha)
         {
             bool astral = Plane == Plane.Astral;

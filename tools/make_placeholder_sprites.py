@@ -4,7 +4,7 @@
 These exist only so the game shows *something* before the real art arrives. Replace any of them by
 saving your own PNG with the same name (see docs/ART_AND_GIT_GUIDE.md). Needs Pillow.
 Frame sizes must match ShiftJam.Game/Gfx/SpriteDefs.cs. Art faces RIGHT.
-Usage: python3 tools/make_placeholder_sprites.py [--force]   (existing files are kept unless --force)
+Usage: python3 tools/make_placeholder_sprites.py [--force]   (only missing files are written, unless --force)
 """
 import sys
 from pathlib import Path
@@ -45,7 +45,12 @@ class Frame:
             self.im.putpixel((x, y), c + (255,))
 
 
+FORCE = "--force" in sys.argv
+
+
 def strip(name, w, h, frames):
+    if (OUT / f"{name}.png").exists() and not FORCE:
+        return                                     # never overwrite real art
     sheet = Image.new("RGBA", (w * len(frames), h), (0, 0, 0, 0))
     for i, f in enumerate(frames):
         sheet.paste(f.im, (i * w, 0))
@@ -184,9 +189,91 @@ def make_dummy():
     strip("dummy_hurt", 24, 32, [dummy(True, 2)])
 
 
+# ---------------------------------------------------------------- Hollowed (32x48): a townsperson, drab, guard up
+HOL = (120, 100, 82)
+HOL_D = (84, 70, 58)
+
+
+def hollowed(legs=0, arm="down", slump=0, white=False, sit=False):
+    f = Frame(32, 48)
+    body = WHITE if white else HOL
+    fy = 47
+    if sit:
+        f.r(9, 34, 22, fy, body); f.r(9, 34, 10, fy, HOL_D)
+        f.r(11, 26, 20, 35, body); f.r(16, 29, 19, 30, K)
+        return f
+    a = legs * 2
+    f.r(11 - a, 36, 15 - a, fy, HOL_D); f.r(17 + a, 36, 21 + a, fy, HOL_D)
+    f.r(10 - a, fy - 1, 15 - a, fy, K); f.r(17 + a, fy - 1, 22 + a, fy, K)
+    f.r(10, 16 + slump, 21, 37, body); f.r(10, 16 + slump, 11, 37, HOL_D)
+    f.r(12, 7 + slump, 19, 16 + slump, body); f.r(16, 10 + slump, 19, 12 + slump, HOLLOW)
+    if arm == "down":
+        f.r(8, 20, 9, 34, HOL_D); f.r(22, 20, 23, 34, HOL_D)
+    elif arm == "raised":
+        f.r(22, 8, 25, 22, HOL_D); f.r(23, 4, 28, 8, HOL_D)
+    elif arm == "strike":
+        f.r(22, 22, 31, 26, HOL_D); f.r(28, 20, 31, 28, RED)
+    return f
+
+
+def make_hollowed():
+    strip("hollowed_idle", 32, 48, [hollowed(0), hollowed(0, slump=1)])
+    strip("hollowed_walk", 32, 48, [hollowed(1), hollowed(0, slump=1), hollowed(-1), hollowed(0, slump=1)])
+    strip("hollowed_windup", 32, 48, [hollowed(0, "raised"), hollowed(0, "raised", slump=-1)])
+    strip("hollowed_attack", 32, 48, [hollowed(0, "strike", slump=1), hollowed(0, "strike", slump=2)])
+    strip("hollowed_hurt", 32, 48, [hollowed(0, "down", slump=-2, white=True)])
+    strip("hollowed_broken", 32, 48, [hollowed(0, "down", slump=6), hollowed(0, "down", slump=7)])
+    strip("hollowed_freed", 32, 48, [hollowed(sit=True)])
+
+
+# ---------------------------------------------------------------- Soul (24x32): a small pale wisp
+def soul(wave=0):
+    f = Frame(24, 32)
+    f.r(7, 4, 16, 22, WR_D)
+    f.r(8, 1, 15, 12, WR)
+    f.r(9, 12, 14, 22, WR)
+    f.r(10 + wave, 22, 13 + wave, 27, WR_D)
+    f.r(11 - wave, 28, 12 - wave, 31, WR_D)
+    f.r(10, 5, 11, 6, HOLLOW); f.r(13, 5, 14, 6, HOLLOW)
+    return f
+
+
+def make_soul():
+    strip("soul_float", 24, 32, [soul(0), soul(1)])
+
+
+# ---------------------------------------------------------------- Flicker (32x48): a thin figure that shimmers
+FL = (220, 140, 80)
+FL_D = (150, 90, 50)
+
+
+def flicker(legs=0, arm="down", white=False):
+    f = Frame(32, 48)
+    body = WHITE if white else FL
+    fy = 47
+    a = legs * 2
+    f.r(12 - a, 34, 14 - a, fy, FL_D); f.r(18 + a, 34, 20 + a, fy, FL_D)
+    f.r(10, 16, 21, 35, body); f.r(10, 16, 11, 35, FL_D)
+    f.r(12, 6, 19, 16, body); f.r(16, 9, 19, 11, K)
+    if arm == "down":
+        f.r(8, 20, 9, 32, FL_D); f.r(22, 20, 23, 32, FL_D)
+    elif arm == "raised":
+        f.r(22, 8, 24, 22, FL_D); f.r(22, 4, 27, 8, FL_D)
+    elif arm == "strike":
+        f.r(22, 20, 31, 24, FL_D); f.r(28, 18, 31, 26, RED)
+    return f
+
+
+def make_flicker():
+    strip("flicker_idle", 32, 48, [flicker(0), flicker(0)])
+    strip("flicker_walk", 32, 48, [flicker(1), flicker(0), flicker(-1), flicker(0)])
+    strip("flicker_windup", 32, 48, [flicker(0, "raised"), flicker(0, "raised")])
+    strip("flicker_attack", 32, 48, [flicker(0, "strike"), flicker(0, "strike")])
+    strip("flicker_hurt", 32, 48, [flicker(0, white=True)])
+
+
 if __name__ == "__main__":
-    if OUT.exists() and any(OUT.glob("*.png")) and "--force" not in sys.argv:
-        print("Sprites already exist in", OUT, "- not overwriting (use --force to replace them).")
-        sys.exit(0)
-    make_joseph(); make_shell(); make_wraith(); make_dummy()
-    print("Wrote", len(list(OUT.glob("*.png"))), "placeholder strips to", OUT)
+    before = {p.name for p in OUT.glob("*.png")} if OUT.exists() else set()
+    make_joseph(); make_shell(); make_wraith(); make_dummy(); make_hollowed(); make_soul(); make_flicker()
+    after = {p.name for p in OUT.glob("*.png")}
+    print("Wrote", len(after - before), "new placeholder strips to", OUT, f"({len(after)} in total)")

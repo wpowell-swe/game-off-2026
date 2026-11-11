@@ -343,6 +343,9 @@ namespace ShiftJam
 
         // ---- Drawing ----
 
+        protected override string SpriteName => SpriteDefs.Clerk;
+        protected override string StateName => _s.ToString();
+
         protected override void DrawBody(SpriteBatch sb, Rectangle r, float flash, float alpha)
         {
             if (_s == S.Hidden) return;

@@ -123,6 +123,42 @@ namespace ShiftJam
             Health = _phase == 0 ? MaxHealth : _phases[_phase - 1].EndHealth;
         }
 
+        // ---- Art ----
+
+        private Animator _anim;
+
+        /// <summary>Sprite set name (see SpriteDefs). Null means code-drawn only.</summary>
+        protected virtual string SpriteName => null;
+        /// <summary>The boss's own pattern state as text; "...Wind" is a windup, "...Hit", "...Dash", "...Recover" and so on an attack.</summary>
+        protected virtual string StateName => null;
+
+        private string Pose()
+        {
+            if (_state == BossState.Freed) return "freed";
+            if (_state == BossState.Transition) return "hurt";
+            if (_state == BossState.Fight)
+            {
+                string n = StateName ?? "";
+                if (n.EndsWith("Wind")) return "windup";
+                if (n.EndsWith("Hit") || n.EndsWith("Dash") || n.EndsWith("Run") || n.EndsWith("Drop")
+                    || n.EndsWith("Appear") || n.EndsWith("Recover")) return "attack";
+                if (MathF.Abs(Velocity.X) > 12f) return "walk";
+            }
+            return "idle";
+        }
+
+        /// <summary>Draws the artist's sprite if there is one for the current pose; false means use DrawBody.</summary>
+        private bool TryDrawSprite(SpriteBatch sb, Rectangle r, float flash, float alpha)
+        {
+            if (SpriteName == null) return false;
+            _anim ??= new Animator(SpriteName);
+            string pose = Pose();
+            if (!_anim.Play(pose, "idle")) return false;
+            var tint = flash > 0.5f ? new Color(255, 170, 170) : Color.White;
+            _anim.Draw(sb, new Point(r.Center.X, r.Bottom), Facing, Plane == Plane.Astral, tint * MathHelper.Clamp(alpha, 0f, 1f));
+            return true;
+        }
+
         // ---- Hooks ----
 
         /// <summary>
@@ -320,7 +356,8 @@ namespace ShiftJam
                 flash = 0.55f;   // pale and relieved
                 alpha *= MathHelper.Clamp(1f - _timer / FreedTime, 0f, 1f);
             }
-            DrawBody(sb, r, flash, alpha);
+            if (Intangible && _state == BossState.Fight) { /* vanished: nothing to draw */ }
+            else if (!TryDrawSprite(sb, r, flash, alpha)) DrawBody(sb, r, flash, alpha);
             if (_state != BossState.Freed) DrawOverlay(sb, r);
         }
     }

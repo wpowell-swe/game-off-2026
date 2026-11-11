@@ -501,6 +501,9 @@ namespace ShiftJam
 
         // ---- Drawing ----
 
+        protected override string SpriteName => SpriteDefs.Dova;
+        protected override string StateName => _s.ToString();
+
         protected override void DrawBody(SpriteBatch sb, Rectangle r, float flash, float alpha)
         {
             if (_s == S.RecVanish) return;   // gone in a flash

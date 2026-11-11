@@ -312,6 +312,8 @@ namespace ShiftJam
             return Mover.Overlaps(world.Tiles, Plane.Material, probeFloor, new Point(2, 2));
         }
 
+        private readonly Animator _anim = new(SpriteDefs.Flicker);
+
         public void Draw(SpriteBatch sb)
         {
             if (!IsAlive) return;
@@ -347,6 +349,19 @@ namespace ShiftJam
                 float k = MathHelper.Clamp(_timer / SwapTime, 0f, 1f);
                 var fl = r; fl.Inflate(3, 3);
                 Gfx.Fill(sb, fl, Color.White * (0.9f * k));
+                return;
+            }
+            bool art = _state switch
+            {
+                State.Stun => _anim.Play("hurt", "idle"),
+                _ when _flash > 0 => _anim.Play("hurt", "idle"),
+                State.Windup => _anim.Play("windup", "idle"),
+                State.Strike or State.Recover => _anim.Play("attack", "windup", "idle"),
+                _ => MathF.Abs(Velocity.X) > 5f ? _anim.Play("walk", "idle") : _anim.Play("idle", "walk"),
+            };
+            if (art)
+            {
+                _anim.Draw(sb, new Point(r.X + Size.X / 2, r.Bottom), Facing, astral, Color.White * MathHelper.Clamp(a, 0f, 1f));
                 return;
             }
             Gfx.Fill(sb, r, body * a);

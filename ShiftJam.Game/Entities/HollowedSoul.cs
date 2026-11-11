@@ -74,9 +74,17 @@ namespace ShiftJam
             DrawSoul(sb, cx, top, 1f, _flash > 0);
         }
 
+        private readonly Animator _anim = new(SpriteDefs.Soul);
+
         private void DrawSoul(SpriteBatch sb, int cx, int top, float a, bool flash)
         {
             if (a <= 0f) return;
+            if (_anim.Play("float"))
+            {
+                // The art's bottom centre (the wisp tail) sits 26 px below the top of the soul.
+                _anim.Draw(sb, new Point(cx, top + 26), 1, true, (flash ? Color.White : new Color(235, 245, 255)) * a);
+                return;
+            }
             Color core = (flash ? Color.White : new Color(190, 250, 255)) * a;
             Color rim = new Color(70, 190, 255) * a;
             Gfx.Fill(sb, new Rectangle(cx - 6, top + 3, 12, 14), rim);     // glow
