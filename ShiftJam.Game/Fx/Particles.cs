@@ -12,7 +12,11 @@ namespace ShiftJam
     {
         private struct P { public Vector2 Pos, Vel; public float Life, MaxLife; public int Size; public Color Color; }
 
+        private struct Burst { public Vector2 Pos; public float Life, MaxLife, Size; public int Facing; public Color Color; }
+
         private readonly P[] _pool = new P[256];
+        private readonly Burst[] _bursts = new Burst[16];
+        private int _nextBurst;
         private int _next;
         private uint _seed = 12345;
 
@@ -38,12 +42,22 @@ namespace ShiftJam
                     ? (Rand() < 0.5f ? new Color(255, 220, 120) : new Color(255, 150, 60))
                     : (Rand() < 0.5f ? new Color(150, 240, 255) : new Color(70, 190, 255));
                 if (i % 4 == 0) c = Color.White;
-                Spawn(pos, v, Tuning.SparkLife * (0.6f + 0.4f * Rand()), Rand() < 0.3f ? 2 : 1, c);
+                Spawn(pos, v, Tuning.SparkLife * (0.6f + 0.4f * Rand()), Rand() < 0.45f ? 3 : 2, c);
             }
+        }
+
+        /// <summary>A bright star-shaped flash where a hit lands: a streak along the swing and a cross, white fading to the plane's colour.</summary>
+        public void Impact(Vector2 pos, Plane plane, bool heavy, int facing)
+        {
+            float size = heavy ? Tuning.ImpactSizeHeavy : Tuning.ImpactSizeLight;
+            Color c = plane == Plane.Material ? new Color(255, 190, 80) : new Color(90, 210, 255);
+            _bursts[_nextBurst] = new Burst { Pos = pos, Life = Tuning.ImpactTime, MaxLife = Tuning.ImpactTime, Size = size, Facing = facing == 0 ? 1 : facing, Color = c };
+            _nextBurst = (_nextBurst + 1) % _bursts.Length;
         }
 
         public void Update(float dt)
         {
+            for (int i = 0; i < _bursts.Length; i++) if (_bursts[i].Life > 0) _bursts[i].Life -= dt;
             float drag = MathF.Max(0f, 1f - 6f * dt);
             for (int i = 0; i < _pool.Length; i++)
             {
@@ -57,6 +71,27 @@ namespace ShiftJam
 
         public void Draw(SpriteBatch sb)
         {
+            for (int i = 0; i < _bursts.Length; i++)
+            {
+                ref Burst b = ref _bursts[i];
+                if (b.Life <= 0) continue;
+                float t = b.Life / b.MaxLife;                  // 1 at the moment of impact, 0 when gone
+                float grow = 0.8f + 0.4f * (1f - t);           // starts near full size and swells a little as it fades
+                int len = Math.Max(4, (int)(b.Size * grow));
+                int x = (int)MathF.Round(b.Pos.X), y = (int)MathF.Round(b.Pos.Y);
+                Color core = Color.Lerp(b.Color, Color.White, t) * MathF.Min(1f, t * 1.6f);
+                Color edge = b.Color * MathF.Min(1f, t * 1.6f);
+                int thick = b.Size > 25f ? 3 : 2;
+                // Streak along the direction of the hit, a shorter vertical bar, and four diagonal tips.
+                Gfx.Fill(sb, new Rectangle(x - len / 2, y - thick / 2, len, thick), core);
+                Gfx.Fill(sb, new Rectangle(x - thick / 2, y - len / 3, thick, len * 2 / 3), core);
+                for (int k = 3; k <= len / 3 + 1; k += 2)
+                {
+                    Gfx.Fill(sb, new Rectangle(x + k, y + k, 2, 2), edge); Gfx.Fill(sb, new Rectangle(x - k - 1, y - k - 1, 2, 2), edge);
+                    Gfx.Fill(sb, new Rectangle(x + k, y - k - 1, 2, 2), edge); Gfx.Fill(sb, new Rectangle(x - k - 1, y + k, 2, 2), edge);
+                }
+                Gfx.Fill(sb, new Rectangle(x - 2, y - 2, 4, 4), Color.White * MathF.Min(1f, t * 2f));   // hot centre
+            }
             for (int i = 0; i < _pool.Length; i++)
             {
                 ref P p = ref _pool[i];

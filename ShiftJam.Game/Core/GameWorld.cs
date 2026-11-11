@@ -95,12 +95,19 @@ namespace ShiftJam
                 count++;
 
                 var hb = target.Hurtbox;
-                var pos = new Vector2((hit.Area.Center.X + hb.Center.X) * 0.5f, (hit.Area.Center.Y + hb.Center.Y) * 0.5f);
+                // The contact point: where the attack overlaps the target, on the edge nearest the attacker, at the height
+                // of the overlap. (Not the midpoint of the two boxes: that drags the effect down toward the torso.)
+                var overlap = Rectangle.Intersect(hit.Area, hb);
+                var pos = overlap.IsEmpty
+                    ? new Vector2(hb.Center.X, hit.Area.Center.Y)
+                    : new Vector2(hit.Facing > 0 ? overlap.Left + 2 : hit.Facing < 0 ? overlap.Right - 2 : overlap.Center.X, overlap.Center.Y);
                 Sparks.Sparks(pos, hit.Plane, heavy ? Tuning.SparksHeavy : Tuning.SparksLight, hit.Facing);
+                Sparks.Impact(pos, hit.Plane, heavy, hit.Facing);
                 if (!isPlayer)
                 {
                     Sfx.Play(heavy ? SfxId.HeavyHit : SfxId.LightHit, 1f, 0.08f);
                     if (heavy) Camera.Shake(Tuning.ShakeHeavyHit, Tuning.ShakeHeavyHitTime);
+                    else Camera.Shake(Tuning.ShakeLightHit, Tuning.ShakeLightHitTime);
                 }
             }
             if (count > 0)

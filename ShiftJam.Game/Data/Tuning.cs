@@ -39,10 +39,10 @@ namespace ShiftJam
         // Attack hitboxes (pixels, in front of the body)
         public static int LightReachX = Cfg.I("Tuning.LightReachX", 14, v => LightReachX = v);
         public static int LightHeight = Cfg.I("Tuning.LightHeight", 12, v => LightHeight = v);
-        public static int LightOffsetY = Cfg.I("Tuning.LightOffsetY", 6, v => LightOffsetY = v);             // from top of body
+        public static int LightOffsetY = Cfg.I("Tuning.LightOffsetY", 0, v => LightOffsetY = v);             // from top of body
         public static int HeavyReachX = Cfg.I("Tuning.HeavyReachX", 22, v => HeavyReachX = v);
         public static int HeavyHeight = Cfg.I("Tuning.HeavyHeight", 20, v => HeavyHeight = v);
-        public static int HeavyOffsetY = Cfg.I("Tuning.HeavyOffsetY", 3, v => HeavyOffsetY = v);
+        public static int HeavyOffsetY = Cfg.I("Tuning.HeavyOffsetY", -6, v => HeavyOffsetY = v);
         public static float LightKnockback = Cfg.F("Tuning.LightKnockback", 40f, v => LightKnockback = v);
         public static float HeavyKnockback = Cfg.F("Tuning.HeavyKnockback", 260f, v => HeavyKnockback = v);
         public static float LightLunge = Cfg.F("Tuning.LightLunge", 40f, v => LightLunge = v);
@@ -101,6 +101,12 @@ namespace ShiftJam
         public static int SparksLight = Cfg.I("Tuning.SparksLight", 6, v => SparksLight = v);
         public static int SparksHeavy = Cfg.I("Tuning.SparksHeavy", 14, v => SparksHeavy = v);
         public static float SparkLife = Cfg.F("Tuning.SparkLife", 0.22f, v => SparkLife = v);
+        public static float ShakeLightHit = Cfg.F("Tuning.ShakeLightHit", 1.5f, v => ShakeLightHit = v);        // small shake on a light hit (pixels)
+        public static float ShakeLightHitTime = Cfg.F("Tuning.ShakeLightHitTime", 0.08f, v => ShakeLightHitTime = v);
+        /// <summary>The bright burst at the point of contact: size in pixels and how long it lasts.</summary>
+        public static float ImpactSizeLight = Cfg.F("Tuning.ImpactSizeLight", 24f, v => ImpactSizeLight = v);
+        public static float ImpactSizeHeavy = Cfg.F("Tuning.ImpactSizeHeavy", 40f, v => ImpactSizeHeavy = v);
+        public static float ImpactTime = Cfg.F("Tuning.ImpactTime", 0.2f, v => ImpactTime = v);
         public static float SparkSpeed = Cfg.F("Tuning.SparkSpeed", 110f, v => SparkSpeed = v);           // pixels per second, max initial
 
         // Audio
