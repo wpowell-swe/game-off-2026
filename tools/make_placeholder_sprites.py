@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws simple placeholder pixel-art strips into ShiftJamContent/Sprites/.
+"""Draws simple placeholder pixel-art strips into ShiftJamContent/Sprites/<character>/<animation>.png.
 
 These exist only so the game shows *something* before the real art arrives. Replace any of them by
 saving your own PNG with the same name (see docs/ART_AND_GIT_GUIDE.md). Needs Pillow.
@@ -49,13 +49,16 @@ FORCE = "--force" in sys.argv
 
 
 def strip(name, w, h, frames):
-    if (OUT / f"{name}.png").exists() and not FORCE:
+    """name is character_animation, written to Sprites/<character>/<animation>.png."""
+    character, animation = name.split("_", 1)
+    target = OUT / character / f"{animation}.png"
+    if target.exists() and not FORCE:
         return                                     # never overwrite real art
     sheet = Image.new("RGBA", (w * len(frames), h), (0, 0, 0, 0))
     for i, f in enumerate(frames):
         sheet.paste(f.im, (i * w, 0))
-    OUT.mkdir(parents=True, exist_ok=True)
-    sheet.save(OUT / f"{name}.png")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    sheet.save(target)
 
 
 # ---------------------------------------------------------------- Joseph (32x48, feet at bottom, hitbox 12 wide centred)
@@ -272,8 +275,97 @@ def make_flicker():
     strip("flicker_hurt", 32, 48, [flicker(0, white=True)])
 
 
+# ---------------------------------------------------------------- Bosses: examples to paint over. Drawn facing RIGHT.
+# One shared pose set per boss: idle, walk, windup (the telegraph), attack, hurt, freed.
+def boss_frame(w, h, cx, body_w, body_h, coat, trim, skin, hair, pose="idle", bob=0, legs=0, flash=False, tall_hat=False,
+               apron=None, extra=None):
+    """A standing figure: feet on the bottom edge, centred on cx. pose: idle, walk, windup, attack, hurt, freed."""
+    f = Frame(w, h)
+    fy = h - 1
+    c = WHITE if flash else coat
+    x0 = cx - body_w // 2
+    if pose == "freed":                                    # sitting, relieved
+        top = fy - body_h // 2
+        f.r(x0, top + 6, x0 + body_w - 1, fy, c)
+        f.r(x0 + 2, top - 6, x0 + body_w - 3, top + 5, skin)
+        f.r(x0 + 2, top - 8, x0 + body_w - 3, top - 5, hair)
+        f.r(cx + 2, top - 2, cx + 3, top - 1, K)
+        return f
+    lean = -2 if pose == "hurt" else (2 if pose == "attack" else 0)
+    top = fy - body_h - bob
+    a = legs * 2
+    f.r(x0 + 3 - a, fy - 9, x0 + 6 - a, fy, K); f.r(x0 + body_w - 7 + a, fy - 9, x0 + body_w - 4 + a, fy, K)
+    f.r(x0 + lean, top + 10, x0 + body_w - 1 + lean, fy - 6, c)                       # coat / dress
+    f.r(x0 + lean, top + 10, x0 + 1 + lean, fy - 6, K)
+    if apron:
+        f.r(x0 + 3 + lean, top + 15, x0 + body_w - 4 + lean, fy - 7, apron)
+        f.r(cx + 3 + lean, top + 18, cx + 6 + lean, top + 22, FX)                     # price tag
+    f.r(x0 + 3 + lean, top + 10, x0 + body_w - 4 + lean, top + 13, trim)               # collar / shoulders
+    f.r(x0 + 2 + lean, top, x0 + body_w - 3 + lean, top + 10, skin)                    # head
+    f.r(x0 + 2 + lean, top - 1, x0 + body_w - 3 + lean, top + 2, hair)
+    if tall_hat:
+        f.r(x0 + 3 + lean, top - 9, x0 + body_w - 4 + lean, top - 1, coat)
+    f.r(cx + 3 + lean, top + 4, cx + 5 + lean, top + 5, HOLLOW if pose != "hurt" else K)     # eye on the FRONT (right)
+    ax = x0 + body_w + lean                                                           # hand on the front side
+    if pose == "windup":
+        f.r(ax - 2, top - 12, ax + 1, top + 12, skin)
+    elif pose == "attack":
+        f.r(ax - 2, top + 14, ax + 12, top + 18, skin)
+    else:
+        f.r(ax - 1, top + 14, ax + 2, top + 24, skin)
+    if extra:
+        extra(f, pose, ax, top)
+    return f
+
+
+def pell_prop(f, pose, ax, top):
+    """The lantern pole: upright when idle, raised for the windup, forward for the strike."""
+    if pose == "windup":
+        f.r(ax + 1, top - 18, ax + 2, top + 12, WOOD); f.r(ax - 2, top - 24, ax + 5, top - 18, FX)
+    elif pose == "attack":
+        f.r(ax, top + 15, ax + 20, top + 16, WOOD); f.r(ax + 18, top + 11, ax + 24, top + 20, FX)
+    else:
+        f.r(ax + 1, top + 4, ax + 2, top + 36, WOOD); f.r(ax - 2, top, ax + 5, top + 6, FX)
+
+
+def dova_prop(f, pose, ax, top):
+    """A crate for the toss, a fist-hammer for the slam."""
+    if pose == "windup":
+        f.r(ax - 8, top - 16, ax + 6, top - 8, WOOD); f.r(ax - 8, top - 16, ax + 6, top - 15, ROBE_D)
+    elif pose == "attack":
+        f.r(ax + 12, top + 12, ax + 20, top + 20, SKIN)
+
+
+def clerk_prop(f, pose, ax, top):
+    """The big stamp: raised for the windup, slammed forward for the strike, a ledger under the arm otherwise."""
+    if pose == "windup":
+        f.r(ax - 4, top - 20, ax + 5, top - 14, SASH); f.r(ax, top - 14, ax + 1, top - 8, WOOD)
+    elif pose == "attack":
+        f.r(ax + 12, top + 12, ax + 20, top + 22, SASH)
+    else:
+        f.r(ax - 6, top + 16, ax + 1, top + 24, WHITE)
+
+
+def make_boss(name, w, h, body_w, body_h, coat, trim, skin, hair, prop, tall_hat=False, apron=None):
+    def fr(pose, bob=0, legs=0, flash=False):
+        return boss_frame(w, h, w // 2, body_w, body_h, coat, trim, skin, hair, pose, bob, legs, flash, tall_hat, apron, prop)
+    strip(f"{name}_idle", w, h, [fr("idle"), fr("idle", bob=1)])
+    strip(f"{name}_walk", w, h, [fr("walk", 0, 1), fr("walk", 1, 0), fr("walk", 0, -1), fr("walk", 1, 0)])
+    strip(f"{name}_windup", w, h, [fr("windup"), fr("windup", bob=1)])
+    strip(f"{name}_attack", w, h, [fr("attack"), fr("attack", bob=1)])
+    strip(f"{name}_hurt", w, h, [fr("hurt", flash=True)])
+    strip(f"{name}_freed", w, h, [fr("freed")])
+
+
+def make_bosses():
+    # Frames and hitboxes match ShiftJamContent/Data/sprites.json.
+    make_boss("pell", 48, 56, 18, 36, (130, 90, 60), (200, 160, 90), SKIN, (90, 62, 40), pell_prop)
+    make_boss("dova", 48, 56, 22, 34, (160, 70, 55), (235, 220, 180), SKIN, (90, 55, 35), dova_prop, apron=(235, 220, 180))
+    make_boss("clerk", 40, 56, 18, 30, (48, 46, 66), (225, 220, 205), (205, 200, 190), (48, 46, 66), clerk_prop, tall_hat=True)
+
+
 if __name__ == "__main__":
-    before = {p.name for p in OUT.glob("*.png")} if OUT.exists() else set()
-    make_joseph(); make_shell(); make_wraith(); make_dummy(); make_hollowed(); make_soul(); make_flicker()
-    after = {p.name for p in OUT.glob("*.png")}
+    before = {p.relative_to(OUT).as_posix() for p in OUT.rglob("*.png")} if OUT.exists() else set()
+    make_joseph(); make_shell(); make_wraith(); make_dummy(); make_hollowed(); make_soul(); make_flicker(); make_bosses()
+    after = {p.relative_to(OUT).as_posix() for p in OUT.rglob("*.png")}
     print("Wrote", len(after - before), "new placeholder strips to", OUT, f"({len(after)} in total)")

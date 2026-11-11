@@ -24,7 +24,7 @@
 
 #--- sprites-and-sfx:begin (managed by tools/sync_content.py, do not edit) ---#
 
-#begin Sprites/dummy_hurt.png
+#begin Sprites/clerk/attack.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -33,10 +33,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/dummy_hurt.png
-#end Sprites/dummy_hurt.png
+/build:Sprites/clerk/attack.png
+#end Sprites/clerk/attack.png
 
-#begin Sprites/dummy_idle.png
+#begin Sprites/clerk/freed.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -45,10 +45,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/dummy_idle.png
-#end Sprites/dummy_idle.png
+/build:Sprites/clerk/freed.png
+#end Sprites/clerk/freed.png
 
-#begin Sprites/flicker_attack.png
+#begin Sprites/clerk/hurt.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -57,10 +57,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/flicker_attack.png
-#end Sprites/flicker_attack.png
+/build:Sprites/clerk/hurt.png
+#end Sprites/clerk/hurt.png
 
-#begin Sprites/flicker_hurt.png
+#begin Sprites/clerk/idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -69,10 +69,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/flicker_hurt.png
-#end Sprites/flicker_hurt.png
+/build:Sprites/clerk/idle.png
+#end Sprites/clerk/idle.png
 
-#begin Sprites/flicker_idle.png
+#begin Sprites/clerk/walk.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -81,10 +81,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/flicker_idle.png
-#end Sprites/flicker_idle.png
+/build:Sprites/clerk/walk.png
+#end Sprites/clerk/walk.png
 
-#begin Sprites/flicker_walk.png
+#begin Sprites/clerk/windup.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -93,10 +93,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/flicker_walk.png
-#end Sprites/flicker_walk.png
+/build:Sprites/clerk/windup.png
+#end Sprites/clerk/windup.png
 
-#begin Sprites/flicker_windup.png
+#begin Sprites/dova/attack.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -105,10 +105,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/flicker_windup.png
-#end Sprites/flicker_windup.png
+/build:Sprites/dova/attack.png
+#end Sprites/dova/attack.png
 
-#begin Sprites/hollowed_attack.png
+#begin Sprites/dova/freed.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -117,10 +117,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/hollowed_attack.png
-#end Sprites/hollowed_attack.png
+/build:Sprites/dova/freed.png
+#end Sprites/dova/freed.png
 
-#begin Sprites/hollowed_broken.png
+#begin Sprites/dova/hurt.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -129,10 +129,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/hollowed_broken.png
-#end Sprites/hollowed_broken.png
+/build:Sprites/dova/hurt.png
+#end Sprites/dova/hurt.png
 
-#begin Sprites/hollowed_freed.png
+#begin Sprites/dova/idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -141,10 +141,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/hollowed_freed.png
-#end Sprites/hollowed_freed.png
+/build:Sprites/dova/idle.png
+#end Sprites/dova/idle.png
 
-#begin Sprites/hollowed_hurt.png
+#begin Sprites/dova/walk.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -153,10 +153,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/hollowed_hurt.png
-#end Sprites/hollowed_hurt.png
+/build:Sprites/dova/walk.png
+#end Sprites/dova/walk.png
 
-#begin Sprites/hollowed_idle.png
+#begin Sprites/dova/windup.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -165,10 +165,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/hollowed_idle.png
-#end Sprites/hollowed_idle.png
+/build:Sprites/dova/windup.png
+#end Sprites/dova/windup.png
 
-#begin Sprites/hollowed_walk.png
+#begin Sprites/dummy/hurt.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -177,10 +177,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/hollowed_walk.png
-#end Sprites/hollowed_walk.png
+/build:Sprites/dummy/hurt.png
+#end Sprites/dummy/hurt.png
 
-#begin Sprites/hollowed_windup.png
+#begin Sprites/dummy/idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -189,10 +189,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/hollowed_windup.png
-#end Sprites/hollowed_windup.png
+/build:Sprites/dummy/idle.png
+#end Sprites/dummy/idle.png
 
-#begin Sprites/joseph_block.png
+#begin Sprites/flicker/attack.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -201,10 +201,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_block.png
-#end Sprites/joseph_block.png
+/build:Sprites/flicker/attack.png
+#end Sprites/flicker/attack.png
 
-#begin Sprites/joseph_dead.png
+#begin Sprites/flicker/hurt.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -213,10 +213,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_dead.png
-#end Sprites/joseph_dead.png
+/build:Sprites/flicker/hurt.png
+#end Sprites/flicker/hurt.png
 
-#begin Sprites/joseph_heavy.png
+#begin Sprites/flicker/idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -225,10 +225,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_heavy.png
-#end Sprites/joseph_heavy.png
+/build:Sprites/flicker/idle.png
+#end Sprites/flicker/idle.png
 
-#begin Sprites/joseph_hurt.png
+#begin Sprites/flicker/walk.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -237,10 +237,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_hurt.png
-#end Sprites/joseph_hurt.png
+/build:Sprites/flicker/walk.png
+#end Sprites/flicker/walk.png
 
-#begin Sprites/joseph_idle.png
+#begin Sprites/flicker/windup.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -249,10 +249,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_idle.png
-#end Sprites/joseph_idle.png
+/build:Sprites/flicker/windup.png
+#end Sprites/flicker/windup.png
 
-#begin Sprites/joseph_jump.png
+#begin Sprites/hollowed/attack.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -261,10 +261,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_jump.png
-#end Sprites/joseph_jump.png
+/build:Sprites/hollowed/attack.png
+#end Sprites/hollowed/attack.png
 
-#begin Sprites/joseph_light.png
+#begin Sprites/hollowed/broken.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -273,10 +273,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_light.png
-#end Sprites/joseph_light.png
+/build:Sprites/hollowed/broken.png
+#end Sprites/hollowed/broken.png
 
-#begin Sprites/joseph_shift.png
+#begin Sprites/hollowed/freed.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -285,10 +285,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_shift.png
-#end Sprites/joseph_shift.png
+/build:Sprites/hollowed/freed.png
+#end Sprites/hollowed/freed.png
 
-#begin Sprites/joseph_walk.png
+#begin Sprites/hollowed/hurt.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -297,10 +297,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/joseph_walk.png
-#end Sprites/joseph_walk.png
+/build:Sprites/hollowed/hurt.png
+#end Sprites/hollowed/hurt.png
 
-#begin Sprites/shell_attack.png
+#begin Sprites/hollowed/idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -309,10 +309,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/shell_attack.png
-#end Sprites/shell_attack.png
+/build:Sprites/hollowed/idle.png
+#end Sprites/hollowed/idle.png
 
-#begin Sprites/shell_hurt.png
+#begin Sprites/hollowed/walk.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -321,10 +321,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/shell_hurt.png
-#end Sprites/shell_hurt.png
+/build:Sprites/hollowed/walk.png
+#end Sprites/hollowed/walk.png
 
-#begin Sprites/shell_walk.png
+#begin Sprites/hollowed/windup.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -333,10 +333,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/shell_walk.png
-#end Sprites/shell_walk.png
+/build:Sprites/hollowed/windup.png
+#end Sprites/hollowed/windup.png
 
-#begin Sprites/shell_windup.png
+#begin Sprites/joseph/block.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -345,10 +345,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/shell_windup.png
-#end Sprites/shell_windup.png
+/build:Sprites/joseph/block.png
+#end Sprites/joseph/block.png
 
-#begin Sprites/soul_float.png
+#begin Sprites/joseph/dead.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -357,10 +357,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/soul_float.png
-#end Sprites/soul_float.png
+/build:Sprites/joseph/dead.png
+#end Sprites/joseph/dead.png
 
-#begin Sprites/wraith_float.png
+#begin Sprites/joseph/heavy.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -369,10 +369,10 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/wraith_float.png
-#end Sprites/wraith_float.png
+/build:Sprites/joseph/heavy.png
+#end Sprites/joseph/heavy.png
 
-#begin Sprites/wraith_lunge.png
+#begin Sprites/joseph/hurt.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -381,8 +381,224 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Sprites/wraith_lunge.png
-#end Sprites/wraith_lunge.png
+/build:Sprites/joseph/hurt.png
+#end Sprites/joseph/hurt.png
+
+#begin Sprites/joseph/idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/joseph/idle.png
+#end Sprites/joseph/idle.png
+
+#begin Sprites/joseph/jump.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/joseph/jump.png
+#end Sprites/joseph/jump.png
+
+#begin Sprites/joseph/light.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/joseph/light.png
+#end Sprites/joseph/light.png
+
+#begin Sprites/joseph/shift.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/joseph/shift.png
+#end Sprites/joseph/shift.png
+
+#begin Sprites/joseph/walk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/joseph/walk.png
+#end Sprites/joseph/walk.png
+
+#begin Sprites/pell/attack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/pell/attack.png
+#end Sprites/pell/attack.png
+
+#begin Sprites/pell/freed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/pell/freed.png
+#end Sprites/pell/freed.png
+
+#begin Sprites/pell/hurt.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/pell/hurt.png
+#end Sprites/pell/hurt.png
+
+#begin Sprites/pell/idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/pell/idle.png
+#end Sprites/pell/idle.png
+
+#begin Sprites/pell/walk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/pell/walk.png
+#end Sprites/pell/walk.png
+
+#begin Sprites/pell/windup.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/pell/windup.png
+#end Sprites/pell/windup.png
+
+#begin Sprites/shell/attack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/shell/attack.png
+#end Sprites/shell/attack.png
+
+#begin Sprites/shell/hurt.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/shell/hurt.png
+#end Sprites/shell/hurt.png
+
+#begin Sprites/shell/walk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/shell/walk.png
+#end Sprites/shell/walk.png
+
+#begin Sprites/shell/windup.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/shell/windup.png
+#end Sprites/shell/windup.png
+
+#begin Sprites/soul/float.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/soul/float.png
+#end Sprites/soul/float.png
+
+#begin Sprites/wraith/float.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/wraith/float.png
+#end Sprites/wraith/float.png
+
+#begin Sprites/wraith/lunge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Sprites/wraith/lunge.png
+#end Sprites/wraith/lunge.png
 
 #begin Ui/title.png
 /importer:TextureImporter

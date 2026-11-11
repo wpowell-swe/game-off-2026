@@ -98,7 +98,7 @@ Keys and their words, such as `"title.name": "THRESHOLD"`. The built-in font dra
 ### sprites.json
 
 One line per strip, such as `{ "name": "joseph_walk", "w": 32, "h": 48, "frames": 4, "fps": 8, "loop": true, "originY": 48 }`.
-The PNG is `ShiftJamContent/Sprites/<name>.png`, `frames` equal frames of `w` by `h` side by side. Changing the numbers
+The PNG is `ShiftJamContent/Sprites/<character>/<animation>.png` (for `joseph_walk`, that is `Sprites/joseph/walk.png`), `frames` equal frames of `w` by `h` side by side. Changing the numbers
 needs no build; a new or changed PNG does (see the art guide).
 
 ## Still in the code

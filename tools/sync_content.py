@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Lists every sprite, UI image (Ui/*.png), sound effect and data file (Data/*.json, Data/levels/*.txt) in ShiftJamContent/ShiftJamContent.mgcb.
 
-Run this after adding, renaming or deleting a file in ShiftJamContent/Sprites (*.png) or
+Run this after adding, renaming or deleting a file in ShiftJamContent/Sprites/<character>/ (*.png) or
 ShiftJamContent/Sfx (*.wav) or ShiftJamContent/Data, then run `dotnet build`. Safe to run any number of times: it only
 rewrites its own block (between the two marker comments) and leaves the rest of the file alone.
 Standard library only. Keeps the file's existing line endings (CRLF).
@@ -48,6 +48,14 @@ def sound_entry(rel):
     ]
 
 
+def files_deep(folder, pattern):
+    """Like files(), but also finds files in sub-folders (Sprites/<character>/<animation>.png)."""
+    d = CONTENT / folder
+    if not d.is_dir():
+        return []
+    return sorted(p.relative_to(CONTENT).as_posix() for p in d.rglob(pattern) if p.is_file())
+
+
 def files(folder, pattern):
     d = CONTENT / folder
     if not d.is_dir():
@@ -66,7 +74,7 @@ def main():
         lines.pop()
 
     block = [BEGIN]
-    for rel in files("Sprites", "*.png"):
+    for rel in files_deep("Sprites", "*.png"):
         block += [""] + texture_entry(rel)
     for rel in files("Ui", "*.png"):
         block += [""] + texture_entry(rel)
@@ -94,7 +102,7 @@ def main():
     else:
         MGCB.write_bytes(data)
         print(f"sync_content: updated {MGCB.relative_to(ROOT)}")
-    print(f"  {len(files('Sprites', '*.png'))} sprites, {len(files('Sfx', '*.wav'))} sound effects, "
+    print(f"  {len(files_deep('Sprites', '*.png'))} sprites, {len(files('Sfx', '*.wav'))} sound effects, "
           f"{len(files('Data', '*.json')) + len(files('Data/levels', '*.txt'))} data files listed.")
 
 

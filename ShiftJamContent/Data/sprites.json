@@ -1,6 +1,6 @@
 {
   "_help": [
-    "Every animation strip the game knows: a PNG named <name>.png in Sprites/ with 'frames' equal frames laid out left to right.",
+    "Every animation strip the game knows: the PNG Sprites/<character>/<animation>.png (for the name joseph_walk, that is Sprites/joseph/walk.png) with 'frames' equal frames laid out left to right.",
     "w and h are the frame size; fps is the playback speed; loop false holds the last frame. originY is where the feet are (from the top of the frame).",
     "Frames are drawn facing RIGHT. After changing a size, press F11 in the game to reload (no rebuild needed for this file)."
   ],

@@ -12,7 +12,7 @@ You draw PNGs, drop them in a folder, run two commands, and see them in the game
 
 ## File names and sizes
 
-Put files in `ShiftJamContent/Sprites/` named `<character>_<animation>.png`. The image width is the frame width times the number of frames.
+Each character has its own folder: `ShiftJamContent/Sprites/<character>/<animation>.png`, for example `ShiftJamContent/Sprites/joseph/walk.png`. The image width is the frame width times the number of frames.
 
 | Character | Frame size | Animations (frames) |
 |---|---|---|
@@ -30,9 +30,9 @@ Notes on the newer ones:
 - **`soul`** is that Astral soul, a small pale wisp. It is only visible while the body is broken. The game tints it, so draw it in normal colours.
 - **`flicker`** swaps between the Material and Astral planes every couple of seconds. You draw one set; the game tints the Astral half and draws the warning ring.
 
-Example: `joseph_walk.png` is 128x48 (4 frames of 32x48). The exact list is `ShiftJamContent/Data/sprites.json`. If you want a different size or frame count, edit the numbers there (no coder needed; see `docs/DATA_GUIDE.md`) and press F11 in the game.
+Example: `joseph/walk.png` is 128x48 (4 frames of 32x48). The exact list is `ShiftJamContent/Data/sprites.json`. If you want a different size or frame count, edit the numbers there (no coder needed; see `docs/DATA_GUIDE.md`) and press F11 in the game.
 
-Placeholder strips already exist for all of the characters in the table above, including the Hollowed, Flicker and soul (not the bosses, see below). `python3 tools/make_placeholder_sprites.py` writes any that are missing and never overwrites your art. Replace one by saving your own PNG with the **same name**.
+Placeholder strips already exist for every character in the tables here, bosses included, so you always have a file to open and paint over. Replace one by saving your own PNG with the **same name in the same folder**. `python3 tools/make_placeholder_sprites.py` writes any that are missing and never overwrites your art.
 
 ### Bosses
 
@@ -55,18 +55,18 @@ For each boss the animations are:
 | `hurt` | 1 | The flinch when a health bar empties or a phase changes |
 | `freed` | 1 | Relieved and calm, as the boss is freed. They are hollowed townspeople, not villains |
 
-Files are named `<boss>_<animation>.png`, for example `pell_windup.png` (96x56, two frames of 48x56) or `clerk_idle.png` (80x56).
+The files are `Sprites/<boss>/<animation>.png`, for example `Sprites/pell/windup.png` (96x56, two frames of 48x56) or `Sprites/clerk/idle.png` (80x56).
 
 Things to know about the bosses:
 
 - **Astral phases:** the game tints your normal sprites blue-violet for the Astral phases, so you still draw one set. Some bosses float in their Astral phases; the same frames are used.
 - **Vanishing:** when a boss vanishes (Dova's receipts, the Clerk's reappear attack) the game simply hides the sprite. You do not draw a vanish frame.
 - **Attack colours:** the warning boxes on the floor are drawn by the game (orange for Material, blue for Astral, violet for both planes). Your `windup` frames sit on top of them.
-- **No placeholders for bosses:** until you add a PNG, a boss is drawn by the game as coloured blocks, so you can add one animation at a time. If a pose has no PNG, the game uses `idle`, and if there is no `idle` either it uses the blocks.
+- **Placeholders:** each boss has a simple example figure in every pose (Pell with his lantern pole, Dova in her apron with a crate, the Clerk in the tall hat with the stamp). Paint over them one at a time. If a pose has no PNG, the game uses `idle`, and if there is no `idle` either it draws the boss as coloured blocks.
 
 ## Getting your art into the game
 
-1. Save the PNG into `ShiftJamContent/Sprites/`.
+1. Save the PNG into the character's folder, `ShiftJamContent/Sprites/<character>/`.
 2. In a terminal in the project folder: `python3 tools/sync_content.py` (adds new files to the content list).
 3. Then: `dotnet build`, and run the game.
 
@@ -93,8 +93,8 @@ If an animation has no PNG (or its size is wrong), the game just draws the old c
 
 1. `git switch main` then `git pull` to get the latest.
 2. `git switch -c art/joseph-idle` makes a branch for one piece of work.
-3. Add your PNG to `ShiftJamContent/Sprites/`, then run `python3 tools/sync_content.py`.
-4. `git add ShiftJamContent/Sprites/joseph_idle.png ShiftJamContent/ShiftJamContent.mgcb` then `git commit -m "Add Joseph idle sprite"`.
+3. Add your PNG to `ShiftJamContent/Sprites/<character>/`, then run `python3 tools/sync_content.py`.
+4. `git add ShiftJamContent/Sprites/joseph/idle.png ShiftJamContent/ShiftJamContent.mgcb` then `git commit -m "Add Joseph idle sprite"`.
 5. `git push -u origin art/joseph-idle`
 6. Open a pull request on GitHub so the coder can look before it joins `main`.
 

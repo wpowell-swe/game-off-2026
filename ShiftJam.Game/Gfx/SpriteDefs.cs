@@ -15,7 +15,7 @@ namespace ShiftJam
 
     /// <summary>
     /// The table of every animation the game knows about, read from Data/sprites.json.
-    /// File name = ShiftJamContent/Sprites/&lt;character&gt;_&lt;animation&gt;.png. To change a frame size or count, edit that
+    /// File = ShiftJamContent/Sprites/&lt;character&gt;/&lt;animation&gt;.png (the table key is character_animation). To change a frame size or count, edit that
     /// JSON (and press F11 in the game); no rebuild is needed for the numbers, only for new or changed PNGs.
     /// Art must be drawn FACING RIGHT; the game flips it for facing left.
     /// </summary>
@@ -59,7 +59,10 @@ namespace ShiftJam
                     float fps = e.TryGetProperty("fps", out var f) ? (float)f.GetDouble() : 1f;
                     bool loop = e.TryGetProperty("loop", out var l) && l.GetBoolean();
                     int originY = e.TryGetProperty("originY", out var o) ? o.GetInt32() : h;
-                    t[name] = new SpriteDef("Sprites/" + name, w, h, frames, fps, loop, w / 2, originY);
+                    // "joseph_walk" is the file Sprites/joseph/walk.png: one folder per character.
+                    int us = name.IndexOf('_');
+                    string asset = us > 0 ? "Sprites/" + name[..us] + "/" + name[(us + 1)..] : "Sprites/" + name;
+                    t[name] = new SpriteDef(asset, w, h, frames, fps, loop, w / 2, originY);
                 }
             }
             catch (Exception ex) when (ex is JsonException || ex is InvalidOperationException || ex is KeyNotFoundException)
