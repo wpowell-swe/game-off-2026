@@ -111,6 +111,11 @@ namespace ShiftJam
             return count;
         }
 
+        /// <summary>An attack that lands in both planes (the player cannot dodge it by shifting). Returns how many targets it hit.</summary>
+        public int SpawnHitBoth(Rectangle area, int damage, int facing, float knockback, bool breaksGuard, IHittable source = null) =>
+            SpawnHit(new Hit(area, damage, facing, Plane.Material, knockback, breaksGuard), source)
+            + SpawnHit(new Hit(area, damage, facing, Plane.Astral, knockback, breaksGuard), source);
+
         public void Update(float dt)
         {
             if (!_tracked && Player != null)
@@ -128,6 +133,7 @@ namespace ShiftJam
                 for (int i = 0; i < Hittables.Count; i++)
                     if (!Hittables[i].IsAlive && Hittables[i] != Player) Sfx.Play(SfxId.EnemyDefeat, 1f, 0.05f);
                 Hittables.RemoveAll(h => !h.IsAlive);
+                RemoveFallen();
             }
 
             if (Player != null)
@@ -158,6 +164,26 @@ namespace ShiftJam
             Camera.UpdateShake(dt);
             Sparks.Update(dt);
             ShiftEffect.Update(dt);
+        }
+
+        /// <summary>Anything but the player that has fallen well below the level is gone for good (so it cannot block a room).</summary>
+        private void RemoveFallen()
+        {
+            if (Tiles == null) return;
+            // A Shell knocked onto spikes is impaled (counts as defeated), so a pit can never hold one out of reach.
+            if (Tiles is TileMap map)
+                for (int i = Entities.Count - 1; i >= 0; i--)
+                    if (Entities[i] is Shell sh && sh.IsAlive && map.TouchesSpikes(sh.Hurtbox))
+                    {
+                        var hb = sh.Hurtbox;
+                        Sparks.Sparks(new Vector2(hb.Center.X, hb.Center.Y), Plane.Material, 10, 0);
+                        Sfx.Play(SfxId.EnemyDefeat, 1f, 0.05f);
+                        Remove(Entities[i]);
+                    }
+            int limit = (Tiles.Height + 3) * Metrics.TileSize;
+            for (int i = Entities.Count - 1; i >= 0; i--)
+                if (Entities[i] is IHittable h && h != Player && h.IsAlive && h.Hurtbox.Width > 0 && h.Hurtbox.Top > limit)
+                    Remove(Entities[i]);
         }
 
         private void DetectPlayerEvents()

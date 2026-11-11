@@ -40,6 +40,7 @@ namespace ShiftJam
         public void Update(float dt, GameWorld world)
         {
             if (_flash > 0) _flash -= dt;
+            if (!world.Entities.Contains(_owner)) world.Remove(this);   // the body fell out of the level
         }
 
         public void TakeHit(in Hit hit)

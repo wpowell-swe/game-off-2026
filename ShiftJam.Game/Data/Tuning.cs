@@ -12,7 +12,7 @@ namespace ShiftJam
         // Movement (pixels and seconds)
         public const float WalkSpeed = 80f;
         public const float Gravity = 600f;
-        public const float JumpVelocity = 240f;
+        public const float JumpVelocity = 260f;     // apex about 56 px: just clears a 3-tile (48 px) ledge, the tallest step in the game
         public const float GroundAcceleration = 700f;
         public const float GroundFriction = 800f;
         public const float AirAcceleration = 450f;

@@ -17,6 +17,12 @@ namespace ShiftJam
         bool Engaged { get; }
         /// <summary>The plane the boss currently stands in (used to colour the bar).</summary>
         Plane Plane { get; }
+        /// <summary>How many health bars the boss has (1 for a plain boss).</summary>
+        int Bars { get; }
+        /// <summary>Which bar is in play, from 0.</summary>
+        int BarIndex { get; }
+        /// <summary>How full the current bar is, 0 to 1.</summary>
+        float BarFraction { get; }
     }
 
     /// <summary>One row of a boss's phase table.</summary>
@@ -73,6 +79,10 @@ namespace ShiftJam
         public bool IsDefeated => _state == BossState.Freed;
         public bool IsAlive => !_done;
 
+        public virtual int Bars => 1;
+        public virtual int BarIndex => 0;
+        public virtual float BarFraction => MaxHealth > 0 ? MathHelper.Clamp(Health / (float)MaxHealth, 0f, 1f) : 0f;
+
         protected Boss(string name, int maxHealth, Point size, Vector2 position, IReadOnlyList<BossPhase> phases)
         {
             if (phases == null || phases.Count == 0) throw new ArgumentException("A boss needs at least one phase.");
@@ -100,10 +110,26 @@ namespace ShiftJam
         /// <summary>Set by a boss while it is vanished or otherwise untargetable (nothing can hit it, and its hurtbox is empty).</summary>
         protected bool Intangible;
 
+        /// <summary>While true, Strike() hits both planes, so the player cannot dodge it by shifting. Telegraphs turn violet.</summary>
+        protected bool Dual;
+
         private bool CanBeHit => Engaged && _state == BossState.Fight && !Intangible;
         public Rectangle Hurtbox => CanBeHit ? Body : Rectangle.Empty;
 
+        /// <summary>Starts the fight on a later phase (a checkpoint): health is whatever the earlier phases left.</summary>
+        protected void SkipToPhase(int index)
+        {
+            _phase = Math.Clamp(index, 0, _phases.Count - 1);
+            Health = _phase == 0 ? MaxHealth : _phases[_phase - 1].EndHealth;
+        }
+
         // ---- Hooks ----
+
+        /// <summary>
+        /// Called every frame of a phase transition after the opening flash, until it returns false. A boss can use it to
+        /// run to another room first. It may set Velocity.X; nothing can hit the boss while it runs.
+        /// </summary>
+        protected virtual bool HoldTransition(float dt, GameWorld world) => false;
 
         /// <summary>Called once when the player triggers the fight.</summary>
         protected virtual void OnEngaged(GameWorld world) { }
@@ -134,14 +160,15 @@ namespace ShiftJam
 
         /// <summary>Attack in the boss's current plane. Returns true if it hurt something.</summary>
         protected bool Strike(GameWorld world, Rectangle area, int damage, float knockback, bool breaksGuard = false) =>
-            world.SpawnHit(new Hit(area, damage, Facing, Plane, knockback, breaksGuard), this) > 0;
+            Dual ? world.SpawnHitBoth(area, damage, Facing, knockback, breaksGuard, this) > 0
+                 : world.SpawnHit(new Hit(area, damage, Facing, Plane, knockback, breaksGuard), this) > 0;
 
         /// <summary>Flashing rectangle that warns of an attack. progress runs 0 to 1 over the windup.</summary>
-        protected static void DrawTelegraph(SpriteBatch sb, Rectangle area, Plane plane, float progress)
+        protected static void DrawTelegraph(SpriteBatch sb, Rectangle area, Plane plane, float progress, bool both = false)
         {
             if (area.Width <= 0 || area.Height <= 0) return;
             progress = MathHelper.Clamp(progress, 0f, 1f);
-            var c = plane == Plane.Astral ? new Color(110, 220, 255) : new Color(255, 110, 60);
+            var c = both ? new Color(220, 120, 255) : plane == Plane.Astral ? new Color(110, 220, 255) : new Color(255, 110, 60);
             bool on = ((int)(progress * 14f) & 1) == 0;
             Gfx.Fill(sb, area, c * (0.16f + 0.3f * progress + (on ? 0.18f : 0f)));
             float e = 0.5f + 0.5f * progress;
@@ -236,6 +263,7 @@ namespace ShiftJam
         {
             _timer += dt;
             Velocity.X = 0;
+            if (!_swapped && _timer >= TransitionTelegraph && HoldTransition(dt, world)) return;
             if (!_swapped && _timer >= TransitionTelegraph)
             {
                 _swapped = true;

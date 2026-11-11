@@ -127,7 +127,7 @@ namespace ShiftJam
 
         private void ResetPattern(float idle)
         {
-            _s = S.Idle; _timer = idle; _idleTotal = 0; _landed = false;
+            _s = S.Idle; _timer = idle; _idleTotal = 0; _landed = false; Dual = false;
             Array.Clear(_tele);
             PlaneOverride = null;   // never stay stuck in a Rest stand if the pattern is cancelled
         }
@@ -323,7 +323,7 @@ namespace ShiftJam
 
         private void EndPattern(bool astral)
         {
-            _s = S.Idle; _timer = astral ? IdleTimeAstral : IdleTime; _idleTotal = 0;
+            _s = S.Idle; _timer = astral ? IdleTimeAstral : IdleTime; _idleTotal = 0; Dual = false;
         }
 
         private void Face(float dx) { if (MathF.Abs(dx) > 1f) Facing = dx > 0 ? 1 : -1; }
@@ -332,6 +332,7 @@ namespace ShiftJam
         {
             var kind = Seq[_seq % Seq.Length];
             _seq++;
+            Dual = kind == K.Lunge;   // the lunge lands in both planes: shifting does not dodge it
             Face(p.Hurtbox.Center.X - Body.Center.X);
             switch (kind)
             {
@@ -477,7 +478,7 @@ namespace ShiftJam
         protected override void DrawOverlay(SpriteBatch sb, Rectangle r)
         {
             for (int i = 0; i < _tele.Length; i++)
-                if (_tele[i].Width > 0) DrawTelegraph(sb, _tele[i], (_s == S.LanternWind || _s == S.ThrowWind) ? Plane.Material : Plane, _teleProgress);
+                if (_tele[i].Width > 0) DrawTelegraph(sb, _tele[i], (_s == S.LanternWind || _s == S.ThrowWind) ? Plane.Material : Plane, _teleProgress, Dual);
         }
 
         // ---- Hazards ----

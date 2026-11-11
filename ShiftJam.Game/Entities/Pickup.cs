@@ -63,6 +63,25 @@ namespace ShiftJam
                     Gfx.Fill(sb, new Rectangle(b.X + (Size - widths[i]) / 2, b.Y + i, widths[i], 1), c);
                 Gfx.Fill(sb, new Rectangle(b.X + 3, b.Y + 3, 2, 2), Color.White);
             }
+            else if (_kind == PickupKind.Shard)
+            {
+                // A sigil shard: a quarter circle (one piece of the sigil), gold with a bright rim.
+                var gold = new Color(255, 200, 80);
+                var rim = new Color(255, 240, 190);
+                Gfx.Fill(sb, new Rectangle(b.X - 2, b.Y - 2, Size + 4, Size + 4), gold * 0.25f);
+                const int r = Size;                      // radius; the wedge's corner is the bottom-left of the box
+                for (int row = 0; row < r; row++)
+                {
+                    int dy = r - 1 - row;               // distance up from the corner
+                    int w = (int)MathF.Floor(MathF.Sqrt(r * r - dy * dy));
+                    if (w <= 0) continue;
+                    Gfx.Fill(sb, new Rectangle(b.X, b.Y + row, w, 1), gold);
+                    Gfx.Fill(sb, new Rectangle(b.X + w - 1, b.Y + row, 1, 1), rim);   // curved edge
+                }
+                Gfx.Fill(sb, new Rectangle(b.X, b.Bottom - 1, r, 1), rim);             // straight edges
+                Gfx.Fill(sb, new Rectangle(b.X, b.Y, 1, r), rim);
+                Gfx.Fill(sb, new Rectangle(b.X + 2, b.Y + 4, 2, 2), Color.White);
+            }
             else
             {
                 Gfx.Fill(sb, new Rectangle(b.X - 2, b.Y - 2, Size + 4, Size + 4), new Color(255, 90, 90) * 0.25f);

@@ -124,6 +124,7 @@ namespace ShiftJam
             "#.E.P.k.S.....o.....S......h.#",
             "##########aaaaaaaaa###########",
             "##########xxxxxxxxx###########",
+            "##############################",
         }, "The Tithe Keep: Gauntlet");
 
         private static readonly Level[] Rooms = { null, Room1, Room2, Room3, Room4 };
@@ -228,7 +229,7 @@ namespace ShiftJam
             }
             if (_done) return;
 
-            int foes = _foes.Count(f => f.IsAlive);
+            int foes = _foes.Count(f => f.IsAlive && f is IEntity e && world.Entities.Contains(e));
             int left = world.Entities.OfType<Pickup>().Count(p => p.Kind == PickupKind.Shard);
             var parts = new System.Collections.Generic.List<string>();
             if (_foes.Count > 0) parts.Add("FOES " + foes);

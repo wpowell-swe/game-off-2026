@@ -9,7 +9,7 @@ namespace ShiftJam
     public sealed record Stage(string Name, StageKind Kind, Action<GameWorld> Build);
 
     /// <summary>
-    /// The order the game is played in: Streets, Pell, Cellars, Dova, Rooftops, Tithe Hall, then the end.
+    /// The order the game is played in: Streets, Pell, Cellars, Dova, Rooftops, Tithe Hall, Tithe Keep, the Clerk, then the end.
     /// Normal levels are cleared by reaching their exit door; boss arenas by freeing the boss.
     /// </summary>
     public sealed class Campaign
@@ -23,6 +23,7 @@ namespace ShiftJam
             new("The Rooftops", StageKind.Level, w => LoadWithExit(w, StageLevels.Rooftops)),
             new("The Tithe Hall", StageKind.Level, w => LoadWithExit(w, StageLevels.TitheHall)),
             new("The Tithe Keep", StageKind.Level, KeepLevel.Build),
+            new("The Clerk, in the Catacombs", StageKind.Boss, ClerkArena.Build),
         };
 
         public int Index { get; private set; }
@@ -35,6 +36,7 @@ namespace ShiftJam
         public void GoTo(int index)
         {
             KeepState.Reset();
+            ClerkArena.Checkpoint = 0;
             Index = Math.Clamp(index, 0, Stages.Length - 1);
         }
 
@@ -43,6 +45,7 @@ namespace ShiftJam
         {
             TotalSouls += soulsThisStage;
             KeepState.Reset();
+            ClerkArena.Checkpoint = 0;
             if (IsLast) return false;
             Index++;
             return true;
@@ -53,6 +56,7 @@ namespace ShiftJam
             Index = 0;
             TotalSouls = 0;
             KeepState.Reset();
+            ClerkArena.Checkpoint = 0;
         }
 
         /// <summary>Loads a level like TestRoom does, then turns its 'X' tile into the exit door.</summary>
