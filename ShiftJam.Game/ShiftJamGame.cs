@@ -79,11 +79,11 @@ namespace ShiftJam
                 catch (PlatformNotSupportedException) { /* the web build cannot exit */ }
             }
 
-            // Debug: F1-F4 jump to campaign stages, F5/F6 the old test levels, R restarts the stage.
+            // Debug: F1-F6 jump to campaign stages, F7/F8 the old test levels, R restarts the stage.
             for (int n = 0; n < Campaign.Stages.Length; n++)
                 if (Pressed(keys, Keys.F1 + n)) { _title = false; _campaign.GoTo(n); LoadStage(); }
-            if (Pressed(keys, Keys.F5)) { _title = false; LoadDebugLevel(TestRoom.Build); }
-            else if (Pressed(keys, Keys.F6)) { _title = false; LoadDebugLevel(TestRoom.BuildDescent); }
+            if (Pressed(keys, Keys.F7)) { _title = false; LoadDebugLevel(TestRoom.Build); }
+            else if (Pressed(keys, Keys.F8)) { _title = false; LoadDebugLevel(TestRoom.BuildDescent); }
 
             bool confirm = Pressed(keys, Keys.Enter) || Pressed(keys, Keys.Space);
             if (_title)
@@ -170,13 +170,35 @@ namespace ShiftJam
                 spriteBatch.Draw(_titleArt, new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight), Color.White);
             // Darken the top and bottom so the text reads over the art.
             Gfx.Fill(spriteBatch, new Rectangle(0, 0, Metrics.ScreenWidth, 62), new Color(0, 0, 0, 110));
-            Gfx.Fill(spriteBatch, new Rectangle(0, 140, Metrics.ScreenWidth, 40), new Color(0, 0, 0, 130));
 
             PixelFont.DrawCentered(spriteBatch, "THRESHOLD", 12, new Color(255, 225, 140), 6);
             PixelFont.DrawCentered(spriteBatch, "A GAME OF TWO PLANES", 48, new Color(150, 220, 255), 1);
             if ((int)(_titleClock * 1.6f) % 2 == 0)
-                PixelFont.DrawCentered(spriteBatch, "PRESS ENTER", 148, Color.White, 2);
-            PixelFont.DrawCentered(spriteBatch, "MOVE A D  JUMP SPACE  J K ATTACK  L BLOCK  SHIFT PLANE", 168, new Color(180, 200, 255), 1);
+                PixelFont.DrawCentered(spriteBatch, "PRESS ENTER", 114, Color.White, 2);
+
+            // Controls: an action label with keycaps beside it, two columns of three.
+            Gfx.Fill(spriteBatch, new Rectangle(0, 132, Metrics.ScreenWidth, 48), new Color(0, 0, 0, 170));
+            DrawBinding("MOVE", 20, 138, "A", "D");
+            DrawBinding("JUMP", 20, 150, "SPACE");
+            DrawBinding("SWAP PLANE", 20, 162, "SHIFT");
+            DrawBinding("LIGHT", 176, 138, "J");
+            DrawBinding("HEAVY", 176, 150, "K");
+            DrawBinding("BLOCK", 176, 162, "L");
+        }
+
+        /// <summary>One controls row: a dim action label, then each key drawn as a small keycap.</summary>
+        private void DrawBinding(string action, int x, int y, params string[] keys)
+        {
+            PixelFont.Draw(spriteBatch, action, x, y + 2, new Color(150, 220, 255), 1);
+            int kx = x + 46;
+            foreach (var key in keys)
+            {
+                int w = PixelFont.Width(key) + 5;
+                Gfx.Fill(spriteBatch, new Rectangle(kx, y, w, 9), new Color(230, 220, 200));
+                Gfx.Fill(spriteBatch, new Rectangle(kx, y + 8, w, 1), new Color(140, 120, 100));
+                PixelFont.Draw(spriteBatch, key, kx + 2, y + 2, new Color(30, 24, 40), 1);
+                kx += w + 3;
+            }
         }
 
         protected override void Draw(GameTime gameTime)

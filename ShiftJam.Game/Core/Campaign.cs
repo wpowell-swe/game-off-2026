@@ -9,7 +9,7 @@ namespace ShiftJam
     public sealed record Stage(string Name, StageKind Kind, Action<GameWorld> Build);
 
     /// <summary>
-    /// The order the game is played in: Streets, Pell, Cellars, Dova, then the end.
+    /// The order the game is played in: Streets, Pell, Cellars, Dova, Rooftops, Tithe Hall, then the end.
     /// Normal levels are cleared by reaching their exit door; boss arenas by freeing the boss.
     /// </summary>
     public sealed class Campaign
@@ -20,6 +20,8 @@ namespace ShiftJam
             new("Pell, the Lantern-Keeper", StageKind.Boss, BossArena.Build),
             new("The Cellars", StageKind.Level, w => LoadWithExit(w, StageLevels.Cellars)),
             new("Dova, the Stall Owner", StageKind.Boss, DovaArena.Build),
+            new("The Rooftops", StageKind.Level, w => LoadWithExit(w, StageLevels.Rooftops)),
+            new("The Tithe Hall", StageKind.Level, w => LoadWithExit(w, StageLevels.TitheHall)),
         };
 
         public int Index { get; private set; }

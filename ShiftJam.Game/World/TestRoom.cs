@@ -4,7 +4,7 @@ namespace ShiftJam
 {
     /// <summary>
     /// Prototype test levels as data. Legend: # solid, w Material-only wall (Astral passes),
-    /// P player, D dummy, S Shell, R Wraith, H Hollowed, F Flicker, . empty.
+    /// P player, D dummy, S Shell, R Wraith, H Hollowed, F Flicker, k Ki pickup, h health pickup, . empty.
     /// Reach limits: jump about 3 tiles up (keep steps to 2), about 4 tiles across at walk speed.
     /// </summary>
     public static class TestRoom
@@ -89,6 +89,12 @@ namespace ShiftJam
                         break;
                     case 'F':
                         world.Add(new Flicker(new Vector2(tile.X, tile.Y)));
+                        break;
+                    case 'k':
+                        world.Add(new Pickup(PickupKind.Ki, tile));
+                        break;
+                    case 'h':
+                        world.Add(new Pickup(PickupKind.Health, tile));
                         break;
                     case 'R':
                         world.Add(new Wraith(new Vector2(tile.X, tile.Y)));

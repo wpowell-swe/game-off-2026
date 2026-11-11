@@ -20,7 +20,7 @@ namespace ShiftJam
                 for (int x = 0; x < rows[y].Length; x++)
                 {
                     char c = rows[y][x];
-                    if (c == 'P' || c == 'D' || c == 'S' || c == 'R' || c == 'H' || c == 'F')
+                    if (c == 'P' || c == 'D' || c == 'S' || c == 'R' || c == 'H' || c == 'F' || c == 'k' || c == 'h')
                         list.Add((c, new Vector2(x * Metrics.TileSize, y * Metrics.TileSize)));
                 }
             return list;
@@ -29,7 +29,7 @@ namespace ShiftJam
 
     /// <summary>
     /// Tile grid built from text rows.
-    /// '#' solid in both planes, 'w' solid in Material but passable in Astral, anything else empty
+    /// '#' solid in both planes, 'w' solid in Material but passable in Astral, 'a' the reverse, 'x' spikes (hurt Material only), anything else empty
     /// (spawn markers are empty). Left, right and top edges are walls; the bottom is open.
     /// </summary>
     public sealed class TileMap : ITileWorld, IDrawableTiles
@@ -66,6 +66,18 @@ namespace ShiftJam
             char c = _rows[ty][tx];
             if (c == '#') return true;
             if (c == 'w') return plane == Plane.Material;
+            if (c == 'a') return plane == Plane.Astral;
+            return false;
+        }
+
+        /// <summary>True if the box touches a spike tile ('x'). Spikes only hurt in the Material plane.</summary>
+        public bool TouchesSpikes(Rectangle box)
+        {
+            int x0 = Math.Max(0, box.Left / T), x1 = Math.Min(Width - 1, (box.Right - 1) / T);
+            int y0 = Math.Max(0, box.Top / T), y1 = Math.Min(Height - 1, (box.Bottom - 1) / T);
+            for (int y = y0; y <= y1; y++)
+                for (int x = x0; x <= x1; x++)
+                    if (_rows[y][x] == 'x') return true;
             return false;
         }
 
@@ -82,6 +94,8 @@ namespace ShiftJam
                     char c = _rows[y][x];
                     if (c == '#') DrawSolid(sb, x, y);
                     else if (c == 'w') DrawWall(sb, x, y);
+                    else if (c == 'a') DrawAstralBlock(sb, x, y);
+                    else if (c == 'x') DrawSpikes(sb, x, y);
                 }
         }
 
@@ -101,6 +115,28 @@ namespace ShiftJam
             // Darker bottom shade and a brick-ish seam
             Gfx.Fill(sb, new Rectangle(px, py + T - 2, T, 2), dark);
             Gfx.Fill(sb, new Rectangle(px + ((x + y) % 2 == 0 ? 8 : 4), py + 6, 1, 4), dark);
+        }
+
+        // Astral-only block: a faint cyan lattice. Reads as ghostly in Material, and as solid ground once you shift.
+        private static void DrawAstralBlock(SpriteBatch sb, int x, int y)
+        {
+            int px = x * T, py = y * T;
+            Gfx.Fill(sb, new Rectangle(px, py, T, T), new Color(60, 150, 200) * 0.35f);
+            Gfx.Fill(sb, new Rectangle(px, py, T, 2), new Color(150, 235, 255) * 0.9f);
+            Gfx.Fill(sb, new Rectangle(px, py + T - 1, T, 1), new Color(150, 235, 255) * 0.5f);
+            Gfx.Fill(sb, new Rectangle(px, py, 1, T), new Color(150, 235, 255) * 0.5f);
+            Gfx.Fill(sb, new Rectangle(px + T - 1, py, 1, T), new Color(150, 235, 255) * 0.5f);
+            Gfx.Fill(sb, new Rectangle(px + 7, py + 4, 2, 8), new Color(150, 235, 255) * 0.4f);
+        }
+
+        private static void DrawSpikes(SpriteBatch sb, int x, int y)
+        {
+            int px = x * T, py = y * T;
+            for (int i = 0; i < T; i += 4)
+            {
+                Gfx.Fill(sb, new Rectangle(px + i, py + 10, 4, 6), new Color(190, 190, 205));
+                Gfx.Fill(sb, new Rectangle(px + i + 1, py + 6, 2, 4), new Color(225, 225, 240));
+            }
         }
 
         private static void DrawWall(SpriteBatch sb, int x, int y)

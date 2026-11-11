@@ -22,6 +22,12 @@ namespace ShiftJam
             if (entity is IHittable h) Hittables.Add(h);
         }
 
+        public void Remove(IEntity entity)
+        {
+            Entities.Remove(entity);
+            if (entity is IHittable h) Hittables.Remove(h);
+        }
+
         /// <summary>The level exit (a door tile). Reaching it clears a normal level; boss arenas have none.</summary>
         public Rectangle? ExitArea;
 
@@ -113,6 +119,10 @@ namespace ShiftJam
                 DetectPlayerEvents();
                 Camera.Follow(Player.Hurtbox, Tiles, dt);
             }
+            // Spikes hurt only while the player is in the Material plane; shifting makes them harmless.
+            if (Player != null && Player.IsAlive && Player.Plane == Plane.Material
+                && Tiles is TileMap map && map.TouchesSpikes(Player.Hurtbox))
+                Player.TakeHit(new Hit(Player.Hurtbox, 10, 0, Plane.Material, 0f, true));
             _exitClock += dt;
             if (ExitArea.HasValue && Player != null && Player.IsAlive && !LevelCleared && Player.Hurtbox.Intersects(ExitArea.Value))
             {
