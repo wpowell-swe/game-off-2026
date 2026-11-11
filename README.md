@@ -9,6 +9,8 @@ Built in C# with [KNI](https://github.com/kniEngine/kni), a MonoGame/XNA-compati
 
 ## Setup
 
+Full install steps for Linux and Windows, as paste-into-the-terminal blocks, are in [docs/INSTALL.md](docs/INSTALL.md). In short:
+
 1. Install the [.NET 10 SDK](https://dotnet.microsoft.com/download). The projects target .NET 8, but KNI's content builder needs the .NET 10 runtime.
 2. (Optional) Install the KNI templates: `dotnet new install nkast.Kni.Templates::4.3.9001`
 3. Clone and build:
