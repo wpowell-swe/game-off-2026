@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lists every sprite and sound effect in ShiftJamContent/ShiftJamContent.mgcb.
+"""Lists every sprite, UI image (Ui/*.png) and sound effect in ShiftJamContent/ShiftJamContent.mgcb.
 
 Run this after adding, renaming or deleting a file in ShiftJamContent/Sprites (*.png) or
 ShiftJamContent/Sfx (*.wav), then run `dotnet build`. Safe to run any number of times: it only
@@ -63,6 +63,8 @@ def main():
 
     block = [BEGIN]
     for rel in files("Sprites", "*.png"):
+        block += [""] + texture_entry(rel)
+    for rel in files("Ui", "*.png"):
         block += [""] + texture_entry(rel)
     for rel in files("Sfx", "*.wav"):
         block += [""] + sound_entry(rel)

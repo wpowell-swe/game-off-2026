@@ -21,6 +21,9 @@ namespace ShiftJam
         private KeyboardState _prevKeys;
         private float _stageIntro;     // seconds left on the stage-name banner
         private bool _ending;          // the whole campaign is finished
+        private bool _title = true;    // showing the title screen
+        private Texture2D _titleArt;
+        private float _titleClock;
 
         public ShiftJamGame()
         {
@@ -40,6 +43,9 @@ namespace ShiftJam
             SpriteStore.Load(Content);
             Sfx.Load(Content);
             _screen = new RenderTarget2D(GraphicsDevice, Metrics.ScreenWidth, Metrics.ScreenHeight);
+
+            try { _titleArt = Content.Load<Texture2D>("Ui/title"); }
+            catch (Exception) { /* no art yet: the title falls back to a plain background */ }
 
             LoadStage();
         }
@@ -75,14 +81,22 @@ namespace ShiftJam
 
             // Debug: F1-F4 jump to campaign stages, F5/F6 the old test levels, R restarts the stage.
             for (int n = 0; n < Campaign.Stages.Length; n++)
-                if (Pressed(keys, Keys.F1 + n)) { _campaign.GoTo(n); LoadStage(); }
-            if (Pressed(keys, Keys.F5)) LoadDebugLevel(TestRoom.Build);
-            else if (Pressed(keys, Keys.F6)) LoadDebugLevel(TestRoom.BuildDescent);
+                if (Pressed(keys, Keys.F1 + n)) { _title = false; _campaign.GoTo(n); LoadStage(); }
+            if (Pressed(keys, Keys.F5)) { _title = false; LoadDebugLevel(TestRoom.Build); }
+            else if (Pressed(keys, Keys.F6)) { _title = false; LoadDebugLevel(TestRoom.BuildDescent); }
 
-            bool confirm = Pressed(keys, Keys.Enter);
+            bool confirm = Pressed(keys, Keys.Enter) || Pressed(keys, Keys.Space);
+            if (_title)
+            {
+                _titleClock += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (Pressed(keys, Keys.Enter) || Pressed(keys, Keys.Space)) { _title = false; _campaign.Restart(); LoadStage(); }
+                _prevKeys = keys;
+                base.Update(gameTime);
+                return;
+            }
             if (_ending)
             {
-                if (confirm || Pressed(keys, Keys.R)) { _campaign.Restart(); LoadStage(); }
+                if (confirm || Pressed(keys, Keys.R)) { _campaign.Restart(); _title = true; _titleClock = 0; }
             }
             else if (_world.LevelCleared && confirm)
             {
@@ -148,8 +162,37 @@ namespace ShiftJam
             }
         }
 
+        /// <summary>Title art with the game name and a blinking prompt, drawn in screen space.</summary>
+        private void DrawTitle()
+        {
+            Gfx.Fill(spriteBatch, new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight), new Color(20, 16, 28));
+            if (_titleArt != null)
+                spriteBatch.Draw(_titleArt, new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight), Color.White);
+            // Darken the top and bottom so the text reads over the art.
+            Gfx.Fill(spriteBatch, new Rectangle(0, 0, Metrics.ScreenWidth, 62), new Color(0, 0, 0, 110));
+            Gfx.Fill(spriteBatch, new Rectangle(0, 140, Metrics.ScreenWidth, 40), new Color(0, 0, 0, 130));
+
+            PixelFont.DrawCentered(spriteBatch, "THRESHOLD", 12, new Color(255, 225, 140), 6);
+            PixelFont.DrawCentered(spriteBatch, "A GAME OF TWO PLANES", 48, new Color(150, 220, 255), 1);
+            if ((int)(_titleClock * 1.6f) % 2 == 0)
+                PixelFont.DrawCentered(spriteBatch, "PRESS ENTER", 148, Color.White, 2);
+            PixelFont.DrawCentered(spriteBatch, "MOVE A D  JUMP SPACE  J K ATTACK  L BLOCK  SHIFT PLANE", 168, new Color(180, 200, 255), 1);
+        }
+
         protected override void Draw(GameTime gameTime)
         {
+            if (_title)
+            {
+                GraphicsDevice.SetRenderTarget(_screen);
+                GraphicsDevice.Clear(new Color(20, 16, 28));
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+                DrawTitle();
+                spriteBatch.End();
+                PresentScreen();
+                base.Draw(gameTime);
+                return;
+            }
+
             GraphicsDevice.SetRenderTarget(_screen);
             GraphicsDevice.Clear(_world.Player.Plane == Plane.Astral ? new Color(12, 18, 44) : new Color(20, 16, 28));
 
@@ -166,6 +209,13 @@ namespace ShiftJam
             _world.DrawScreenFx(spriteBatch);
             spriteBatch.End();
 
+            PresentScreen();
+            base.Draw(gameTime);
+        }
+
+        /// <summary>Scales the 320x180 render target to the window with integer scaling.</summary>
+        private void PresentScreen()
+        {
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
@@ -180,8 +230,6 @@ namespace ShiftJam
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp);
             spriteBatch.Draw(_screen, dest, Color.White);
             spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }
