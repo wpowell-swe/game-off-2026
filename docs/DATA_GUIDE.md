@@ -74,7 +74,7 @@ those and then press F11, or restart the stage, to see them.
 - Every other line is one row of the map, top to bottom. `@name` and similar `@` lines are settings.
 - Legend: `#` solid, `.` empty, `w` wall that only blocks the Material plane, `a` block that only exists in the Astral
   plane, `x` spikes, `g` gate, `P` player start, `X` level exit, `D` dummy, `S` Shell, `R` Wraith, `H` Hollowed,
-  `F` Flicker, `k` Ki orb, `h` health orb, `o` shard. Boss arenas also use `B` (the boss). The Keep hub uses `1` to `4`
+  `F` Flicker, `k` Ki orb, `h` health orb, `o` shard, `c` checkpoint shrine (touch it to light it; dying then restarts you there). Boss arenas also use `B` (the boss). The Keep hub uses `1` to `4`
   for the doors and the rooms use `E` for the way back. The Clerk's catacombs use `@roomwidth` and `@rooms`.
 - Rows do not need to be the same length (short ones are filled with empty). The left, right and top edges are
   walls; the bottom is open, so a gap in the floor is a pit.

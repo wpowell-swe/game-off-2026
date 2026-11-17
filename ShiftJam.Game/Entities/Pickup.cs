@@ -19,6 +19,7 @@ namespace ShiftJam
         private bool _taken;
 
         public PickupKind Kind => _kind;
+        public Vector2 Home => _home;
 
         /// <summary>position is the tile's top-left; the orb sits on the bottom of the tile.</summary>
         public Pickup(PickupKind kind, Vector2 tile)

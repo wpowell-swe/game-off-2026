@@ -83,7 +83,7 @@ namespace ShiftJam
         public void GoTo(int index)
         {
             KeepState.Reset();
-            ClerkArena.Checkpoint = 0;
+            ClerkArena.Checkpoint = 0; Checkpoints.Reset();
             Index = Math.Clamp(index, 0, Stages.Length - 1);
         }
 
@@ -95,7 +95,7 @@ namespace ShiftJam
         {
             TotalSouls += soulsThisStage;
             KeepState.Reset();
-            ClerkArena.Checkpoint = 0;
+            ClerkArena.Checkpoint = 0; Checkpoints.Reset();
             if (IsLast) return false;
             Index++;
             return true;
@@ -106,7 +106,7 @@ namespace ShiftJam
             Index = 0;
             TotalSouls = 0;
             KeepState.Reset();
-            ClerkArena.Checkpoint = 0;
+            ClerkArena.Checkpoint = 0; Checkpoints.Reset();
         }
 
         /// <summary>Loads a level like TestRoom does, then turns its 'X' tile into the exit door.</summary>

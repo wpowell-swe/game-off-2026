@@ -52,6 +52,9 @@ namespace ShiftJam
         /// <summary>Souls freed from Hollowed enemies and bosses this level. Entities increment it.</summary>
         public int SoulsFreed;
 
+        /// <summary>The campaign build id of this stage (e.g. level:streets); checkpoints are tied to it.</summary>
+        public string StageId;
+
         /// <summary>Set by the level's boss when it is freed. The game shows a level-complete state.</summary>
         public bool LevelCleared;
 

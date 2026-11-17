@@ -76,6 +76,7 @@ namespace ShiftJam
         {
             _world = new GameWorld();
             _campaign.Current.Build(_world);
+            Checkpoints.Restore(_world, _campaign.Current.Id);
             _backdrop.Use(_campaign.Current.Id, _world.Player.Plane == Plane.Astral);
             _stageIntro = 2.5f;
             _ending = false;
@@ -103,6 +104,7 @@ namespace ShiftJam
 
         private void BackToTitle()
         {
+            Checkpoints.Reset();
             _campaign.Restart();
             _title = true; _titleClock = 0; _paused = false;
             _dialogue.Clear();
@@ -167,7 +169,7 @@ namespace ShiftJam
                 switch (_pause.Update(dt, keys, _prevKeys))
                 {
                     case PauseChoice.Resume: _paused = false; break;
-                    case PauseChoice.Restart: _paused = false; _fade.Go(LoadStage); break;
+                    case PauseChoice.Restart: _paused = false; _fade.Go(() => { Checkpoints.Reset(); LoadStage(); }); break;
                     case PauseChoice.Title: _fade.Go(BackToTitle); break;
                 }
                 return;
@@ -265,7 +267,7 @@ namespace ShiftJam
             else
             {
                 PixelFont.DrawCentered(spriteBatch, Txt.S("defeat.title", "DEFEATED"), 72, new Color(255, 110, 110), 3);
-                PixelFont.DrawCentered(spriteBatch, Txt.S("defeat.retry", "ENTER TO TRY AGAIN"), 100, Color.White, 1);
+                PixelFont.DrawCentered(spriteBatch, Checkpoints.Has(_campaign.Current.Id) ? Txt.S("defeat.retry_checkpoint", "ENTER TO RETURN TO THE SHRINE") : Txt.S("defeat.retry", "ENTER TO TRY AGAIN"), 100, Color.White, 1);
             }
         }
 

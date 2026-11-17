@@ -17,6 +17,8 @@
   "clear.continue": "ENTER TO CONTINUE",
   "defeat.title": "DEFEATED",
   "defeat.retry": "ENTER TO TRY AGAIN",
+  "defeat.retry_checkpoint": "ENTER TO RETURN TO THE SHRINE",
+  "checkpoint.saved": "CHECKPOINT",
   "ending.title": "THE END",
   "ending.line": "BUT THE TITHE IS STILL OUT THERE.",
   "ending.souls": "TOTAL SOULS FREED: ",

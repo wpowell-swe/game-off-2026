@@ -53,6 +53,9 @@ namespace ShiftJam
                     case 'h':
                         world.Add(new Pickup(PickupKind.Health, tile));
                         break;
+                    case 'c':
+                        world.Add(new Shrine(tile));
+                        break;
                     case 'R':
                         world.Add(new Wraith(new Vector2(tile.X, tile.Y)));
                         break;
