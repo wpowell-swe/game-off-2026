@@ -7,7 +7,7 @@ namespace ShiftJam
     /// <summary>
     /// Tiny built-in 3x5 pixel font drawn with rectangles, so text works without any font assets.
     /// Uppercase letters, digits and a few symbols. Good enough for banners; replace with a real
-    /// bitmap font for dialogue boxes later.
+    /// bitmap font for dialogue boxes later. Curly quotes, dashes and ellipses are mapped to plain ones (see Normalize).
     /// </summary>
     public static class PixelFont
     {
@@ -31,7 +31,16 @@ namespace ShiftJam
             ['9'] = "111101111001110",
             ['.'] = "000000000000010", ['!'] = "010010010000010", ['-'] = "000000111000000",
             [':'] = "000010000010000", ['?'] = "110001010000010", ['/'] = "001001010100100",
+            [','] = "000000000010100", ['\''] = "010010000000000", ['"'] = "101101000000000",
+            ['('] = "001010010010001", [')'] = "100010010010100", ['+'] = "000010111010000",
+            [';'] = "000010000010100", ['%'] = "101001010100101", ['&'] = "010101010101011",
+            ['>'] = "100010001010100", ['<'] = "001010100010001", ['*'] = "101010111010101",
         };
+
+        /// <summary>Swaps typographic characters (curly quotes, dashes, an ellipsis) for ones the font has.</summary>
+        public static string Normalize(string text) => text
+            .Replace('\u2018', '\'').Replace('\u2019', '\'').Replace('\u201C', '"').Replace('\u201D', '"')
+            .Replace('\u2013', '-').Replace('\u2014', '-').Replace("\u2026", "...").Replace('\u00A0', ' ');
 
         public static int Width(string text, int scale = 1) =>
             text.Length == 0 ? 0 : (text.Length * (GlyphW + 1) - 1) * scale;

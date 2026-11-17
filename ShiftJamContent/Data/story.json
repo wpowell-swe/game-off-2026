@@ -1,0 +1,134 @@
+{
+  "_help": [
+    "The story script. Each trigger plays once per run, in this order of lines. A line is {\"speaker\": \"Name\", \"text\": \"...\"} (empty speaker = narration)",
+    "or {\"ref\": \"id\"} to use a line written by the content pipeline (Generated/dialogue.json).",
+    "Triggers: intro, start:<stage> (the stage's build name from campaign.json), engage:pell|dova|clerk, freed:pell|dova|clerk, ending.",
+    "Capitals, digits and . , ! ? - : ; ' \" ( ) / + % & only; the game's font has no other symbols. Lines over about 200 characters run long."
+  ],
+  "triggers": {
+    "intro": [
+      {
+        "speaker": "",
+        "text": "Lanternfall lights its lanterns every dusk, to guide wandering souls home."
+      },
+      {
+        "speaker": "",
+        "text": "Lately fewer souls are arriving. The Tithe has been collecting them, and it has been very polite about it."
+      },
+      {
+        "speaker": "Joseph",
+        "text": "I saw the first signs. I meant to report them. There was a form."
+      }
+    ],
+    "start:level:streets": [
+      {
+        "speaker": "Joseph",
+        "text": "The vow, then. No one is left behind the Threshold."
+      },
+      {
+        "speaker": "Joseph",
+        "text": "I say it before every fight. It sounds better when someone else says it."
+      }
+    ],
+    "engage:pell": [
+      {
+        "speaker": "Pell",
+        "text": "Lanterns. Must be lit. Please keep to the lit side of the street."
+      }
+    ],
+    "freed:pell": [
+      {
+        "speaker": "Pell",
+        "text": "Joseph? Is it dusk already? I never finished the lanterns. I think I was doing something else."
+      },
+      {
+        "ref": "joseph_pell_lantern"
+      },
+      {
+        "speaker": "Pell",
+        "text": "You saw it coming, didn't you. Months ago. You were standing right there."
+      },
+      {
+        "ref": "joseph_pell_delay"
+      }
+    ],
+    "start:level:cellars": [
+      {
+        "speaker": "Joseph",
+        "text": "The Cellars. Dova keeps her stock down here. She would want it counted, and she would want it counted twice."
+      }
+    ],
+    "engage:dova": [
+      {
+        "speaker": "Dova",
+        "text": "No refunds. No exchanges. Mind the crates, they were expensive."
+      }
+    ],
+    "freed:dova": [
+      {
+        "speaker": "Dova",
+        "text": "I would like it noted that I did not authorise any of that. A whole season, gone, and not one receipt."
+      },
+      {
+        "ref": "joseph_dova_stall"
+      },
+      {
+        "speaker": "Dova",
+        "text": "Don't be kind to me, it makes me suspicious. I want a refund."
+      },
+      {
+        "ref": "joseph_dova_complaint"
+      }
+    ],
+    "start:level:rooftops": [
+      {
+        "speaker": "Joseph",
+        "text": "The rooftops. The Astral Plane keeps bridges up here. It does not mention them."
+      }
+    ],
+    "start:level:tithe_hall": [
+      {
+        "speaker": "Joseph",
+        "text": "The Tithe's Hall. Forms on every wall. None of them are mine, I hope."
+      }
+    ],
+    "start:keep": [
+      {
+        "speaker": "Joseph",
+        "text": "Four doors, four sigils. The Keep wants its due before it opens the gate."
+      }
+    ],
+    "start:boss:clerk": [
+      {
+        "speaker": "",
+        "text": "You hear your old teacher's voice, or you remember it."
+      },
+      {
+        "ref": "oss_disappointed"
+      }
+    ],
+    "engage:clerk": [
+      {
+        "ref": "clerk_notice"
+      },
+      {
+        "speaker": "Joseph",
+        "text": "Form 7. Of course there's a form. There is always a form."
+      }
+    ],
+    "ending": [
+      {
+        "speaker": "",
+        "text": "The Clerk files itself away, and every lantern in Lanternfall lights at once, which has never happened before."
+      },
+      {
+        "speaker": "",
+        "text": "The Tithe will send a reply. It will be polite."
+      },
+      {
+        "speaker": "Joseph",
+        "text": "Tomorrow, then. I'll write the report tomorrow."
+      }
+    ]
+  }
+}

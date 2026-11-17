@@ -26,6 +26,12 @@ namespace ShiftJam
         private float _titleClock;
         private string _toast;         // a short message in the corner (data reloaded, ...)
         private float _toastTime;
+        private readonly DialogueBox _dialogue = new();
+        private readonly PauseMenu _pause = new();
+        private readonly ScreenFade _fade = new();
+        private readonly System.Collections.Generic.HashSet<string> _storySeen = new();   // story triggers already played this run
+        private bool _paused;
+        private bool _prevPadStart;
 
         public ShiftJamGame()
         {
@@ -55,7 +61,7 @@ namespace ShiftJam
         /// <summary>Re-reads the data files and rebuilds the current stage. Textures are not reloaded (that needs a content build).</summary>
         private void ReloadData()
         {
-            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload();
+            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload(); Story.Reload();
             SpriteStore.Load(Content);
             _campaign.ClampIndex();
             LoadStage();
@@ -70,6 +76,33 @@ namespace ShiftJam
             _campaign.Current.Build(_world);
             _stageIntro = 2.5f;
             _ending = false;
+            if (!_title) Say("start:" + _campaign.Current.Id);
+        }
+
+        /// <summary>Plays a story trigger's lines in the text box, once per run.</summary>
+        private void Say(string trigger)
+        {
+            if (!_storySeen.Add(trigger)) return;
+            var lines = Story.Get(trigger);
+            if (lines.Count > 0) _dialogue.Enqueue(lines);
+        }
+
+        /// <summary>A fresh run from the title screen: intro text, then the first stage.</summary>
+        private void StartRun()
+        {
+            _title = false;
+            _campaign.Restart();
+            _storySeen.Clear();
+            _dialogue.Clear();
+            Say("intro");
+            LoadStage();
+        }
+
+        private void BackToTitle()
+        {
+            _campaign.Restart();
+            _title = true; _titleClock = 0; _paused = false;
+            _dialogue.Clear();
         }
 
         /// <summary>Loads a standalone test level (debug keys), outside the campaign flow.</summary>
@@ -86,7 +119,20 @@ namespace ShiftJam
         protected override void Update(GameTime gameTime)
         {
             var keys = Keyboard.GetState();
-            if (keys.IsKeyDown(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            Step(gameTime, keys);
+            _prevKeys = keys;
+            base.Update(gameTime);
+        }
+
+        private void Step(GameTime gameTime, KeyboardState keys)
+        {
+            float dt = Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, 1f / 30f);
+            var pad = GamePad.GetState(PlayerIndex.One);
+            bool padStart = pad.Buttons.Start == ButtonState.Pressed || pad.Buttons.Back == ButtonState.Pressed;
+            bool pausePressed = Pressed(keys, Keys.Escape) || Pressed(keys, Keys.P) || (padStart && !_prevPadStart);
+            _prevPadStart = padStart;
+
+            if (_title && Pressed(keys, Keys.Escape))
             {
                 try { Exit(); }
                 catch (PlatformNotSupportedException) { /* the web build cannot exit */ }
@@ -94,56 +140,84 @@ namespace ShiftJam
 
             // Debug: F1-F7 jump to campaign stages, F9/F10 the old test levels, R restarts the stage.
             for (int n = 0; n < Campaign.Stages.Length; n++)
-                if (Pressed(keys, Keys.F1 + n)) { _title = false; _campaign.GoTo(n); LoadStage(); }
-            if (Pressed(keys, Keys.F9)) { _title = false; LoadDebugLevel(TestRoom.Build); }
-            else if (Pressed(keys, Keys.F10)) { _title = false; LoadDebugLevel(TestRoom.BuildDescent); }
+                if (Pressed(keys, Keys.F1 + n)) { _title = false; _paused = false; _dialogue.Clear(); _campaign.GoTo(n); LoadStage(); }
+            if (Pressed(keys, Keys.F9)) { _title = false; _paused = false; LoadDebugLevel(TestRoom.Build); }
+            else if (Pressed(keys, Keys.F10)) { _title = false; _paused = false; LoadDebugLevel(TestRoom.BuildDescent); }
 
-            // F11: re-read every data file (balance numbers, text, levels, campaign, sprite sizes) and rebuild the stage.
+            // F11: re-read every data file (balance numbers, text, story, levels, campaign, sprite sizes) and rebuild the stage.
             if (Pressed(keys, Keys.F11)) ReloadData();
+
+            if (_toastTime > 0) _toastTime -= dt;
+            _fade.Update(dt);
+            if (_fade.Blocking) return;      // fading out: hold still until the change at black
 
             bool confirm = Pressed(keys, Keys.Enter) || Pressed(keys, Keys.Space);
             if (_title)
             {
-                _titleClock += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (Pressed(keys, Keys.Enter) || Pressed(keys, Keys.Space)) { _title = false; _campaign.Restart(); LoadStage(); }
-                _prevKeys = keys;
-                base.Update(gameTime);
+                _titleClock += dt;
+                if (confirm) _fade.Go(StartRun);
                 return;
             }
+
+            if (_paused)
+            {
+                switch (_pause.Update(dt, keys, _prevKeys))
+                {
+                    case PauseChoice.Resume: _paused = false; break;
+                    case PauseChoice.Restart: _paused = false; _fade.Go(LoadStage); break;
+                    case PauseChoice.Title: _fade.Go(BackToTitle); break;
+                }
+                return;
+            }
+            if (pausePressed && !_ending && !_dialogue.Active) { _paused = true; _pause.Open(); return; }
+
+            // The text box: the world holds still while it is open.
+            if (_dialogue.Active)
+            {
+                _dialogue.Update(dt, confirm || Pressed(keys, Keys.J));
+                return;
+            }
+
             if (_ending)
             {
-                if (confirm || Pressed(keys, Keys.R)) { _campaign.Restart(); _title = true; _titleClock = 0; }
+                if (confirm || Pressed(keys, Keys.R)) _fade.Go(BackToTitle);
             }
             else if (_world.LevelCleared && confirm)
             {
-                if (_campaign.Advance(_world.SoulsFreed)) LoadStage();
-                else _ending = true;
+                int souls = _world.SoulsFreed;
+                _fade.Go(() =>
+                {
+                    if (_campaign.Advance(souls)) LoadStage();
+                    else { _ending = true; Say("ending"); }
+                });
             }
-            else if (!_world.Player.IsAlive && confirm) LoadStage();
+            else if (!_world.Player.IsAlive && confirm) _fade.Go(LoadStage);
             else if (Pressed(keys, Keys.R)) LoadStage();
-            _prevKeys = keys;
 
-            float dt = Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, 1f / 30f);
-            if (_toastTime > 0) _toastTime -= dt;
             if (_stageIntro > 0) _stageIntro -= dt;
             _world.Input = _ending ? default : _input.Read();
             _world.Update(dt);
 
+            // Bosses speak when they wake and when they are freed.
+            foreach (var e in _world.Entities)
+                if (e is IBoss boss)
+                {
+                    if (boss.Engaged) Say("engage:" + boss.Id);
+                    if (boss.IsDefeated) Say("freed:" + boss.Id);
+                }
+
             // Took a door in the Keep: load where it leads (the same stage, a different part of it).
             if (_world.PortalRequest is int target)
             {
-                KeepState.Go(target, _world.SoulsFreed);
-                LoadStage();
-                _stageIntro = 0;
-                base.Update(gameTime);
+                int souls = _world.SoulsFreed;
+                _world.PortalRequest = null;
+                _fade.Go(() => { KeepState.Go(target, souls); LoadStage(); _stageIntro = 0; });
                 return;
             }
 
             // Fell out of the bottom of the level: restart it (real respawn comes later).
             if (_world.Player.Position.Y > (_world.Tiles.Height + 4) * Metrics.TileSize || !_world.Player.IsAlive && _world.Player.Position.Y > _world.Tiles.Height * Metrics.TileSize)
-                LoadStage();
-
-            base.Update(gameTime);
+                _fade.Go(LoadStage);
         }
 
         /// <summary>Stage intro, level-cleared, defeated and ending banners, drawn in screen space.</summary>
@@ -238,6 +312,7 @@ namespace ShiftJam
                 GraphicsDevice.Clear(new Color(20, 16, 28));
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
                 DrawTitle();
+                _fade.Draw(spriteBatch);
                 spriteBatch.End();
                 PresentScreen();
                 base.Draw(gameTime);
@@ -260,7 +335,10 @@ namespace ShiftJam
                 PixelFont.Draw(spriteBatch, _world.StatusText, Metrics.ScreenWidth - 6 - PixelFont.Width(_world.StatusText), 8, new Color(255, 225, 140), 1);
             DrawEndBanner();
             _world.DrawScreenFx(spriteBatch);
+            _dialogue.Draw(spriteBatch);
+            if (_paused) _pause.Draw(spriteBatch);
             if (_toastTime > 0 && _toast != null) PixelFont.Draw(spriteBatch, _toast, 6, Metrics.ScreenHeight - 10, new Color(150, 255, 170));
+            _fade.Draw(spriteBatch);
             spriteBatch.End();
 
             PresentScreen();

@@ -35,5 +35,11 @@
   "keep.room3": "HOLLOW CHAPEL",
   "keep.room4": "GAUNTLET",
   "prompt.interact": "E ",
-  "prompt.enter": "ENTER"
+  "prompt.enter": "ENTER",
+  "pause.title": "PAUSED",
+  "pause.resume": "RESUME",
+  "pause.restart": "RESTART STAGE",
+  "pause.volume": "VOLUME",
+  "pause.title_screen": "QUIT TO TITLE",
+  "pause.hint": "W S MOVE  ENTER CHOOSE  ESC RESUME"
 }

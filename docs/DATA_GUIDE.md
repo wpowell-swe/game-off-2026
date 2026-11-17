@@ -33,7 +33,8 @@ Run `python3 tools/sync_content.py` after **adding or removing** a data file (no
 | `balance.json` | Every tunable number: move speed, jump, gravity, health, damage, timings, ranges, pickup amounts, boss attack timings and attack order |
 | `levels/*.txt` | The maps: one text file per level, boss arena, Keep room and the Clerk's catacombs |
 | `campaign.json` | The order of the stages, their names, and which level each uses |
-| `text.json` | The words on screen: title, banners, ending, door prompts |
+| `story.json` | The story script: the text-box dialogue for the intro, each stage, each boss and the ending |
+| `text.json` | The words on screen: title, banners, ending, door prompts, the pause menu |
 | `sprites.json` | Each animation strip's frame size, frame count, speed and feet position |
 
 ### balance.json
@@ -94,6 +95,27 @@ The list order is the play order. `kind` is `level` or `boss` (it changes the "c
 
 Keys and their words, such as `"title.name": "THRESHOLD"`. The built-in font draws capital letters, digits and
 . ! - : ? / only. Delete a line to get the built-in wording back.
+
+### story.json
+
+The Castlevania-style text box. Each *trigger* is a list of lines, shown one after another in a bordered box with a name tab and
+typed-out text (Enter, Space or J finishes a line, then moves on; the game holds still while it is open):
+
+```json
+"freed:pell": [
+  { "speaker": "Pell", "text": "Joseph? Is it dusk already?" },
+  { "ref": "joseph_pell_lantern" }
+]
+```
+
+- A line is `{ "speaker": "Name", "text": "..." }` (empty speaker = narration, no name tab), or `{ "ref": "id" }`, which pulls
+  a line the content pipeline wrote in `Generated/dialogue.json`.
+- Triggers: `intro` (a new run), `start:<stage>` (entering a stage; `<stage>` is its `build` name in `campaign.json`, such as
+  `level:streets`, `boss:pell` or `keep`), `engage:pell|dova|clerk` (a boss wakes), `freed:pell|dova|clerk`, and `ending`.
+  Each trigger plays once per run. A trigger with no entry simply shows nothing.
+- Long lines wrap, and a line over four rows continues on the next page. The font has capitals, digits and `. , ! ? - : ; ' " ( ) / + % &`
+  only; curly quotes and dashes are converted for you.
+- Typing speed is `Dialogue.CharsPerSecond` in `balance.json`.
 
 ### sprites.json
 

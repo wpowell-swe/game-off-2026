@@ -52,6 +52,7 @@ saw = lambda p: 2 * (p % 1.0) - 1
 tri = lambda p: 4 * abs((p % 1.0) - 0.5) - 1
 
 SOUNDS = {
+    "blip": lambda: sweep(0.035, 760, 700, lambda p: square(p, 0.5), 0.22, 1.0),
     "jump": lambda: sweep(0.18, 260, 620, lambda p: square(p, 0.25), 0.35),
     "light_hit": lambda: mix(noise(0.07, 0.6, 3, 0.3, 2), sweep(0.07, 380, 160, square, 0.3, 2.5)),
     "heavy_hit": lambda: mix(noise(0.28, 0.8, 2, 0.6, 3), sweep(0.28, 150, 45, sine, 0.9, 1.5)),

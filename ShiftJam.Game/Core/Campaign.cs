@@ -7,7 +7,7 @@ namespace ShiftJam
     public enum StageKind { Level, Boss }
 
     /// <summary>One step of the campaign: a name for the intro banner, how it is won, and how to build it.</summary>
-    public sealed record Stage(string Name, StageKind Kind, Action<GameWorld> Build);
+    public sealed record Stage(string Name, StageKind Kind, Action<GameWorld> Build, string Id = "");
 
     /// <summary>
     /// The order the game is played in, from Data/campaign.json (Streets, Pell, Cellars, Dova, Rooftops, Tithe Hall, Tithe Keep, the Clerk), then the end.
@@ -38,7 +38,7 @@ namespace ShiftJam
                         string build = e.GetProperty("build").GetString();
                         var kind = e.TryGetProperty("kind", out var k) && Enum.TryParse<StageKind>(k.GetString(), true, out var parsed) ? parsed : StageKind.Level;
                         var builder = MakeBuilder(build);
-                        if (builder != null) list.Add(new Stage(name, kind, builder));
+                        if (builder != null) list.Add(new Stage(name, kind, builder, build));
                         else Console.WriteLine($"[data] campaign.json: cannot build '{build}' for stage '{name}', skipped.");
                     }
                 }
@@ -51,7 +51,7 @@ namespace ShiftJam
             if (list.Count == 0)
             {
                 Console.WriteLine("[data] no usable campaign.json: falling back to the first level only.");
-                list.Add(new Stage("The Lantern Streets", StageKind.Level, w => LoadWithExit(w, LevelFile.Get("streets"))));
+                list.Add(new Stage("The Lantern Streets", StageKind.Level, w => LoadWithExit(w, LevelFile.Get("streets")), "level:streets"));
             }
             return list.ToArray();
         }

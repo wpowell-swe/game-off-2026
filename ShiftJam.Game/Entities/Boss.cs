@@ -9,6 +9,8 @@ namespace ShiftJam
     public interface IBoss
     {
         string Name { get; }
+        /// <summary>A short lowercase id (pell, dova, clerk), used by the story script.</summary>
+        string Id { get; }
         int Health { get; }
         int MaxHealth { get; }
         /// <summary>True once the boss has been freed (health reached zero).</summary>
@@ -72,6 +74,7 @@ namespace ShiftJam
         public float TriggerRange = DefaultTriggerRange;
 
         public string Name { get; }
+        public string Id => SpriteName ?? Name.ToLowerInvariant();
         public int Health { get; private set; }
         public int MaxHealth { get; }
         public Point Size { get; }

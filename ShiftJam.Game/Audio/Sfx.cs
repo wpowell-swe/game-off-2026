@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework.Content;
 
 namespace ShiftJam
 {
-    public enum SfxId { Jump, LightHit, HeavyHit, Swing, ShiftIn, ShiftOut, Hurt, EnemyDefeat, Block }
+    public enum SfxId { Jump, LightHit, HeavyHit, Swing, ShiftIn, ShiftOut, Hurt, EnemyDefeat, Block, Blip }
 
     /// <summary>Placeholder sound effects. Missing content or a missing audio device just means silence.</summary>
     public static class Sfx
     {
         private static readonly string[] Names =
-            { "jump", "light_hit", "heavy_hit", "swing", "shift_in", "shift_out", "hurt", "enemy_defeat", "block" };
+            { "jump", "light_hit", "heavy_hit", "swing", "shift_in", "shift_out", "hurt", "enemy_defeat", "block", "blip" };
         private static readonly SoundEffect[] _fx = new SoundEffect[Names.Length];
         private static readonly Random _rng = new Random(7);
         private static bool _warned;
