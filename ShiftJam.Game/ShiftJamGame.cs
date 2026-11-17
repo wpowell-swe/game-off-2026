@@ -59,9 +59,11 @@ namespace ShiftJam
         }
 
         /// <summary>Re-reads the data files and rebuilds the current stage. Textures are not reloaded (that needs a content build).</summary>
+        private readonly Backdrop _backdrop = new();
+
         private void ReloadData()
         {
-            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload(); Story.Reload();
+            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload(); Story.Reload(); Backdrop.Reload();
             SpriteStore.Load(Content);
             _campaign.ClampIndex();
             LoadStage();
@@ -74,6 +76,7 @@ namespace ShiftJam
         {
             _world = new GameWorld();
             _campaign.Current.Build(_world);
+            _backdrop.Use(_campaign.Current.Id, _world.Player.Plane == Plane.Astral);
             _stageIntro = 2.5f;
             _ending = false;
             if (!_title) Say("start:" + _campaign.Current.Id);
@@ -197,6 +200,7 @@ namespace ShiftJam
             if (_stageIntro > 0) _stageIntro -= dt;
             _world.Input = _ending ? default : _input.Read();
             _world.Update(dt);
+            _backdrop.Update(dt, _world.Player.Plane == Plane.Astral);
 
             // Bosses speak when they wake and when they are freed.
             foreach (var e in _world.Entities)
@@ -321,6 +325,9 @@ namespace ShiftJam
 
             GraphicsDevice.SetRenderTarget(_screen);
             GraphicsDevice.Clear(_world.Player.Plane == Plane.Astral ? new Color(12, 18, 44) : new Color(20, 16, 28));
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            _backdrop.Draw(spriteBatch, _world.Camera.Position);
+            spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 null, null, null, _world.Camera.Transform);

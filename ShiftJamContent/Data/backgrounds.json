@@ -1,0 +1,102 @@
+{
+  "_help": [
+    "Scenery behind each stage. 'themes' is keyed by the stage's build id from campaign.json (level:streets, boss:pell, keep ...);",
+    "'default' is used for any stage without an entry. Colours are [r,g,b]. Every colour has an astral twin that fades in when the",
+    "player shifts. Layers draw back to front. factor = how fast it scrolls sideways compared to the camera (0 = fixed, 1 = with the world).",
+    "Layer kinds: skyline (buildings with lit windows), arches (colonnade), columns (hanging pillars), stars, mist, moon (baseY=x, minH=y).",
+    "Common numbers: baseY (ground line on screen), spacing, minH/maxH, minW/maxW, seed (change for a different arrangement),",
+    "windows / density (0-1), drift (self-scroll speed), lit / astralLit (window and star colour)."
+  ],
+  "default": {
+    "skyTop": [20, 16, 28], "skyBottom": [34, 26, 44],
+    "astralSkyTop": [12, 18, 44], "astralSkyBottom": [22, 34, 80],
+    "layers": [
+      { "kind": "stars", "factor": 0.05, "baseY": 90, "spacing": 18, "density": 0.35, "seed": 3 },
+      { "kind": "skyline", "factor": 0.25, "baseY": 170, "spacing": 44, "minH": 40, "maxH": 80, "minW": 22, "maxW": 40, "seed": 11,
+        "color": [30, 24, 44], "astralColor": [18, 28, 70], "windows": 0.25 }
+    ]
+  },
+  "themes": {
+    "level:streets": {
+      "skyTop": [26, 18, 34], "skyBottom": [60, 38, 52],
+      "astralSkyTop": [10, 16, 48], "astralSkyBottom": [30, 44, 100],
+      "layers": [
+        { "kind": "stars", "factor": 0.04, "baseY": 80, "spacing": 16, "density": 0.4, "seed": 5 },
+        { "kind": "moon", "baseY": 250, "minH": 36, "maxH": 22, "lit": [255, 232, 190], "astralLit": [170, 210, 255] },
+        { "kind": "skyline", "factor": 0.12, "baseY": 160, "spacing": 52, "minH": 50, "maxH": 100, "minW": 26, "maxW": 46, "seed": 21,
+          "color": [44, 30, 50], "astralColor": [24, 34, 84], "windows": 0.15 },
+        { "kind": "skyline", "factor": 0.3, "baseY": 176, "spacing": 40, "minH": 30, "maxH": 76, "minW": 22, "maxW": 36, "seed": 8,
+          "color": [30, 22, 40], "astralColor": [16, 24, 64], "windows": 0.35 },
+        { "kind": "mist", "baseY": 178, "color": [120, 90, 110], "astralColor": [80, 110, 190] }
+      ]
+    },
+    "boss:pell": {
+      "skyTop": [28, 20, 20], "skyBottom": [76, 44, 34],
+      "astralSkyTop": [12, 14, 46], "astralSkyBottom": [34, 38, 96],
+      "layers": [
+        { "kind": "skyline", "factor": 0.15, "baseY": 170, "spacing": 48, "minH": 60, "maxH": 110, "minW": 24, "maxW": 40, "seed": 33,
+          "color": [48, 30, 36], "astralColor": [24, 30, 80], "windows": 0.5 },
+        { "kind": "arches", "factor": 0.4, "baseY": 180, "spacing": 64, "maxH": 96, "color": [30, 20, 28], "astralColor": [16, 22, 60] }
+      ]
+    },
+    "level:cellars": {
+      "skyTop": [14, 14, 18], "skyBottom": [28, 30, 34],
+      "astralSkyTop": [8, 14, 36], "astralSkyBottom": [16, 30, 64],
+      "layers": [
+        { "kind": "arches", "factor": 0.2, "baseY": 180, "spacing": 72, "maxH": 110, "color": [24, 26, 30], "astralColor": [14, 24, 52] },
+        { "kind": "arches", "factor": 0.45, "baseY": 184, "spacing": 56, "maxH": 120, "color": [16, 18, 22], "astralColor": [10, 18, 42] },
+        { "kind": "mist", "baseY": 176, "color": [80, 100, 100], "astralColor": [60, 100, 170] }
+      ]
+    },
+    "boss:dova": {
+      "skyTop": [20, 24, 20], "skyBottom": [44, 56, 44],
+      "astralSkyTop": [8, 20, 40], "astralSkyBottom": [20, 52, 80],
+      "layers": [
+        { "kind": "columns", "factor": 0.3, "spacing": 34, "minW": 8, "maxW": 14, "minH": 20, "maxH": 70, "density": 0.55, "seed": 4,
+          "color": [28, 38, 30], "astralColor": [14, 30, 56] },
+        { "kind": "mist", "baseY": 178, "color": [100, 130, 100], "astralColor": [70, 130, 190] }
+      ]
+    },
+    "level:rooftops": {
+      "skyTop": [14, 20, 48], "skyBottom": [88, 60, 80],
+      "astralSkyTop": [6, 10, 40], "astralSkyBottom": [44, 40, 120],
+      "layers": [
+        { "kind": "stars", "factor": 0.03, "baseY": 110, "spacing": 12, "density": 0.45, "seed": 9 },
+        { "kind": "moon", "baseY": 70, "minH": 30, "maxH": 30, "lit": [255, 240, 200], "astralLit": [190, 220, 255] },
+        { "kind": "skyline", "factor": 0.1, "baseY": 176, "spacing": 56, "minH": 60, "maxH": 120, "minW": 30, "maxW": 52, "seed": 41,
+          "color": [58, 40, 66], "astralColor": [30, 36, 100], "windows": 0.2 },
+        { "kind": "skyline", "factor": 0.28, "baseY": 184, "spacing": 44, "minH": 40, "maxH": 90, "minW": 24, "maxW": 40, "seed": 17,
+          "color": [34, 24, 48], "astralColor": [18, 24, 70], "windows": 0.4 }
+      ]
+    },
+    "level:tithe_hall": {
+      "skyTop": [26, 16, 14], "skyBottom": [64, 40, 28],
+      "astralSkyTop": [12, 12, 40], "astralSkyBottom": [40, 36, 96],
+      "layers": [
+        { "kind": "columns", "factor": 0.18, "spacing": 48, "minW": 12, "maxW": 18, "minH": 30, "maxH": 90, "density": 0.7, "seed": 12,
+          "color": [48, 30, 26], "astralColor": [26, 28, 76] },
+        { "kind": "arches", "factor": 0.4, "baseY": 184, "spacing": 80, "maxH": 120, "color": [32, 20, 20], "astralColor": [18, 20, 56] }
+      ]
+    },
+    "keep": {
+      "skyTop": [18, 14, 26], "skyBottom": [46, 34, 56],
+      "astralSkyTop": [10, 12, 42], "astralSkyBottom": [30, 36, 96],
+      "layers": [
+        { "kind": "stars", "factor": 0.03, "baseY": 70, "spacing": 16, "density": 0.3, "seed": 14 },
+        { "kind": "arches", "factor": 0.22, "baseY": 184, "spacing": 84, "maxH": 130, "color": [34, 26, 46], "astralColor": [20, 26, 70] },
+        { "kind": "columns", "factor": 0.5, "spacing": 64, "minW": 10, "maxW": 16, "minH": 30, "maxH": 60, "density": 0.6, "seed": 6,
+          "color": [24, 18, 34], "astralColor": [14, 18, 54] }
+      ]
+    },
+    "boss:clerk": {
+      "skyTop": [10, 10, 14], "skyBottom": [26, 22, 30],
+      "astralSkyTop": [6, 8, 28], "astralSkyBottom": [18, 22, 64],
+      "layers": [
+        { "kind": "columns", "factor": 0.25, "spacing": 30, "minW": 6, "maxW": 12, "minH": 24, "maxH": 84, "density": 0.6, "seed": 22,
+          "color": [22, 20, 26], "astralColor": [12, 18, 48] },
+        { "kind": "stars", "factor": 0.06, "baseY": 120, "spacing": 14, "density": 0.2, "seed": 31, "lit": [200, 90, 90], "astralLit": [160, 180, 255] },
+        { "kind": "mist", "baseY": 178, "color": [90, 70, 90], "astralColor": [60, 90, 170] }
+      ]
+    }
+  }
+}

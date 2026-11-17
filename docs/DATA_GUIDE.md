@@ -33,6 +33,7 @@ Run `python3 tools/sync_content.py` after **adding or removing** a data file (no
 | `balance.json` | Every tunable number: move speed, jump, gravity, health, damage, timings, ranges, pickup amounts, boss attack timings and attack order |
 | `levels/*.txt` | The maps: one text file per level, boss arena, Keep room and the Clerk's catacombs |
 | `campaign.json` | The order of the stages, their names, and which level each uses |
+| `backgrounds.json` | The scenery behind each stage: sky colours and parallax layers (skylines, arches, columns, stars, mist, moon), each with an Astral twin |
 | `story.json` | The story script: the text-box dialogue for the intro, each stage, each boss and the ending |
 | `text.json` | The words on screen: title, banners, ending, door prompts, the pause menu |
 | `sprites.json` | Each animation strip's frame size, frame count, speed and feet position |
@@ -128,3 +129,11 @@ needs no build; a new or changed PNG does (see the art guide).
 These are not data files yet: colours and shapes of anything drawn by code (tiles, pickups, doors, the HUD, hazards),
 the built-in font's letter shapes, the keyboard layout, and the rules of how attacks and AI work. The art guide lists
 what is still drawn by the game. The keyboard and gamepad buttons are in `ShiftJam.Game/Input/InputReader.cs`.
+
+### backgrounds.json
+
+Each stage's backdrop is a sky gradient plus layers drawn back to front. `themes` is keyed by the stage's `build` id
+from `campaign.json` (`level:streets`, `boss:pell`, `keep`, ...); `default` covers anything without an entry. Every
+colour is `[r,g,b]` and has an `astral...` twin that the scene fades into when the player shifts. A layer's `factor` is
+how fast it scrolls compared with the camera (small = far away). Kinds: `skyline`, `arches`, `columns`, `stars`,
+`mist`, `moon`. Change `seed` to rearrange a layer. Edit, then press F11 in the game to see it.

@@ -682,6 +682,10 @@
 /build:Sfx/swing.wav
 #end Sfx/swing.wav
 
+#begin Data/backgrounds.json
+/copy:Data/backgrounds.json
+#end Data/backgrounds.json
+
 #begin Data/balance.json
 /copy:Data/balance.json
 #end Data/balance.json
