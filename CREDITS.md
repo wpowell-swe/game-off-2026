@@ -3,7 +3,7 @@
 ## Team
 
 - William Powell ([@wpowell-swe](https://github.com/wpowell-swe)): game design, direction and quality
-- PuppySmiles: sprite art. Hello World!
+- AsterViolet ([@AsterViolet](https://github.com/AsterViolet)): sprite art
 
 ## How this game was made
 
