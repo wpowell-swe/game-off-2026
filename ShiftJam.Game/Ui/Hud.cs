@@ -26,6 +26,13 @@ namespace ShiftJam
             Bar(sb, 8, 17, 80, 6, player.Ki / Math.Max(1f, player.MaxKi), Color.DeepSkyBlue);
 
             PlaneBadge(sb, 8, 26, astral);
+            int gx = 8;
+            foreach (var _ in Charms.Held())
+            {
+                Gfx.Fill(sb, new Rectangle(gx, 38, 5, 5), Color.Black);
+                Gfx.Fill(sb, new Rectangle(gx + 1, 39, 3, 3), new Color(255, 210, 100));
+                gx += 7;
+            }
         }
 
         private static void Bar(SpriteBatch sb, int x, int y, int w, int h, float fill, Color c)

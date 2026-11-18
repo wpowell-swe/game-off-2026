@@ -694,6 +694,10 @@
 /copy:Data/campaign.json
 #end Data/campaign.json
 
+#begin Data/charms.json
+/copy:Data/charms.json
+#end Data/charms.json
+
 #begin Data/sprites.json
 /copy:Data/sprites.json
 #end Data/sprites.json

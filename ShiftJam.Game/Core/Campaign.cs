@@ -105,6 +105,7 @@ namespace ShiftJam
         {
             Index = 0;
             TotalSouls = 0;
+            Charms.Reset();
             KeepState.Reset();
             ClerkArena.Checkpoint = 0; Checkpoints.Reset();
         }

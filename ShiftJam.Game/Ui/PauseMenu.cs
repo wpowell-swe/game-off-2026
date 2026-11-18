@@ -72,6 +72,12 @@ namespace ShiftJam
                     Gfx.Fill(sb, new Rectangle(x, y + 7, 3, 1), gold);
                 }
             }
+            int cy = 157;
+            foreach (var c in Charms.Held())
+            {
+                PixelFont.DrawCentered(sb, c.Name + " - " + c.Desc, cy, new Color(255, 210, 100), 1);
+                cy += 6;
+            }
             PixelFont.DrawCentered(sb, Txt.S("pause.hint", "W S MOVE  ENTER CHOOSE  ESC RESUME"), 150, new Color(150, 160, 190), 1);
         }
     }

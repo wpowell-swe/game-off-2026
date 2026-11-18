@@ -33,6 +33,7 @@ Run `python3 tools/sync_content.py` after **adding or removing** a data file (no
 | `balance.json` | Every tunable number: move speed, jump, gravity, health, damage, timings, ranges, pickup amounts, boss attack timings and attack order |
 | `levels/*.txt` | The maps: one text file per level, boss arena, Keep room and the Clerk's catacombs |
 | `campaign.json` | The order of the stages, their names, and which level each uses |
+| `charms.json` | Permanent upgrades earned during a run (boss freed, level cleared) and what they change |
 | `backgrounds.json` | The scenery behind each stage: sky colours and parallax layers (skylines, arches, columns, stars, mist, moon), each with an Astral twin |
 | `story.json` | The story script: the text-box dialogue for the intro, each stage, each boss and the ending |
 | `text.json` | The words on screen: title, banners, ending, door prompts, the pause menu |
@@ -137,3 +138,10 @@ from `campaign.json` (`level:streets`, `boss:pell`, `keep`, ...); `default` cove
 colour is `[r,g,b]` and has an `astral...` twin that the scene fades into when the player shifts. A layer's `factor` is
 how fast it scrolls compared with the camera (small = far away). Kinds: `skyline`, `arches`, `columns`, `stars`,
 `mist`, `moon`. Change `seed` to rearrange a layer. Edit, then press F11 in the game to see it.
+
+### charms.json
+
+Charms are upgrades kept for the rest of a run (lost on quitting to the title or dying out of the campaign). `from` says
+what grants one: `freed:pell` (a boss is freed) or `clear:level:rooftops` (a level is cleared). `effects` can set
+`maxHealth` and `maxKi` (added) and `shiftCostMult`, `astralDrainMult`, `kiRegenMult`, `damageMult` (multiplied, so
+`0.75` means 25% cheaper). Owned charms show as gold gems under the plane badge and are listed in the pause menu.

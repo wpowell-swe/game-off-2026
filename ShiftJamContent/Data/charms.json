@@ -1,0 +1,19 @@
+{
+  "_help": [
+    "Charms: permanent upgrades earned during a run and lost when the run ends. 'from' is what grants it:",
+    "  freed:<boss id>        when that boss is freed (freed:pell, freed:dova, freed:clerk)",
+    "  clear:<build id>       when that level is cleared (clear:level:rooftops ...)",
+    "'effects' (all optional): maxHealth, maxKi (added); shiftCostMult, astralDrainMult, kiRegenMult, damageMult (multiplied).",
+    "Names and descriptions are shown in capitals, so keep them short."
+  ],
+  "charms": [
+    { "id": "lantern_wick", "name": "LANTERN WICK", "desc": "SHIFTING COSTS LESS KI", "from": "freed:pell",
+      "effects": { "shiftCostMult": 0.75 } },
+    { "id": "stall_coin", "name": "STALL COIN", "desc": "+25 MAX HEALTH", "from": "freed:dova",
+      "effects": { "maxHealth": 25 } },
+    { "id": "rooftop_chime", "name": "ROOFTOP CHIME", "desc": "KI RECOVERS FASTER", "from": "clear:level:rooftops",
+      "effects": { "kiRegenMult": 1.5 } },
+    { "id": "tithe_seal", "name": "TITHE SEAL", "desc": "STRIKES HIT HARDER, ASTRAL DRAINS LESS", "from": "clear:level:tithe_hall",
+      "effects": { "damageMult": 1.2, "astralDrainMult": 0.75 } }
+  ]
+}

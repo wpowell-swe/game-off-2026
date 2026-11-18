@@ -63,7 +63,7 @@ namespace ShiftJam
 
         private void ReloadData()
         {
-            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload(); Story.Reload(); Backdrop.Reload();
+            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload(); Story.Reload(); Backdrop.Reload(); Charms.Reload();
             SpriteStore.Load(Content);
             _campaign.ClampIndex();
             LoadStage();
@@ -100,6 +100,17 @@ namespace ShiftJam
             _dialogue.Clear();
             Say("intro");
             LoadStage();
+        }
+
+        /// <summary>Gives out any charms earned by this event and announces them.</summary>
+        private void Award(string from)
+        {
+            foreach (var c in Charms.Grant(from))
+            {
+                _toast = Txt.S("charm.got", "CHARM: ") + c.Name + " - " + c.Desc;
+                _toastTime = 6f;
+                Sfx.Play(SfxId.ShiftIn, 1f, 0.2f);
+            }
         }
 
         private void BackToTitle()
@@ -209,8 +220,10 @@ namespace ShiftJam
                 if (e is IBoss boss)
                 {
                     if (boss.Engaged) Say("engage:" + boss.Id);
-                    if (boss.IsDefeated) Say("freed:" + boss.Id);
+                    if (boss.IsDefeated) { Say("freed:" + boss.Id); Award("freed:" + boss.Id); }
                 }
+
+            if (_world.LevelCleared) Award("clear:" + _campaign.Current.Id);
 
             // Took a door in the Keep: load where it leads (the same stage, a different part of it).
             if (_world.PortalRequest is int target)

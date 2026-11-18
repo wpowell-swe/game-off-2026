@@ -16,10 +16,10 @@ namespace ShiftJam
         public Vector2 Velocity;
         public int Facing = 1;
 
-        public int MaxHealth = Tuning.PlayerMaxHealth;
-        public int Health = Tuning.PlayerMaxHealth;
-        public float MaxKi = Tuning.MaxKi;
-        public float Ki = Tuning.MaxKi;
+        public int MaxHealth = Tuning.PlayerMaxHealth + (int)Charms.Sum("maxHealth");
+        public int Health = Tuning.PlayerMaxHealth + (int)Charms.Sum("maxHealth");
+        public float MaxKi = Tuning.MaxKi + Charms.Sum("maxKi");
+        public float Ki = Tuning.MaxKi + Charms.Sum("maxKi");
 
         public Plane Plane { get; private set; } = Plane.Material;
         public bool IsAlive => Health > 0;
@@ -89,11 +89,11 @@ namespace ShiftJam
         {
             if (Plane == Plane.Material)
             {
-                Ki = Math.Min(MaxKi, Ki + Tuning.MaterialKiRegenPerSecond * dt);
+                Ki = Math.Min(MaxKi, Ki + Tuning.MaterialKiRegenPerSecond * Charms.Mult("kiRegenMult") * dt);
                 return;
             }
 
-            Ki = Math.Max(0, Ki - Tuning.AstralKiDrainPerSecond * dt);
+            Ki = Math.Max(0, Ki - Tuning.AstralKiDrainPerSecond * Charms.Mult("astralDrainMult") * dt);
             // Out of Ki: pulled back as soon as it is safe (stays Astral while embedded in a wall).
             if (Ki <= 0 && CanReturnToMaterial(world))
             {
@@ -114,8 +114,9 @@ namespace ShiftJam
         {
             if (Plane == Plane.Material)
             {
-                if (Ki < Tuning.ShiftKiCost) return;
-                Ki -= Tuning.ShiftKiCost;
+                float cost = Tuning.ShiftKiCost * Charms.Mult("shiftCostMult");
+                if (Ki < cost) return;
+                Ki -= cost;
                 Plane = Plane.Astral;
             }
             else if (CanReturnToMaterial(world))
@@ -256,7 +257,7 @@ namespace ShiftJam
             _flashTimer = (_heavy ? Tuning.HeavyActiveFrames : Tuning.LightActiveFrames) * Tuning.Frame;
 
             var hit = new Hit(area,
-                _heavy ? Tuning.HeavyDamage : Tuning.LightDamage,
+                (int)MathF.Round((_heavy ? Tuning.HeavyDamage : Tuning.LightDamage) * Charms.Mult("damageMult")),
                 Facing, Plane,
                 _heavy ? Tuning.HeavyKnockback : Tuning.LightKnockback,
                 _heavy);
