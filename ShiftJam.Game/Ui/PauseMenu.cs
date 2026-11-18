@@ -21,8 +21,13 @@ namespace ShiftJam
             _clock += dt;
             bool Pressed(Keys k) => keys.IsKeyDown(k) && !prev.IsKeyDown(k);
             if (Pressed(Keys.Escape) || Pressed(Keys.P)) return PauseChoice.Resume;
-            if (Pressed(Keys.Up) || Pressed(Keys.W)) _index = (_index + 3) % 4;
-            if (Pressed(Keys.Down) || Pressed(Keys.S)) _index = (_index + 1) % 4;
+            if (Pressed(Keys.Up) || Pressed(Keys.W)) _index = (_index + 4) % 5;
+            if (Pressed(Keys.Down) || Pressed(Keys.S)) _index = (_index + 1) % 5;
+            if (_index == 3)
+            {
+                int ms = (Pressed(Keys.Left) || Pressed(Keys.A) ? -1 : 0) + (Pressed(Keys.Right) || Pressed(Keys.D) ? 1 : 0);
+                if (ms != 0) Tuning.MusicVolume = Math.Clamp((float)Math.Round((Tuning.MusicVolume + ms * 0.1f) * 10f) / 10f, 0f, 1f);
+            }
             if (_index == 2)
             {
                 int step = (Pressed(Keys.Left) || Pressed(Keys.A) ? -1 : 0) + (Pressed(Keys.Right) || Pressed(Keys.D) ? 1 : 0);
@@ -38,7 +43,7 @@ namespace ShiftJam
                 {
                     case 0: return PauseChoice.Resume;
                     case 1: return PauseChoice.Restart;
-                    case 3: return PauseChoice.Title;
+                    case 4: return PauseChoice.Title;
                 }
             }
             return PauseChoice.None;
@@ -54,12 +59,13 @@ namespace ShiftJam
             {
                 Txt.S("pause.resume", "RESUME"),
                 Txt.S("pause.restart", "RESTART STAGE"),
-                Txt.S("pause.volume", "VOLUME") + "  < " + (int)Math.Round(Tuning.SfxMasterVolume * 100) + "% >",
+                Txt.S("pause.volume", "SOUND") + "  < " + (int)Math.Round(Tuning.SfxMasterVolume * 100) + "% >",
+                Txt.S("pause.music", "MUSIC") + "  < " + (int)Math.Round(Tuning.MusicVolume * 100) + "% >",
                 Txt.S("pause.title_screen", "QUIT TO TITLE"),
             };
             for (int i = 0; i < items.Length; i++)
             {
-                int y = 70 + i * 16;
+                int y = 62 + i * 15;
                 bool sel = i == _index;
                 PixelFont.DrawCentered(sb, items[i], y, sel ? Color.White : new Color(150, 160, 190), 1 + (sel ? 1 : 0));
                 if (sel && ((int)(_clock * 4f) & 1) == 0)

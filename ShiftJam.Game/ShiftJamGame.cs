@@ -50,6 +50,7 @@ namespace ShiftJam
             Gfx.Init(GraphicsDevice);
             SpriteStore.Load(Content);
             Sfx.Load(Content);
+            Music.Load(Content);
             _screen = new RenderTarget2D(GraphicsDevice, Metrics.ScreenWidth, Metrics.ScreenHeight);
 
             try { _titleArt = Content.Load<Texture2D>("Ui/title"); }
@@ -63,7 +64,7 @@ namespace ShiftJam
 
         private void ReloadData()
         {
-            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload(); Story.Reload(); Backdrop.Reload(); Charms.Reload();
+            Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload(); Story.Reload(); Backdrop.Reload(); Charms.Reload(); Music.Reload();
             SpriteStore.Load(Content);
             _campaign.ClampIndex();
             LoadStage();
@@ -77,6 +78,7 @@ namespace ShiftJam
             _world = new GameWorld();
             _campaign.Current.Build(_world);
             Checkpoints.Restore(_world, _campaign.Current.Id);
+            if (_title) Music.PlayTitle(); else Music.PlayStage(_campaign.Current.Id);
             _backdrop.Use(_campaign.Current.Id, _world.Player.Plane == Plane.Astral);
             _stageIntro = 2.5f;
             _ending = false;
@@ -118,6 +120,7 @@ namespace ShiftJam
             Checkpoints.Reset();
             _campaign.Restart();
             _title = true; _titleClock = 0; _paused = false;
+            Music.PlayTitle();
             _dialogue.Clear();
         }
 
@@ -136,6 +139,7 @@ namespace ShiftJam
         {
             var keys = Keyboard.GetState();
             Step(gameTime, keys);
+            Music.Update((float)gameTime.ElapsedGameTime.TotalSeconds, _paused || (_dialogue != null && _dialogue.Active), !_title && _world?.Player != null && _world.Player.Plane == Plane.Astral);
             _prevKeys = keys;
             base.Update(gameTime);
         }
@@ -204,7 +208,7 @@ namespace ShiftJam
                 _fade.Go(() =>
                 {
                     if (_campaign.Advance(souls)) LoadStage();
-                    else { _ending = true; Say("ending"); }
+                    else { _ending = true; Say("ending"); Music.PlayTitle(); }
                 });
             }
             else if (!_world.Player.IsAlive && confirm) _fade.Go(LoadStage);

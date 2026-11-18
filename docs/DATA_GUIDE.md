@@ -33,6 +33,7 @@ Run `python3 tools/sync_content.py` after **adding or removing** a data file (no
 | `balance.json` | Every tunable number: move speed, jump, gravity, health, damage, timings, ranges, pickup amounts, boss attack timings and attack order |
 | `levels/*.txt` | The maps: one text file per level, boss arena, Keep room and the Clerk's catacombs |
 | `campaign.json` | The order of the stages, their names, and which level each uses |
+| `music.json` | Which looping music track plays on the title screen and in each stage |
 | `charms.json` | Permanent upgrades earned during a run (boss freed, level cleared) and what they change |
 | `backgrounds.json` | The scenery behind each stage: sky colours and parallax layers (skylines, arches, columns, stars, mist, moon), each with an Astral twin |
 | `story.json` | The story script: the text-box dialogue for the intro, each stage, each boss and the ending |
@@ -145,3 +146,10 @@ Charms are upgrades kept for the rest of a run (lost on quitting to the title or
 what grants one: `freed:pell` (a boss is freed) or `clear:level:rooftops` (a level is cleared). `effects` can set
 `maxHealth` and `maxKi` (added) and `shiftCostMult`, `astralDrainMult`, `kiRegenMult`, `damageMult` (multiplied, so
 `0.75` means 25% cheaper). Owned charms show as gold gems under the plane badge and are listed in the pause menu.
+
+### music.json and the Music folder
+
+Tracks are looping WAVs in `ShiftJamContent/Music`. `tools/make_music.py` synthesises the placeholder chiptune tracks
+(edit its `TRACKS` table for tempo, key and chords, then re-run it); a composer can instead drop in a finished loop with
+the same file name. `music.json` maps each stage's `build` id to a track name. Run `tools/sync_content.py` after adding a
+file. The volume is `Tuning.MusicVolume` in `balance.json` and the pause menu's MUSIC row; music ducks while paused or in dialogue.

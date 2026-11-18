@@ -78,7 +78,7 @@ def main():
         block += [""] + texture_entry(rel)
     for rel in files("Ui", "*.png"):
         block += [""] + texture_entry(rel)
-    for rel in files("Sfx", "*.wav"):
+    for rel in files("Sfx", "*.wav") + files("Music", "*.wav"):
         block += [""] + sound_entry(rel)
     # Game data (balance numbers, text, campaign, sprite table, level maps): copied as they are, read by the game at runtime.
     for rel in files("Data", "*.json") + files("Data/levels", "*.txt"):

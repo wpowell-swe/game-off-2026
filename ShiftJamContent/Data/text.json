@@ -41,7 +41,8 @@
   "pause.title": "PAUSED",
   "pause.resume": "RESUME",
   "pause.restart": "RESTART STAGE",
-  "pause.volume": "VOLUME",
+  "pause.volume": "SOUND",
+  "pause.music": "MUSIC",
   "pause.title_screen": "QUIT TO TITLE",
   "pause.hint": "W S MOVE  ENTER CHOOSE  ESC RESUME"
 }

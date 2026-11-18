@@ -1,0 +1,20 @@
+{
+  "_help": [
+    "Which music track plays where. Tracks are the WAV files in ShiftJamContent/Music (without .wav); each loops.",
+    "'title' plays on the title screen and the ending, 'default' for any stage not listed, 'stages' maps a campaign build id",
+    "(level:streets, boss:pell, keep ...) to a track. Drop in your own looping WAV with the same name to replace a track,",
+    "or add a new WAV and name it here. Run tools/sync_content.py after adding files. Volume: Tuning.MusicVolume in balance.json."
+  ],
+  "title": "title",
+  "default": "street",
+  "stages": {
+    "level:streets": "street",
+    "boss:pell": "boss",
+    "level:cellars": "depths",
+    "boss:dova": "boss",
+    "level:rooftops": "street",
+    "level:tithe_hall": "keep",
+    "keep": "keep",
+    "boss:clerk": "finale"
+  }
+}

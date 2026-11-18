@@ -682,6 +682,48 @@
 /build:Sfx/swing.wav
 #end Sfx/swing.wav
 
+#begin Music/boss.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/boss.wav
+#end Music/boss.wav
+
+#begin Music/depths.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/depths.wav
+#end Music/depths.wav
+
+#begin Music/finale.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/finale.wav
+#end Music/finale.wav
+
+#begin Music/keep.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/keep.wav
+#end Music/keep.wav
+
+#begin Music/street.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/street.wav
+#end Music/street.wav
+
+#begin Music/title.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/title.wav
+#end Music/title.wav
+
 #begin Data/backgrounds.json
 /copy:Data/backgrounds.json
 #end Data/backgrounds.json
@@ -697,6 +739,10 @@
 #begin Data/charms.json
 /copy:Data/charms.json
 #end Data/charms.json
+
+#begin Data/music.json
+/copy:Data/music.json
+#end Data/music.json
 
 #begin Data/sprites.json
 /copy:Data/sprites.json

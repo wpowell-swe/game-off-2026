@@ -110,6 +110,7 @@ namespace ShiftJam
         public static float SparkSpeed = Cfg.F("Tuning.SparkSpeed", 110f, v => SparkSpeed = v);           // pixels per second, max initial
 
         // Audio
+        public static float MusicVolume = Cfg.F("Tuning.MusicVolume", 0.5f, v => MusicVolume = v);
         public static float SfxMasterVolume = Cfg.F("Tuning.SfxMasterVolume", 0.7f, v => SfxMasterVolume = v);
     }
 }
