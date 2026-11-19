@@ -78,7 +78,10 @@ namespace ShiftJam
         public void Draw(SpriteBatch sb)
         {
             int T = Metrics.TileSize, x = (int)_tile.X + T / 2, bottom = (int)_tile.Y + T;
+            bool art = TileArt.Draw(sb, _lit ? "shrine_lit" : "shrine", (int)_tile.X / T, (int)_tile.Y / T)
+                       || (_lit && TileArt.Draw(sb, "shrine", (int)_tile.X / T, (int)_tile.Y / T));
             var iron = new Color(70, 62, 78);
+            if (!art) {
             Gfx.Fill(sb, new Rectangle(x - 4, bottom - 2, 8, 2), iron);          // base
             Gfx.Fill(sb, new Rectangle(x - 1, bottom - 16, 2, 14), iron);        // post
             Gfx.Fill(sb, new Rectangle(x - 4, bottom - 24, 8, 8), iron);         // lantern frame
@@ -90,6 +93,7 @@ namespace ShiftJam
                 Gfx.Fill(sb, new Rectangle(x - 1, bottom - 22, 2, 3), Color.White);
             }
             else Gfx.Fill(sb, new Rectangle(x - 3, bottom - 23, 6, 6), new Color(36, 32, 44));
+            }
             if (_saved > 0)
             {
                 string t = Txt.S("checkpoint.saved", "CHECKPOINT");

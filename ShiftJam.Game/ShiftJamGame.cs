@@ -49,6 +49,7 @@ namespace ShiftJam
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Gfx.Init(GraphicsDevice);
             SpriteStore.Load(Content);
+            TileArt.Load(Content);
             Sfx.Load(Content);
             Music.Load(Content);
             _screen = new RenderTarget2D(GraphicsDevice, Metrics.ScreenWidth, Metrics.ScreenHeight);
@@ -66,6 +67,7 @@ namespace ShiftJam
         {
             Cfg.Load(); Txt.Load(); LevelFile.Reload(); Campaign.Reload(); SpriteDefs.Reload(); Story.Reload(); Backdrop.Reload(); Charms.Reload(); Music.Reload();
             SpriteStore.Load(Content);
+            TileArt.Load(Content);
             _campaign.ClampIndex();
             LoadStage();
             _toast = "DATA RELOADED" + (DataFiles.OverrideDir == null ? " (BUILT-IN COPIES)" : "");

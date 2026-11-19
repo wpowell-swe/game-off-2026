@@ -109,6 +109,8 @@ These are made from code today, so there is nothing to put in a folder yet. Ask 
 - **Doors, the HUD and the font.**
 - **The icon** (`tools/make_icon.py`).
 
+**Tiles are now paintable.** `ShiftJamContent/Tiles/` holds 16x16 templates that match the code-drawn look: `solid`, `solid_top` (solid with open air above, so grass or a lit edge), `wall` (Material-only), `astral` (Astral-only), `gate`, `spikes`, `shrine`, `shrine_lit`. Paint over one with the same name. A PNG may be 32, 48, ... px wide (tiles side by side) and the game picks a variant per map cell so floors do not look stamped. Delete a PNG to get the code-drawn tile back. After adding or renaming a file run `python3 tools/sync_content.py`; `python3 tools/make_placeholder_tiles.py` rewrites any missing template.
+
 The title screen is the exception: replace `ShiftJamContent/Ui/title.png` (320x180) with your own, run `python3 tools/sync_content.py`, and it shows up.
 
 ## Suggested first art tasks

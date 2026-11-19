@@ -110,6 +110,9 @@ namespace ShiftJam
 
         private void DrawSolid(SpriteBatch sb, int x, int y)
         {
+            bool open = !IsSolid(x, y - 1, Plane.Material) || At(x, y - 1) == 'w';
+            if (open && TileArt.Draw(sb, "solid_top", x, y)) return;
+            if (TileArt.Draw(sb, "solid", x, y)) return;
             var body = new Color(78, 60, 52);
             var top = new Color(150, 118, 92);
             var dark = new Color(52, 40, 36);
@@ -129,6 +132,7 @@ namespace ShiftJam
         // Astral-only block: a faint cyan lattice. Reads as ghostly in Material, and as solid ground once you shift.
         private static void DrawAstralBlock(SpriteBatch sb, int x, int y)
         {
+            if (TileArt.Draw(sb, "astral", x, y)) return;
             int px = x * T, py = y * T;
             Gfx.Fill(sb, new Rectangle(px, py, T, T), new Color(60, 150, 200) * 0.35f);
             Gfx.Fill(sb, new Rectangle(px, py, T, 2), new Color(150, 235, 255) * 0.9f);
@@ -141,6 +145,7 @@ namespace ShiftJam
         // A shut gate: iron bars with a red lamp. It opens when its room is cleared.
         private static void DrawGate(SpriteBatch sb, int x, int y)
         {
+            if (TileArt.Draw(sb, "gate", x, y)) return;
             int px = x * T, py = y * T;
             Gfx.Fill(sb, new Rectangle(px + 2, py, 3, T), new Color(120, 120, 135));
             Gfx.Fill(sb, new Rectangle(px + 10, py, 3, T), new Color(120, 120, 135));
@@ -150,6 +155,7 @@ namespace ShiftJam
 
         private static void DrawSpikes(SpriteBatch sb, int x, int y)
         {
+            if (TileArt.Draw(sb, "spikes", x, y)) return;
             int px = x * T, py = y * T;
             for (int i = 0; i < T; i += 4)
             {
@@ -160,6 +166,7 @@ namespace ShiftJam
 
         private static void DrawWall(SpriteBatch sb, int x, int y)
         {
+            if (TileArt.Draw(sb, "wall", x, y)) return;
             var body = new Color(104, 70, 150);
             var stripe = new Color(138, 100, 190);
             var edge = new Color(66, 42, 100);
