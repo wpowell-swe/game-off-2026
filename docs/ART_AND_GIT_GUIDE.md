@@ -111,6 +111,21 @@ These are made from code today, so there is nothing to put in a folder yet. Ask 
 
 **Tiles are now paintable.** `ShiftJamContent/Tiles/` holds 16x16 templates that match the code-drawn look: `solid`, `solid_top` (solid with open air above, so grass or a lit edge), `wall` (Material-only), `astral` (Astral-only), `gate`, `spikes`, `shrine`, `shrine_lit`. Paint over one with the same name. A PNG may be 32, 48, ... px wide (tiles side by side) and the game picks a variant per map cell so floors do not look stamped. Delete a PNG to get the code-drawn tile back. After adding or renaming a file run `python3 tools/sync_content.py`; `python3 tools/make_placeholder_tiles.py` rewrites any missing template.
 
+**Pickups, doors, HUD, dialogue box and backdrops are paintable too.** `python3 tools/make_placeholder_ui.py` writes templates (never overwrites yours); delete any PNG to get the code-drawn look back. After adding or renaming a file run `python3 tools/sync_content.py`, then build.
+
+| File (under `ShiftJamContent/`) | Size | Notes |
+|---|---|---|
+| `Items/pickup_ki.png`, `pickup_health.png`, `pickup_shard.png` | square frames in a row, e.g. 14x14 or 56x14 (4 frames) | Frame size = image height; animates at 6 fps; centred on the pickup, which bobs. |
+| `Items/door_exit.png`, `door_open.png`, `door_done.png`, `door_shut.png` | about 20x51 | Stretched over the doorway (exit door, and Keep room doors: open / cleared / locked). |
+| `Ui/hud_health_frame.png`, `hud_ki_frame.png` | 82x8 | Drawn over the bar; leave the middle transparent. |
+| `Ui/hud_material.png`, `hud_astral.png` | 26x12 | Plane badge. |
+| `Ui/hud_charm.png` | 5x5 | One per held charm (7 px apart; keep it small). |
+| `Ui/hud_astral_edge.png` | 320x180 | Optional full-screen Astral vignette. |
+| `Ui/bossbar_frame.png` | 204x10 | Optional; transparent middle. `bossbar_material.png`, `bossbar_astral.png` (8x10): optional end badges. |
+| `Ui/dialogue_box.png` | any, e.g. 24x24 | Nine-slice with a 4 px border: corners fixed, the rest stretches. `dialogue_tab.png` (3 px border) is the name tab; `dialogue_more.png` / `dialogue_end.png` are the 7x4 arrows. |
+| `Ui/pause_bg.png`, `pause_cursor.png` | 320x180, about 9x9 | Pause screen. |
+| `Backdrops/<name>.png` | any width, tiles sideways | Used by a layer `{"kind": "image", "file": "<name>", "baseY": 90, "factor": 0.3}` in `Data/backgrounds.json` (optional `tint`, `astralTint`, `yFactor`, `drift`). A theme can also set `"skyImage": "<name>"` for a full-screen sky (320x180). Press F11 to see JSON changes. |
+
 The title screen is the exception: replace `ShiftJamContent/Ui/title.png` (320x180) with your own, run `python3 tools/sync_content.py`, and it shows up.
 
 ## Suggested first art tasks

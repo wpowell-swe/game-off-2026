@@ -76,7 +76,7 @@ def main():
     block = [BEGIN]
     for rel in files_deep("Sprites", "*.png"):
         block += [""] + texture_entry(rel)
-    for rel in files("Ui", "*.png") + files("Tiles", "*.png"):
+    for rel in files("Ui", "*.png") + files("Tiles", "*.png") + files("Items", "*.png") + files("Backdrops", "*.png"):
         block += [""] + texture_entry(rel)
     for rel in files("Sfx", "*.wav") + files("Music", "*.wav"):
         block += [""] + sound_entry(rel)

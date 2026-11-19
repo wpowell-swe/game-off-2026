@@ -236,6 +236,7 @@ namespace ShiftJam
             int h = Metrics.TileSize * 3;                       // taller than the player, so it reads as a doorway
             var door = new Rectangle(r.X + 1, r.Bottom - h, r.Width - 2, h);
             float pulse = 0.55f + 0.25f * MathF.Sin(_exitClock * 4f);
+            if (Art.Stretch(sb, "Items/door_exit", new Rectangle(door.X - 2, door.Y - 3, door.Width + 4, door.Height + 3), Color.White * (0.8f + 0.2f * pulse))) return;
             Gfx.Fill(sb, door, new Color(255, 225, 140) * (pulse * 0.45f));
             Gfx.Fill(sb, new Rectangle(door.X + 3, door.Y + 4, door.Width - 6, door.Height - 4), new Color(255, 240, 190) * pulse);
             Gfx.Fill(sb, new Rectangle(door.X - 2, door.Y, 3, door.Height), new Color(110, 80, 50));
@@ -251,6 +252,16 @@ namespace ShiftJam
                 var d = p.Area;
                 bool live = p.Enabled && !p.Done;
                 float pulse = 0.55f + 0.25f * MathF.Sin(_exitClock * 4f + d.X * 0.1f);
+                string doorArt = live ? "Items/door_open" : p.Done ? "Items/door_done" : "Items/door_shut";
+                if (Art.Stretch(sb, doorArt, new Rectangle(d.X - 2, d.Y - 3, d.Width + 4, d.Height + 3), Color.White * (live ? 0.8f + 0.2f * pulse : 1f)))
+                {
+                    if (live && Player != null && Player.Hurtbox.Intersects(d))
+                    {
+                        string t2 = Txt.S("prompt.interact", "E ") + p.Label;
+                        PixelFont.Draw(sb, t2, d.Center.X - PixelFont.Width(t2) / 2, d.Y - 12, Color.White);
+                    }
+                    continue;
+                }
                 Color glow = live ? new Color(255, 225, 140) : p.Done ? new Color(90, 170, 110) : new Color(70, 60, 80);
                 Gfx.Fill(sb, d, glow * (live ? pulse * 0.45f : 0.3f));
                 Gfx.Fill(sb, new Rectangle(d.X + 3, d.Y + 4, d.Width - 6, d.Height - 4), glow * (live ? pulse : 0.45f));

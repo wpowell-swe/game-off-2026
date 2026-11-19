@@ -51,7 +51,8 @@ namespace ShiftJam
 
         public void Draw(SpriteBatch sb)
         {
-            Gfx.Fill(sb, new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight), new Color(0, 0, 10, 170));
+            if (!Art.Stretch(sb, "Ui/pause_bg", new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight)))
+                Gfx.Fill(sb, new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight), new Color(0, 0, 10, 170));
             var gold = new Color(255, 225, 140);
             PixelFont.DrawCentered(sb, Txt.S("pause.title", "PAUSED"), 30, gold, 3);
 
@@ -72,10 +73,13 @@ namespace ShiftJam
                 {
                     int w = PixelFont.Width(items[i], 2);
                     int x = (Metrics.ScreenWidth - w) / 2 - 10;
-                    Gfx.Fill(sb, new Rectangle(x, y + 1, 5, 1), gold);
-                    Gfx.Fill(sb, new Rectangle(x, y + 3, 7, 1), gold);
-                    Gfx.Fill(sb, new Rectangle(x, y + 5, 5, 1), gold);
-                    Gfx.Fill(sb, new Rectangle(x, y + 7, 3, 1), gold);
+                    if (!Art.At(sb, "Ui/pause_cursor", x - 2, y))
+                    {
+                        Gfx.Fill(sb, new Rectangle(x, y + 1, 5, 1), gold);
+                        Gfx.Fill(sb, new Rectangle(x, y + 3, 7, 1), gold);
+                        Gfx.Fill(sb, new Rectangle(x, y + 5, 5, 1), gold);
+                        Gfx.Fill(sb, new Rectangle(x, y + 7, 3, 1), gold);
+                    }
                 }
             }
             int cy = 157;

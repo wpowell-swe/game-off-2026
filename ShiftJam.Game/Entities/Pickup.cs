@@ -54,6 +54,8 @@ namespace ShiftJam
         {
             if (_taken) return;
             var b = Bounds();
+            string art = _kind == PickupKind.Ki ? "Items/pickup_ki" : _kind == PickupKind.Shard ? "Items/pickup_shard" : "Items/pickup_health";
+            if (Art.Anim(sb, art, b, _clock)) return;
             if (_kind == PickupKind.Ki)
             {
                 Gfx.Fill(sb, new Rectangle(b.X - 2, b.Y - 2, Size + 4, Size + 4), new Color(70, 190, 255) * 0.25f);

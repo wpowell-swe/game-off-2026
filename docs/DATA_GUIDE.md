@@ -153,3 +153,7 @@ Tracks are looping WAVs in `ShiftJamContent/Music`. `tools/make_music.py` synthe
 (edit its `TRACKS` table for tempo, key and chords, then re-run it); a composer can instead drop in a finished loop with
 the same file name. `music.json` maps each stage's `build` id to a track name. Run `tools/sync_content.py` after adding a
 file. The volume is `Tuning.MusicVolume` in `balance.json` and the pause menu's MUSIC row; music ducks while paused or in dialogue.
+
+### Image layers in backgrounds.json
+
+A layer with `"kind": "image"` tiles a PNG from `ShiftJamContent/Backdrops/<file>.png` sideways. Fields: `file` (name without .png), `baseY` (screen y of the image's top), `factor` (parallax, 0 = fixed, 1 = moves with the world), `yFactor`, `drift`, `tint` and `astralTint` ([r,g,b], multiplied over the image; the Astral tint blends in when the player shifts). A theme can also set `"skyImage": "<file>"` to replace the sky gradient. Missing PNGs are skipped. Run `python3 tools/sync_content.py` after adding one.

@@ -95,10 +95,13 @@ namespace ShiftJam
             var darkGold = new Color(150, 115, 50);
 
             // Panel with a double border.
-            Gfx.Fill(sb, new Rectangle(BoxX, BoxY, BoxW, BoxH), gold);
-            Gfx.Fill(sb, new Rectangle(BoxX + 1, BoxY + 1, BoxW - 2, BoxH - 2), Color.Black);
-            Gfx.Fill(sb, new Rectangle(BoxX + 3, BoxY + 3, BoxW - 6, BoxH - 6), darkGold);
-            Gfx.Fill(sb, new Rectangle(BoxX + 4, BoxY + 4, BoxW - 8, BoxH - 8), new Color(6, 4, 14));
+            if (!Art.NineSlice(sb, "Ui/dialogue_box", new Rectangle(BoxX, BoxY, BoxW, BoxH), 4))
+            {
+                Gfx.Fill(sb, new Rectangle(BoxX, BoxY, BoxW, BoxH), gold);
+                Gfx.Fill(sb, new Rectangle(BoxX + 1, BoxY + 1, BoxW - 2, BoxH - 2), Color.Black);
+                Gfx.Fill(sb, new Rectangle(BoxX + 3, BoxY + 3, BoxW - 6, BoxH - 6), darkGold);
+                Gfx.Fill(sb, new Rectangle(BoxX + 4, BoxY + 4, BoxW - 8, BoxH - 8), new Color(6, 4, 14));
+            }
 
             // Name tab above the panel's left corner.
             if (!string.IsNullOrEmpty(_page.Speaker))
@@ -106,8 +109,11 @@ namespace ShiftJam
                 string name = PixelFont.Normalize(_page.Speaker).ToUpperInvariant();
                 int w = PixelFont.Width(name) + 12;
                 var tab = new Rectangle(BoxX + 8, BoxY - 10, w, 12);
-                Gfx.Fill(sb, tab, gold);
-                Gfx.Fill(sb, new Rectangle(tab.X + 1, tab.Y + 1, tab.Width - 2, tab.Height - 1), Color.Black);
+                if (!Art.NineSlice(sb, "Ui/dialogue_tab", tab, 3))
+                {
+                    Gfx.Fill(sb, tab, gold);
+                    Gfx.Fill(sb, new Rectangle(tab.X + 1, tab.Y + 1, tab.Width - 2, tab.Height - 1), Color.Black);
+                }
                 PixelFont.Draw(sb, name, tab.X + 6, tab.Y + 4, gold);
             }
 
@@ -125,7 +131,8 @@ namespace ShiftJam
             if (_typed >= _page.Chars && ((int)(_clock * 3f) & 1) == 0)
             {
                 int ax = BoxX + BoxW - 16, ay = BoxY + BoxH - 13;
-                if (_pages.Count > 0)
+                if (Art.At(sb, _pages.Count > 0 ? "Ui/dialogue_more" : "Ui/dialogue_end", ax, ay)) { }
+                else if (_pages.Count > 0)
                 {
                     Gfx.Fill(sb, new Rectangle(ax, ay, 7, 1), gold);
                     Gfx.Fill(sb, new Rectangle(ax + 1, ay + 1, 5, 1), gold);

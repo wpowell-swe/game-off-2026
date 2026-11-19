@@ -11,7 +11,7 @@ namespace ShiftJam
         {
             bool astral = player.Plane == Plane.Astral;
 
-            if (astral)
+            if (astral && !Art.Stretch(sb, "Ui/hud_astral_edge", new Rectangle(0, 0, Metrics.ScreenWidth, Metrics.ScreenHeight)))
             {
                 // Faint cold tint around the screen edges.
                 var tint = new Color(60, 140, 255) * 0.12f;
@@ -22,29 +22,36 @@ namespace ShiftJam
                 Gfx.Fill(sb, new Rectangle(Metrics.ScreenWidth - e, e, e, Metrics.ScreenHeight - 2 * e), tint);
             }
 
-            Bar(sb, 8, 8, 80, 6, player.Health / (float)Math.Max(1, player.MaxHealth), Color.Crimson);
-            Bar(sb, 8, 17, 80, 6, player.Ki / Math.Max(1f, player.MaxKi), Color.DeepSkyBlue);
+            Bar(sb, 8, 8, 80, 6, player.Health / (float)Math.Max(1, player.MaxHealth), Color.Crimson, "Ui/hud_health_frame");
+            Bar(sb, 8, 17, 80, 6, player.Ki / Math.Max(1f, player.MaxKi), Color.DeepSkyBlue, "Ui/hud_ki_frame");
 
             PlaneBadge(sb, 8, 26, astral);
             int gx = 8;
             foreach (var _ in Charms.Held())
             {
-                Gfx.Fill(sb, new Rectangle(gx, 38, 5, 5), Color.Black);
-                Gfx.Fill(sb, new Rectangle(gx + 1, 39, 3, 3), new Color(255, 210, 100));
+                if (!Art.At(sb, "Ui/hud_charm", gx, 38))
+                {
+                    Gfx.Fill(sb, new Rectangle(gx, 38, 5, 5), Color.Black);
+                    Gfx.Fill(sb, new Rectangle(gx + 1, 39, 3, 3), new Color(255, 210, 100));
+                }
                 gx += 7;
             }
         }
 
-        private static void Bar(SpriteBatch sb, int x, int y, int w, int h, float fill, Color c)
+        // A frame PNG (w+2 x h+2) sits over the bar; its transparent middle shows the fill. Without one the bar is plain rectangles.
+        private static void Bar(SpriteBatch sb, int x, int y, int w, int h, float fill, Color c, string frame)
         {
-            Gfx.Fill(sb, new Rectangle(x - 1, y - 1, w + 2, h + 2), Color.Black);
+            bool art = Art.Has(frame);
+            if (!art) Gfx.Fill(sb, new Rectangle(x - 1, y - 1, w + 2, h + 2), Color.Black);
             Gfx.Fill(sb, new Rectangle(x, y, w, h), new Color(40, 40, 40));
             Gfx.Fill(sb, new Rectangle(x, y, (int)(w * MathHelper.Clamp(fill, 0, 1)), h), c);
+            if (art) Art.At(sb, frame, x - 1, y - 1);
         }
 
         /// <summary>Warm sun-like block for Material, cold diamond-ish block for Astral.</summary>
         private static void PlaneBadge(SpriteBatch sb, int x, int y, bool astral)
         {
+            if (Art.At(sb, astral ? "Ui/hud_astral" : "Ui/hud_material", x - 1, y - 1)) return;
             Gfx.Fill(sb, new Rectangle(x - 1, y - 1, 26, 12), Color.Black);
             if (!astral)
             {

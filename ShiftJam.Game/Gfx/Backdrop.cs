@@ -19,6 +19,8 @@ namespace ShiftJam
             public string Kind = "skyline";
             public float Factor = 0.3f, YFactor = 0.05f, Drift;
             public int BaseY = 150, Spacing = 40, MinH = 20, MaxH = 60, MinW = 16, MaxW = 36, Seed = 1;
+            public string File = "";
+            public Color Tint = Color.White, AstralTint = new(150, 170, 255);
             public float Windows = 0.3f, Density = 0.5f;
             public Color Mat = new(30, 24, 44), Astral = new(20, 28, 64), Lit = new(255, 200, 110), AstralLit = new(120, 180, 255);
         }
@@ -27,6 +29,7 @@ namespace ShiftJam
         {
             public Color SkyTopMat = new(20, 16, 28), SkyBotMat = new(34, 26, 44);
             public Color SkyTopAstral = new(12, 18, 44), SkyBotAstral = new(22, 34, 80);
+            public string SkyImage = "";
             public readonly List<Layer> Layers = new();
         }
 
@@ -59,7 +62,8 @@ namespace ShiftJam
         public void Draw(SpriteBatch sb, Vector2 cam)
         {
             int w = Metrics.ScreenWidth, h = Metrics.ScreenHeight;
-            DrawSky(sb, w, h);
+            if (_theme.SkyImage == "" || !Art.Stretch(sb, "Backdrops/" + _theme.SkyImage, new Rectangle(0, 0, w, h), Mix(Color.White, new Color(150, 170, 255))))
+                DrawSky(sb, w, h);
             foreach (var l in _theme.Layers)
             {
                 float sx = cam.X * l.Factor + _time * l.Drift;
@@ -71,6 +75,7 @@ namespace ShiftJam
                     case "columns": DrawColumns(sb, l, sx, sy, w, h); break;
                     case "stars": DrawStars(sb, l, sx, sy, w, h); break;
                     case "mist": DrawMist(sb, l, sx, sy, w); break;
+                    case "image": DrawImage(sb, l, sx, sy, w); break;
                     case "moon": DrawMoon(sb, l, w); break;
                 }
             }
@@ -195,6 +200,16 @@ namespace ShiftJam
             }
         }
 
+        // A painted strip (Backdrops/<file>.png) tiled sideways. Its top edge sits at BaseY; with no PNG the layer is skipped.
+        private void DrawImage(SpriteBatch sb, Layer l, float sx, float sy, int w)
+        {
+            var t = Art.Get("Backdrops/" + l.File);
+            if (t == null) return;
+            var c = Mix(l.Tint, l.AstralTint);
+            int x = -(int)MathF.Floor(((sx % t.Width) + t.Width) % t.Width), y = l.BaseY - (int)sy;
+            for (; x < w; x += t.Width) sb.Draw(t, new Vector2(x, y), c);
+        }
+
         private void DrawMoon(SpriteBatch sb, Layer l, int w)
         {
             Color c = Mix(l.Lit, l.AstralLit);
@@ -232,12 +247,15 @@ namespace ShiftJam
         {
             var t = new Theme();
             Col(e, "skyTop", ref t.SkyTopMat); Col(e, "skyBottom", ref t.SkyBotMat);
+            if (e.TryGetProperty("skyImage", out var si) && si.ValueKind == JsonValueKind.String) t.SkyImage = si.GetString();
             Col(e, "astralSkyTop", ref t.SkyTopAstral); Col(e, "astralSkyBottom", ref t.SkyBotAstral);
             if (e.TryGetProperty("layers", out var ls))
                 foreach (var le in ls.EnumerateArray())
                 {
                     var l = new Layer();
                     if (le.TryGetProperty("kind", out var k)) l.Kind = k.GetString();
+                    if (le.TryGetProperty("file", out var fl) && fl.ValueKind == JsonValueKind.String) l.File = fl.GetString();
+                    Col(le, "tint", ref l.Tint); Col(le, "astralTint", ref l.AstralTint);
                     Num(le, "factor", ref l.Factor); Num(le, "yFactor", ref l.YFactor); Num(le, "drift", ref l.Drift);
                     Num(le, "windows", ref l.Windows); Num(le, "density", ref l.Density);
                     Int(le, "baseY", ref l.BaseY); Int(le, "spacing", ref l.Spacing); Int(le, "minH", ref l.MinH); Int(le, "maxH", ref l.MaxH);
