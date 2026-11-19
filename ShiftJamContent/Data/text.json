@@ -37,6 +37,8 @@
   "keep.room3": "HOLLOW CHAPEL",
   "keep.room4": "GAUNTLET",
   "prompt.interact": "E ",
+  "hint.shift_astral": "SHIFT: STEP INTO THE ASTRAL PLANE",
+  "hint.shift_material": "SHIFT: RETURN TO THE MATERIAL PLANE",
   "prompt.enter": "ENTER",
   "pause.title": "PAUSED",
   "pause.resume": "RESUME",

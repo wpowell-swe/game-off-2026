@@ -224,8 +224,37 @@ namespace ShiftJam
             DrawExit(sb);
             DrawPortals(sb);
             foreach (var e in Entities) e.Draw(sb);
+            DrawShiftHint(sb);
             Sparks.Draw(sb);
             ShiftEffect.DrawWorld(sb);
+        }
+
+        /// <summary>
+        /// Teaches the plane shift: when the player is walking into something that is solid in this plane but open in the
+        /// other, a small prompt floats over their head ("SHIFT: ...").
+        /// </summary>
+        private void DrawShiftHint(SpriteBatch sb)
+        {
+            if (Player == null || !Player.IsAlive || Tiles == null) return;
+            int T = Metrics.TileSize;
+            var hb = Player.Hurtbox;
+            var here = Player.Plane;
+            var other = here == Plane.Material ? Plane.Astral : Plane.Material;
+            int tx = (int)MathF.Floor((hb.Center.X + Player.Facing * (hb.Width / 2 + 14)) / T);
+            bool blocked = false;
+            for (int y = hb.Top; y < hb.Bottom && !blocked; y += T / 2)
+            {
+                int ty = (int)MathF.Floor(y / (float)T);
+                blocked = Tiles.IsSolid(tx, ty, here) && !Tiles.IsSolid(tx, ty, other);
+            }
+            if (!blocked) return;
+            string text = here == Plane.Material
+                ? Txt.S("hint.shift_astral", "SHIFT: STEP INTO THE ASTRAL PLANE")
+                : Txt.S("hint.shift_material", "SHIFT: RETURN TO THE MATERIAL PLANE");
+            int bob = (int)MathF.Round(MathF.Sin(_exitClock * 5f));
+            int x = hb.Center.X - PixelFont.Width(text) / 2, y2 = hb.Top - 14 + bob;
+            Gfx.Fill(sb, new Rectangle(x - 3, y2 - 2, PixelFont.Width(text) + 6, 10), Color.Black * 0.7f);
+            PixelFont.Draw(sb, text, x, y2, here == Plane.Material ? new Color(150, 220, 255) : new Color(255, 200, 120));
         }
 
         /// <summary>A glowing doorway: two posts and a pulsing light between them.</summary>
